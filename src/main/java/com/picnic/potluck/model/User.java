@@ -1,44 +1,64 @@
 package com.picnic.potluck.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.picnic.potluck.util.Role;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(
+    name = "users",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "uc_users_username", columnNames = "username"),
+        @UniqueConstraint(name = "uc_users_email", columnNames = "email")
+    },
+    indexes = {
+        @Index(name = "idx_users_active", columnList = "active")
+    }
+)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(exclude = "passwordHash")
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+public class User extends AuditedEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private int id;
 
-    @Column(name = "role")
-    private Enum role; // Todo: add custom enum for ADMIN, USER
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16)
+    private Role role;
 
-    @Column(name = "is_active")
-    private boolean is_active;
+    @Column(nullable = false)
+    private boolean active;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @NotBlank
+    @Size(min = 3, max = 40)
+    @Column(nullable = false, length = 40)
     private String username;
 
-    @Column(name = "password_hash", nullable = false)
-    private String password_hash;
+    @JsonIgnore
+    @Column(name = "password_hash", length = 100)
+    private String passwordHash;
 
-    @Column(name = "bio")
+    @Size(max = 160)
     private String bio;
 
-    @Column(name = "email")
+    @Email
+    @Size(max = 254)
+    @Column(unique = true)
     private String email;
 
-    @Column(name = "phone_number")
+    // Note: we'll have to strip away any dashes inputted by users on the frontend
+    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
+    @Column(name = "phone_number", length = 20)
     private String phone_number;
-
-    @Column(name = "created_at")
-    private String created_at; // Todo: Change to timestamp object
-
-    @Column(name = "updated_at")
-    private String updated_at; // Todo: Change to timestamp object
-
-    public User() {
-        // Constructor that initializes fields to default values
-    }
 }
