@@ -5,8 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -15,7 +13,7 @@ import java.util.UUID;
 @Table(
         name = "fundraisers",
         indexes = {
-                @Index(name = "idx_fundraisers_active_lat_lon", columnList = "active,lat,lon")
+                @Index(name = "idx_fundraisers_active_lat_lon", columnList = "active,lat,lon"),
                 @Index(name = "idx_fundraisers_organizer", columnList = "organizer_id")
         }
 )
