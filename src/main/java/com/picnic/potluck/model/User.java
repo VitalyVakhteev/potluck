@@ -35,6 +35,7 @@ public class User extends AuditedEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
+    @Size(max = 16)
     private Role role;
 
     @Column(nullable = false)
@@ -60,5 +61,6 @@ public class User extends AuditedEntity {
     // Note: we'll have to strip away any dashes inputted by users on the frontend
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
     @Column(name = "phone_number", length = 20)
+    @Size(max = 20)
     private String phone_number;
 }
