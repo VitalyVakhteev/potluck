@@ -3,14 +3,19 @@ package com.picnic.potluck.model;
 import com.picnic.potluck.util.Source;
 import com.picnic.potluck.util.Status;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
+import java.util.UUID;
 
 @Entity
 @Table(
     name = "scans",
+    uniqueConstraints = {
+            @UniqueConstraint(name = "uk_scans_idempotency_key", columnNames = "idempotency_key")
+    },
     indexes = {
-        @Index(name = "idx_scans_created_at", columnList = "createdAt")
+            @Index(name = "idx_scans_created_at", columnList = "created_at"),
+            @Index(name = "idx_scans_fundraiser_created_at", columnList = "fundraiser_id,created_at DESC"),
+            @Index(name = "idx_scans_participant_created_at", columnList = "participant_user_id,created_at DESC")
     }
 )
 @Getter
@@ -18,25 +23,46 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
+@ToString(exclude = {"fundraiser", "participant_user", "organizer_user"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Scan extends AuditedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Include
-    private int id;
+    private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "fundraiser_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_fundraiser")
+    )
+    private Fundraiser fundraiser;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "participant_user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_participant_user")
+    )
+    private User participant_user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "organizer_user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_organizer_user")
+    )
+    private User organizer_user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
-    @Size(max = 16)
     private Source source;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
-    @Size(max = 16)
     private Status status;
 
-    @Column(nullable = false, unique = true, length=64)
-    @Size(max = 64)
+    @Column(name = "idempotency_key", nullable = false, length = 64)
     private String idempotencyKey;
 }

@@ -9,7 +9,11 @@ import lombok.*;
 @Table(
         name = "points_transactions",
         indexes = {
-                @Index(name = "idx_points_transactions_created_at", columnList = "createdAt")
+                @Index(name = "idx_points_transactions_created_at", columnList = "created_at"),
+                @Index(name = "idx_points_transactions_reason", columnList = "reason"),
+                @Index(name = "idx_scans_user_created_at", columnList = "user_id,created_at DESC"),
+                @Index(name = "idx_scans_fundraiser_created_at", columnList = "fundraiser_id,created_at DESC"),
+                @Index(name = "idx_scans_scan_created_at", columnList = "scan_id,created_at DESC")
         }
 )
 @Getter
@@ -25,12 +29,35 @@ public class PointsLedger extends AuditedEntity {
     @EqualsAndHashCode.Include
     private int id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_user")
+    )
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "fundraiser_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_fundraiser")
+    )
+    private Fundraiser fundraiser;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "scan_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_scan")
+    )
+    private Scan scan;
+
     @Column(nullable = false, unique = true, length=12)
     @Size(max = 12)
     private int delta;
 
     @Column(nullable = false, length=16)
-    @Size(max = 16)
     @Enumerated(EnumType.STRING)
     private Reason reason;
 }
