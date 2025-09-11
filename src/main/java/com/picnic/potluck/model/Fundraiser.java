@@ -5,7 +5,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
@@ -56,4 +59,16 @@ public class Fundraiser extends AuditedEntity {
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
     @Column(name = "phone_number", length = 20)
     private String phone_number;
+
+    @Column(name = "lat", nullable = false)
+    private Double lat;
+
+    @Column(name = "lon", nullable = false)
+    private Double lon;
+
+    @Column(name = "starts_at")
+    private ZonedDateTime starts_at;
+
+    @Column(name = "ends_at")
+    private ZonedDateTime ends_at;
 }
