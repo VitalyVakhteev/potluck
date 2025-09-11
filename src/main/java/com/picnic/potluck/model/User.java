@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(
     name = "users",
@@ -31,11 +33,10 @@ public class User extends AuditedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @EqualsAndHashCode.Include
-    private int id;
+    private UUID id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
-    @Size(max = 16)
     private Role role;
 
     @Column(nullable = false)
@@ -55,12 +56,11 @@ public class User extends AuditedEntity {
 
     @Email
     @Size(max = 254)
-    @Column(unique = true)
+    @Column(length = 254)
     private String email;
 
     // Note: we'll have to strip away any dashes inputted by users on the frontend
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
     @Column(name = "phone_number", length = 20)
-    @Size(max = 20)
     private String phone_number;
 }

@@ -35,7 +35,8 @@ public class Scan extends AuditedEntity {
     @JoinColumn(
             name = "fundraiser_id",
             nullable = false,
-            foreignKey = @ForeignKey(name = "fk_fundraiser")
+            updatable = false,
+            foreignKey = @ForeignKey(name = "fk_scans_fundraiser")
     )
     private Fundraiser fundraiser;
 
@@ -43,7 +44,8 @@ public class Scan extends AuditedEntity {
     @JoinColumn(
             name = "participant_user_id",
             nullable = false,
-            foreignKey = @ForeignKey(name = "fk_participant_user")
+            updatable = false,
+            foreignKey = @ForeignKey(name = "fk_scans_participant_user")
     )
     private User participant_user;
 
@@ -51,7 +53,8 @@ public class Scan extends AuditedEntity {
     @JoinColumn(
             name = "organizer_user_id",
             nullable = false,
-            foreignKey = @ForeignKey(name = "fk_organizer_user")
+            updatable = false,
+            foreignKey = @ForeignKey(name = "fk_scans_organizer_user")
     )
     private User organizer_user;
 
