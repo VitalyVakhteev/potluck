@@ -1,12 +1,10 @@
 package com.picnic.potluck.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -22,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
+@ToString(exclude = "organizer")
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Fundraiser extends AuditedEntity {
 
@@ -38,15 +36,17 @@ public class Fundraiser extends AuditedEntity {
             updatable = false,
             foreignKey = @ForeignKey(name = "fk_organizer_user")
     )
-    private User organizer_user;
+    private User organizer;
 
     @Column(nullable = false)
     private boolean active;
 
-    @Size(max = 32)
+    @NotBlank
+    @Column(nullable = false, length = 80)
     private String title;
 
-    @Size(max = 160)
+    @Size(max = 500)
+    @Column(length = 500)
     private String description;
 
     @Email
@@ -58,15 +58,21 @@ public class Fundraiser extends AuditedEntity {
     @Column(name = "phone_number", length = 20)
     private String phone_number;
 
+    @NotNull
     @Column(name = "lat", nullable = false)
+    @DecimalMin("-90.0")
+    @DecimalMax("90.0")
     private Double lat;
 
+    @NotNull
     @Column(name = "lon", nullable = false)
+    @DecimalMin("-180.0")
+    @DecimalMax("180.0")
     private Double lon;
 
     @Column(name = "starts_at")
-    private ZonedDateTime starts_at;
+    private Instant starts_at;
 
     @Column(name = "ends_at")
-    private ZonedDateTime ends_at;
+    private Instant ends_at;
 }

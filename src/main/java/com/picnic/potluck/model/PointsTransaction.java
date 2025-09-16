@@ -24,7 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
+@ToString(exclude = {"user","fundraiser","scan"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class PointsTransaction extends AuditedEntity {
     @Id
@@ -56,13 +56,13 @@ public class PointsTransaction extends AuditedEntity {
     )
     private Scan scan;
 
-    @Column(nullable = false, unique = true, length=12)
+    @Column(nullable = false)
     @Min(-100000)
     @Max(100000)
     // Sensible min/max for now; might change later
     private int delta;
 
-    @Column(nullable = false, length=16)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length=16)
     private Reason reason;
 }

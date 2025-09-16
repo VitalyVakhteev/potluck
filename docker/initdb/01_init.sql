@@ -1,25 +1,21 @@
-CREATE TYPE role_enum AS ENUM ('ADMIN', 'ORGANIZER', 'SEEKER');
-CREATE TYPE source_enum AS ENUM ('QR');
-CREATE TYPE status_enum AS ENUM ('ACCEPTED', 'REJECTED');
-CREATE TYPE reason_enum AS ENUM ('SCAN_EARN', 'REDEEM', 'ADMIN_ADJUST');
-
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    role role_enum NOT NULL,
+    role VARCHAR(16) NOT NULL,
     active BOOLEAN NOT NULL,
 
     username VARCHAR(40) NOT NULL,
     password_hash VARCHAR(100),
     bio VARCHAR (160),
-    email VARCHAR(254) UNIQUE,
+    email VARCHAR(254),
     phone_number VARCHAR(20),
 
-    created_at TIMESTAMPZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT uc_users_username UNIQUE (username),
-    CONSTRAINT uc_users_email UNIQUE (email),
+    CONSTRAINT uc_users_email UNIQUE (email)
 );
 
 CREATE INDEX idx_users_active ON users (active);
@@ -28,14 +24,14 @@ CREATE TABLE fundraisers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organizer_id UUID NOT NULL,
     active BOOLEAN NOT NULL DEFAULT TRUE,
-    title VARCHAR(80),
+    title VARCHAR(80) NOT NULL,
     description VARCHAR(500),
     email VARCHAR(254),
     phone_number VARCHAR(20),
     lat DOUBLE PRECISION NOT NULL,
     lon DOUBLE PRECISION NOT NULL,
-    starts_at TIMESTAMPZ,
-    ends_at TIMESTAMPZ,
+    starts_at TIMESTAMPTZ,
+    ends_at TIMESTAMPTZ,
 
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -52,8 +48,8 @@ CREATE TABLE scans (
     fundraiser_id UUID NOT NULL,
     participant_user_id UUID NOT NULL,
     organizer_user_id UUID NOT NULL,
-    source source_enum NOT NULL,
-    status status_enum NOT NULL,
+    source VARCHAR(16) NOT NULL,
+    status VARCHAR(16) NOT NULL,
     idempotency_key VARCHAR(64) NOT NULL,
 
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -76,7 +72,7 @@ CREATE TABLE points_transactions (
     fundraiser_id UUID NOT NULL,
     scan_id UUID NOT NULL,
     delta INT NOT NULL,
-    reason reason_enum NOT NULL,
+    reason VARCHAR(16) NOT NULL,
 
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,

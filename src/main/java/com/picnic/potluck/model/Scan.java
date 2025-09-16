@@ -23,7 +23,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"fundraiser", "participant_user", "organizer_user"})
+@ToString(exclude = {"fundraiser", "participant", "organizer"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class Scan extends AuditedEntity {
     @Id
@@ -47,7 +47,7 @@ public class Scan extends AuditedEntity {
             updatable = false,
             foreignKey = @ForeignKey(name = "fk_scans_participant_user")
     )
-    private User participant_user;
+    private User participant;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
@@ -56,7 +56,7 @@ public class Scan extends AuditedEntity {
             updatable = false,
             foreignKey = @ForeignKey(name = "fk_scans_organizer_user")
     )
-    private User organizer_user;
+    private User organizer;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
