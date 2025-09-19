@@ -29,7 +29,7 @@ public class UserService {
                 .username(req.username())
                 .email(req.email())
                 .passwordHash(passwordEncoder.encode(req.password()))
-                .role(Role.SEEKER) // Todo: allow role selection
+                .role(req.role())
                 .active(true)
                 .build();
 

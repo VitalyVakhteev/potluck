@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +26,13 @@ public class DbUserDetailsService implements UserDetailsService {
 
     public static UserDetails toPrincipal(User user) {
         var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        var pwd = user.getPasswordHash();
+        if (pwd == null) {
+            pwd = "{noop}__DISABLED__:" + UUID.randomUUID();
+        }
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
-                .password(user.getPasswordHash() == null ? "{noop}" : user.getPasswordHash())
+                .password(pwd)
                 .authorities(authorities)
                 .accountLocked(!user.isActive())
                 .build();

@@ -134,9 +134,14 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+        </dependency>
         <!--        <dependency>-->
 <!--            <groupId>io.jsonwebtoken</groupId>-->
 <!--            <artifactId>jjwt-api</artifactId>-->
+<!--            <version>0.12.6</version>-->
 <!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>io.jsonwebtoken</groupId>-->
@@ -148,7 +153,7 @@
 <!--            <artifactId>jjwt-jackson</artifactId>-->
 <!--            <scope>runtime</scope>-->
 <!--        </dependency>-->
-<!--        Todo: fix jjwt depend and add swagger -->
+<!--        Todo: fix jjwt depend -->
 
     </dependencies>
 

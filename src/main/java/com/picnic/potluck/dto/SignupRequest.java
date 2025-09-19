@@ -1,9 +1,11 @@
 package com.picnic.potluck.dto;
 
+import com.picnic.potluck.util.Role;
 import jakarta.validation.constraints.*;
 
 public record SignupRequest(
         @NotBlank @Size(min=3, max=40) String username,
         @NotBlank @Email String email,
-        @NotBlank @Size(min=8, max=100) String password
+        @NotBlank @Size(min=8, max=100) String password,
+        @NotNull Role role
 ) {}

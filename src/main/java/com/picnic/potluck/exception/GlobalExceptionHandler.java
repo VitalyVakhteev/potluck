@@ -11,7 +11,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class) // catch any exception
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -22,13 +22,24 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class) // example custom error
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of(
                         "error", ex.getMessage(),
                         "status", 404,
+                        "timestamp", LocalDateTime.now()
+                ));
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<Map<String, Object>> badRequest(IllegalArgumentException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                        "error", ex.getMessage(),
+                        "status", 400,
                         "timestamp", LocalDateTime.now()
                 ));
     }

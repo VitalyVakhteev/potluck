@@ -19,7 +19,8 @@ import java.util.UUID;
         @UniqueConstraint(name = "uc_users_email", columnNames = "email")
     },
     indexes = {
-        @Index(name = "idx_users_active", columnList = "active")
+        @Index(name = "idx_users_active", columnList = "active"),
+        @Index(name = "idx_users_total_points_desc", columnList = "total_points DESC")
     }
 )
 @Getter
@@ -59,8 +60,19 @@ public class User extends AuditedEntity {
     @Column(length = 254)
     private String email;
 
+    @Column(name = "total_points", nullable = false)
+    private int totalPoints;
+
+    @Size(max = 120)
+    @Column(name = "location", length = 120)
+    private String location;
+
     // Note: we'll have to strip away any dashes inputted by users on the frontend
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
     @Column(name = "phone_number", length = 20)
     private String phone_number;
+
+    @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
+    @Column(name = "banner_color", length = 7)
+    private String bannerColor;
 }

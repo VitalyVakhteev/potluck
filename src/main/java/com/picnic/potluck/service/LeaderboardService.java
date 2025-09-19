@@ -17,7 +17,7 @@ public class LeaderboardService {
     private final PointsTransactionRepository pointsRepo;
     private final UserRepository userRepo;
 
-    public record LeaderboardEntry(UUID userId, String username, long totalPoints) {}
+    public record LeaderboardEntry(UUID userId, String username, long totalPoints, long rank) {}
 
     public Page<LeaderboardEntry> getLeaderboard(Pageable pageable) {
         return pointsRepo.leaderboard(pageable)
@@ -27,15 +27,16 @@ public class LeaderboardService {
                     return new LeaderboardEntry(
                             row.getUserId(),
                             user.getUsername(),
-                            row.getTotal()
+                            row.getTotal(),
+                            0 // Rank is not calculated in this query
                     );
                 });
     }
 
     public LeaderboardEntry getUserEntry(UUID userId) {
-        long total = pointsRepo.totalPointsForUser(userId);
-        long rank = pointsRepo.countUsersWithMorePoints(total) + 1;
+        var rankUser = pointsRepo.rankForUser(userId);
+        var username = userRepo.findById(userId).orElseThrow().getUsername();
 
-        return new LeaderboardEntry(userId, total, rank);
+        return new LeaderboardEntry(rankUser.getUserId(), username, rankUser.getTotal(), rankUser.getRnk());
     }
 }

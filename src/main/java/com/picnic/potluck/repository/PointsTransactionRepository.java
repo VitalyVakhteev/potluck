@@ -13,18 +13,34 @@ public interface PointsTransactionRepository extends JpaRepository<PointsTransac
     @Query("select coalesce(sum(p.delta),0) from PointsTransaction p where p.user.id = :userId")
     int totalPointsForUser(@Param("userId") UUID userId);
 
-    @Query("""
-    select count(distinct p.user.id)
-    from PointsTransaction p
-    group by p.user.id
-    having sum(p.delta) > :userTotal
-    """)
-    long countUsersWithMorePoints(@Param("userTotal") long userTotal);
+    @Query(value = """
+    SELECT user_id, total, rnk FROM (
+      SELECT t.user_id,
+             COALESCE(SUM(t.delta),0) AS total,
+             RANK() OVER (ORDER BY COALESCE(SUM(t.delta),0) DESC) AS rnk
+      FROM points_transactions t
+      GROUP BY t.user_id
+    ) s
+    WHERE s.user_id = :userId
+    """, nativeQuery = true)
+    RankRow rankForUser(@Param("userId") UUID userId);
 
+    @Query(value = """
+    SELECT 1 + COUNT(*) AS rnk
+    FROM users u2
+    WHERE u2.total_points > (SELECT u1.total_points FROM users u1 WHERE u1.id = :userId)
+    """, nativeQuery = true)
+    long rankFromUsersTotals(@Param("userId") UUID userId);
 
     interface LeaderboardRow {
         UUID getUserId();
         Long getTotal();
+    }
+
+    interface RankRow {
+        UUID getUserId();
+        long getTotal();
+        long getRnk();
     }
 
     @Query("""
