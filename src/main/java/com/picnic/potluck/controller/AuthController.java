@@ -1,8 +1,10 @@
-package com.picnic.potluck.web;
+package com.picnic.potluck.controller;
 
 import com.picnic.potluck.service.OidcService;
 import com.picnic.potluck.service.UserService;
-import com.picnic.potluck.web.dto.*;
+import com.picnic.potluck.dto.SignupRequest;
+import com.picnic.potluck.dto.LoginRequest;
+import com.picnic.potluck.dto.AuthResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -1,4 +1,4 @@
-package com.picnic.potluck.web.dto;
+package com.picnic.potluck.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

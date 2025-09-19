@@ -4,7 +4,7 @@ import com.picnic.potluck.model.User;
 import com.picnic.potluck.repository.UserRepository;
 import com.picnic.potluck.security.JwtService;
 import com.picnic.potluck.util.Role;
-import com.picnic.potluck.web.dto.AuthResponse;
+import com.picnic.potluck.dto.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;

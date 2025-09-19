@@ -30,6 +30,6 @@ public class DbUserDetailsService implements UserDetailsService {
                 .password(user.getPasswordHash() == null ? "{noop}" : user.getPasswordHash())
                 .authorities(authorities)
                 .accountLocked(!user.isActive())
-                .build();service
+                .build();
     }
 }
