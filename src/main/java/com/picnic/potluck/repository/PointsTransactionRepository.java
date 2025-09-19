@@ -13,6 +13,15 @@ public interface PointsTransactionRepository extends JpaRepository<PointsTransac
     @Query("select coalesce(sum(p.delta),0) from PointsTransaction p where p.user.id = :userId")
     int totalPointsForUser(@Param("userId") UUID userId);
 
+    @Query("""
+    select count(distinct p.user.id)
+    from PointsTransaction p
+    group by p.user.id
+    having sum(p.delta) > :userTotal
+    """)
+    long countUsersWithMorePoints(@Param("userTotal") long userTotal);
+
+
     interface LeaderboardRow {
         UUID getUserId();
         Long getTotal();

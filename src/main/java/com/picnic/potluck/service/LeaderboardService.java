@@ -31,4 +31,11 @@ public class LeaderboardService {
                     );
                 });
     }
+
+    public LeaderboardEntry getUserEntry(UUID userId) {
+        long total = pointsRepo.totalPointsForUser(userId);
+        long rank = pointsRepo.countUsersWithMorePoints(total) + 1;
+
+        return new LeaderboardEntry(userId, total, rank);
+    }
 }
