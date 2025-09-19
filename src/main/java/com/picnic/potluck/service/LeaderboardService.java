@@ -23,7 +23,7 @@ public class LeaderboardService {
         return pointsRepo.leaderboard(pageable)
                 .map(row -> {
                     User user = userRepo.findById(row.getUserId())
-                            .orElseThrow(); // user must exist
+                            .orElseThrow();
                     return new LeaderboardEntry(
                             row.getUserId(),
                             user.getUsername(),

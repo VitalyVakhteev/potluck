@@ -1,35 +1,41 @@
-version: '3.8'
+version: "3.8"
+
 services:
   db:
-    image: postgres:latest
+    image: postgres:16
     container_name: potluck_db
     environment:
-      POSTGRES_DB: potluck
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ${POSTGRES_DB:-please-change-me}
+      POSTGRES_USER: ${POSTGRES_USER:-please-change-me}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS:-please-change-me}
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./docker/initdb:/docker-entrypoint-initdb.d:ro
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin -d potluck -h 127.0.0.1" ]
+      test: ["CMD-SHELL", "pg_isready -U admin -d potluck -h 127.0.0.1"]
       interval: 5s
       timeout: 3s
       retries: 10
-  springboot:
+
+  api:
     build: .
     container_name: potluck_api
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/potluck
-      SPRING_DATASOURCE_USERNAME: admin
-      SPRING_DATASOURCE_PASSWORD: admin
-      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
-      TZ: UTC
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-please-change-me}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-please-change-me}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-please-change-me}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-please-change-me}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-please-change-me}
+      JWT_SECRET: ${JWT_SECRET:-please-change-me-32bytes-min}
+      TZ: UTC
+    ports:
+      - "8080:8080"
+
 volumes:
   db_data:
