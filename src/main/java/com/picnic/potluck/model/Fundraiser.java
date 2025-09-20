@@ -12,7 +12,9 @@ import java.util.UUID;
         name = "fundraisers",
         indexes = {
                 @Index(name = "idx_fundraisers_active_lat_lon", columnList = "active,lat,lon"),
-                @Index(name = "idx_fundraisers_organizer", columnList = "organizer_id")
+                @Index(name = "idx_fundraisers_organizer", columnList = "organizer_id"),
+                @Index(name = "idx_fundraisers_starts_at", columnList = "starts_at"),
+                @Index(name = "idx_fundraisers_ends_at", columnList = "ends_at")
         }
 )
 @Getter
@@ -56,7 +58,7 @@ public class Fundraiser extends AuditedEntity {
 
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
     @Column(name = "phone_number", length = 20)
-    private String phone_number;
+    private String phone;
 
     @NotNull
     @Column(name = "lat", nullable = false)

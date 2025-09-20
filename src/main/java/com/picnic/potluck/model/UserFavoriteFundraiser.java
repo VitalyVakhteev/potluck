@@ -6,12 +6,16 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_favorite_fundraisers",
-        uniqueConstraints = @UniqueConstraint(name="pk_user_fav", columnNames={"user_id","fundraiser_id"}),
-        indexes = {
-                @Index(name="idx_user_fav_user", columnList="user_id"),
-                @Index(name="idx_user_fav_fundraiser", columnList="fundraiser_id")
-        })
+@Table(
+    name = "user_favorite_fundraisers",
+    uniqueConstraints = {
+            @UniqueConstraint(name="pk_user_fav", columnNames={"user_id","fundraiser_id"})
+    },
+    indexes = {
+            @Index(name="idx_user_fav_user", columnList="user_id"),
+            @Index(name="idx_user_fav_fundraiser", columnList="fundraiser_id")
+    }
+)
 @Getter
 @Setter
 @NoArgsConstructor

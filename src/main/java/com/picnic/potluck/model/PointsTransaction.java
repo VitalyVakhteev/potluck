@@ -13,7 +13,6 @@ import java.util.UUID;
         name = "points_transactions",
         indexes = {
                 @Index(name = "idx_points_transactions_created_at", columnList = "created_at"),
-                @Index(name = "idx_points_transactions_reason", columnList = "reason"),
                 @Index(name = "idx_points_transactions_user_created_at", columnList = "user_id,created_at DESC"),
                 @Index(name = "idx_points_transactions_fundraiser_created_at", columnList = "fundraiser_id,created_at DESC"),
                 @Index(name = "idx_points_transactions_scan_created_at", columnList = "scan_id,created_at DESC")

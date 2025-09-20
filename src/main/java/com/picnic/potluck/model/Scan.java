@@ -10,11 +10,10 @@ import java.util.UUID;
 @Table(
     name = "scans",
     uniqueConstraints = {
-            @UniqueConstraint(name = "uk_scans_idempotency_key", columnNames = "idempotency_key")
+            @UniqueConstraint(name = "uk_scans_idempotency_key", columnNames = "idempotency_key"),
+            @UniqueConstraint(name = "uk_scans_same", columnNames={"participant","fundraiser"})
     },
     indexes = {
-            @Index(name = "idx_scans_created_at", columnList = "created_at"),
-            @Index(name = "idx_scans_fundraiser_created_at", columnList = "fundraiser_id,created_at DESC"),
             @Index(name = "idx_scans_participant_created_at", columnList = "participant_user_id,created_at DESC")
     }
 )

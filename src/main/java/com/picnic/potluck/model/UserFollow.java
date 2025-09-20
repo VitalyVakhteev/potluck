@@ -7,7 +7,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "user_followers",
-        uniqueConstraints = @UniqueConstraint(name="pk_user_follow", columnNames={"user_id","follower_user_id"}),
+        uniqueConstraints = {
+            @UniqueConstraint(name="pk_user_follow", columnNames={"user_id","follower_user_id"})
+        },
         indexes = {
                 @Index(name="idx_follow_user", columnList="user_id"),
                 @Index(name="idx_follow_follower", columnList="follower_user_id")
