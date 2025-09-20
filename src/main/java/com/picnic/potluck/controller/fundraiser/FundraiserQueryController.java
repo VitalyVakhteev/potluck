@@ -42,6 +42,7 @@ public class FundraiserQueryController {
         return fundraiserQueryService.listByOrganizer(organizerId, pageable);
     }
 
+    // Todo: turn this into a DTO
     @GetMapping("/near")
     public Page<FundraiserSummary> near(@RequestParam double lat,
                                         @RequestParam double lon,
