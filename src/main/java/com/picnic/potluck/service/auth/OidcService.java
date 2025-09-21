@@ -25,7 +25,7 @@ public class OidcService {
             var u = User.builder()
                     .username(username)
                     .email(email)
-                    .role(Role.SEEKER)
+                    .role(Role.SEEKER) // We default to seeker (organizer usually requires more details). Todo: reevaluate?
                     .active(true)
                     .build();
             return users.save(u);

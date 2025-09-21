@@ -19,6 +19,12 @@ public class ProfileService {
     public ProfileResponse modifyProfile(UUID userId, ProfileRequest req) {
         var u = users.findById(userId).orElseThrow();
 
+        if (req.firstName() != null) {
+            u.setFirstName(trimToNull(req.firstName()));
+        }
+        if (req.lastName() != null) {
+            u.setFirstName(trimToNull(req.lastName()));
+        }
         if (req.bio() != null) {
             u.setBio(trimToNull(req.bio()));
         }
@@ -27,6 +33,9 @@ public class ProfileService {
         }
         if (req.bannerColor() != null) {
             u.setBannerColor(req.bannerColor());
+        }
+        if (req.displayName() != null) {
+            u.setDisplayName(req.displayName());
         }
         if (req.displayEmail() != null) {
             u.setDisplayEmail(req.displayEmail());
@@ -48,9 +57,12 @@ public class ProfileService {
         return new ProfileResponse(
                 u.getId(),
                 u.getUsername(),
+                u.getFirstName(),
+                u.getLastName(),
                 u.getBio(),
                 u.getLocation(),
                 u.getBannerColor(),
+                u.isDisplayName(),
                 u.isDisplayEmail(),
                 u.isDisplayPhone(),
                 u.getTotalPoints()

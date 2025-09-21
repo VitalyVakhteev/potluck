@@ -12,6 +12,7 @@ public record PatchFundraiserRequest(
         @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$") String phoneNumber,
         @DecimalMin("-90.0")  @DecimalMax("90.0")   Double lat,
         @DecimalMin("-180.0") @DecimalMax("180.0") Double lon,
+        @NotNull Boolean reward,
         Instant startsAt,
         Instant endsAt
 ) {}

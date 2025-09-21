@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users/me/follows")
+@RequestMapping("/api/users/follows")
 @RequiredArgsConstructor
 public class FollowController {
     private final FollowService followService;
@@ -27,12 +27,24 @@ public class FollowController {
     public FollowResponse unfollow(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID targetId) {
         return followService.unfollow(UUID.fromString(jwt.getSubject()), targetId);
     }
-    @GetMapping("/followers")
-    public Page<UserSummary> followers(@AuthenticationPrincipal Jwt jwt, Pageable p) {
+
+    @GetMapping("/followers/{userId}")
+    public Page<UserSummary> followers(@PathVariable UUID userId, Pageable p) {
+        return followService.followers(userId, p);
+    }
+
+    @GetMapping("/following/{userId}")
+    public Page<UserSummary> following(@PathVariable UUID userId, Pageable p) {
+        return followService.following(userId, p);
+    }
+
+    @GetMapping("/followers/me")
+    public Page<UserSummary> myFollowers(@AuthenticationPrincipal Jwt jwt, Pageable p) {
         return followService.followers(UUID.fromString(jwt.getSubject()), p);
     }
-    @GetMapping("/following")
-    public Page<UserSummary> following(@AuthenticationPrincipal Jwt jwt, Pageable p) {
+
+    @GetMapping("/following/me")
+    public Page<UserSummary> myFollowing(@AuthenticationPrincipal Jwt jwt, Pageable p) {
         return followService.following(UUID.fromString(jwt.getSubject()), p);
     }
 }

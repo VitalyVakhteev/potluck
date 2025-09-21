@@ -1,5 +1,6 @@
 package com.picnic.potluck.controller.general;
 
+import com.picnic.potluck.dto.user.LeaderboardEntry;
 import com.picnic.potluck.service.general.LeaderboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,12 +17,12 @@ public class LeaderboardController {
     private final LeaderboardService leaderboardService;
 
     @GetMapping
-    public Page<LeaderboardService.LeaderboardEntry> getLeaderboard(Pageable pageable) {
+    public Page<LeaderboardEntry> getLeaderboard(Pageable pageable) {
         return leaderboardService.getLeaderboard(pageable);
     }
 
     @GetMapping("/{userId}")
-    public LeaderboardService.LeaderboardEntry getUserEntry(@PathVariable UUID userId) {
+    public LeaderboardEntry getUserEntry(@PathVariable UUID userId) {
         return leaderboardService.getUserEntry(userId);
     }
 }

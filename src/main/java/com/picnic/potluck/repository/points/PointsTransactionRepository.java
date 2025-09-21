@@ -11,14 +11,14 @@ import java.util.UUID;
 
 public interface PointsTransactionRepository extends JpaRepository<PointsTransaction, UUID> {
     @Query(value = """
-    SELECT user_id, total, rnk FROM (
-      SELECT t.user_id,
-             COALESCE(SUM(t.delta),0) AS total,
-             RANK() OVER (ORDER BY COALESCE(SUM(t.delta),0) DESC) AS rnk
-      FROM points_transactions t
-      GROUP BY t.user_id
+    select user_id, total, rnk from (
+      select t.user_id,
+             COALESCE(SUM(t.delta),0) as total,
+             RANK() over (order by COALESCE(SUM(t.delta),0) desc ) as rnk
+      from points_transactions t
+      group by t.user_id
     ) s
-    WHERE s.user_id = :userId
+    where s.user_id = :userId
     """, nativeQuery = true)
     RankRow rankForUser(@Param("userId") UUID userId);
 

@@ -13,6 +13,11 @@ public record UserDetail(
         long followersCount,
         long followingCount,
         long favoritesCount,
+        String firstName,
+        String lastName,
         String email,
-        String phoneNumber
+        String phoneNumber,
+        boolean displayName,
+        boolean displayEmail,
+        boolean displayPhone
 ) {}

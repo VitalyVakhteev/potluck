@@ -7,6 +7,8 @@ import com.picnic.potluck.repository.user.UserFavoriteFundraiserRepository;
 import com.picnic.potluck.repository.user.UserFollowRepository;
 import com.picnic.potluck.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +20,6 @@ public class UserQueryService {
     private final UserRepository userRepository;
     private final UserFollowRepository userFollowRepository;
     private final UserFavoriteFundraiserRepository userFavoriteFundraiserRepository;
-
-    static String maskEmail(String email) {
-        if (email == null) return null;
-        var parts = email.split("@");
-        if (parts.length != 2) return null;
-        var name = parts[0];
-        var domain = parts[1];
-        var visible = Math.min(2, name.length());
-        return name.substring(0, visible) + "…" + "@" + domain;
-    }
-
-    static String maskPhone(String phone) {
-        if (phone == null || phone.length() < 4) return null;
-        return "•••" + phone.substring(phone.length() - 4);
-    }
 
     public UserDetail getUserForViewer(UUID targetUserId, @Nullable UUID viewerUserId) {
         var user = userRepository.findById(targetUserId).orElseThrow();
@@ -49,16 +36,40 @@ public class UserQueryService {
         return new UserSummary(u.getId(), u.getUsername(), u.getTotalPoints(), u.getTotalFundraisers());
     }
 
+    public UserSummary getSummary(String username) {
+        var u = userRepository.findByUsernameIgnoreCase(username).orElseThrow();
+        return new UserSummary(u.getId(), u.getUsername(), u.getTotalPoints(), u.getTotalFundraisers());
+    }
+
+    public Page<UserSummary> search(String q, Pageable pageable) {
+        String term = q == null ? "" : q.trim();
+        if (term.isEmpty()) return Page.empty(pageable);
+        return userRepository.searchActiveByQuery(term, pageable).map(this::toSummary);
+    }
+
+    public UserSummary toSummary(User user) {
+        return new UserSummary(
+                user.getId(),
+                user.getUsername(),
+                user.getTotalPoints(),
+                user.getTotalFundraisers()
+        );
+    }
+
     private UserDetail buildDetail(User user, @Nullable UUID viewerUserId) {
 
         long followers = userFollowRepository.countByUserId(user.getId());
         long following = userFollowRepository.countByFollowerId(user.getId());
         long favorites = userFavoriteFundraiserRepository.countByUserId(user.getId());
 
-        boolean isSelf = viewerUserId != null && viewerUserId.equals(user.getId());
+        boolean displayName = user.isDisplayName();
+        boolean displayEmail = user.isDisplayEmail();
+        boolean displayPhone = user.isDisplayPhone();
 
-        String emailOut = (user.isDisplayEmail() || isSelf) ? user.getEmail() : maskEmail(user.getEmail());
-        String phoneOut = (user.isDisplayPhone() || isSelf) ? user.getPhoneNumber() : maskPhone(user.getPhoneNumber());
+        String firstNameOut = (displayName ? user.getFirstName() : "...");
+        String lastNameOut = (displayName ? user.getLastName() : "...");
+        String emailOut = (displayEmail ? user.getEmail() : "...");
+        String phoneOut = (displayPhone ? user.getPhoneNumber() : "...");
 
         return new UserDetail(
                 user.getId(),
@@ -69,7 +80,8 @@ public class UserQueryService {
                 user.getTotalPoints(),
                 user.getTotalFundraisers(),
                 followers, following, favorites,
-                emailOut, phoneOut
+                firstNameOut, lastNameOut, emailOut, phoneOut,
+                displayName, displayEmail, displayPhone
         );
     }
 }

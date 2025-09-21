@@ -33,4 +33,16 @@ public interface FundraiserRepository extends JpaRepository<Fundraiser, UUID>, F
     )
     """)
     Page<Fundraiser> findFavorites(UUID userId, Pageable pageable);
+
+    @Query("""
+    select f from Fundraiser f
+    where f.active = true
+      and exists (
+        select 1 from UserFollow uf
+        where uf.follower.id = :followerId
+          and uf.user.id = f.organizer.id
+      )
+    order by f.createdAt desc
+    """)
+    Page<Fundraiser> feedForFollower(UUID followerId, Pageable pageable);
 }

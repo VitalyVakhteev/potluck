@@ -19,8 +19,7 @@ public class ScanController {
 
     @PreAuthorize("hasAnyRole('SEEKER', 'ADMIN')")
     @PostMapping("/claim")
-    public ClaimResponse claim(@AuthenticationPrincipal Jwt jwt,
-                               @RequestBody ClaimRequest req) {
+    public ClaimResponse claim(@AuthenticationPrincipal Jwt jwt, @RequestBody ClaimRequest req) {
         var participantId = UUID.fromString(jwt.getSubject());
         return scanService.claim(participantId, req);
     }

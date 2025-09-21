@@ -39,11 +39,15 @@ public class ScanService {
         var organizer = users.findById(organizerId).orElseThrow();
         var fundraiser = funds.findById(fundraiserId).orElseThrow();
 
+        if (!fundraiser.isReward()) {
+            return new ClaimResponse(false, false, perScan, "no-reward");
+        }
+
         var idemp = participantId + "." + fundraiserId;
 
         var existing = scanRepo.findByIdempotencyKey(idemp);
         if (existing.isPresent()) {
-            return new ClaimResponse(true, perScan, "already-claimed");
+            return new ClaimResponse(true, false, perScan, "already-claimed");
         }
 
         var scan = Scan.builder()
@@ -58,6 +62,6 @@ public class ScanService {
 
         points.awardScanPoints(organizer, participant, fundraiser, scan, perScan);
 
-        return new ClaimResponse(false, perScan, "ok");
+        return new ClaimResponse(false, true, perScan, "ok");
     }
 }

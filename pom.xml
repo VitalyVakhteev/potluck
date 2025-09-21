@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.picnic</groupId>
 	<artifactId>potluck</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>potluck</name>
 	<description>Potluck on SpringBoot</description>
 	<url/>
@@ -150,6 +150,18 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.13.0</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.20.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.20.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -13,9 +13,9 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // apply to all endpoints
-                        .allowedOrigins("*")  // allow all origins for now todo: restrict later
-                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")  // I've never used options Todo: might be a good time to learn options...
+                registry.addMapping("/**")
+                        .allowedOrigins("*") // allow all origins for now todo: restrict later
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
         };

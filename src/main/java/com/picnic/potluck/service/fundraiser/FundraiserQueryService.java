@@ -2,6 +2,7 @@ package com.picnic.potluck.service.fundraiser;
 
 import com.picnic.potluck.dto.fundraiser.FundraiserDetail;
 import com.picnic.potluck.dto.fundraiser.FundraiserSummary;
+import com.picnic.potluck.dto.fundraiser.NearRequest;
 import com.picnic.potluck.model.Fundraiser;
 import com.picnic.potluck.model.User;
 import com.picnic.potluck.repository.user.UserRepository;
@@ -34,13 +35,17 @@ public class FundraiserQueryService {
         return fundraisers.searchActiveByQuery(term, pageable).map(this::toSummary);
     }
 
+    public Page<FundraiserSummary> feed(UUID followerId, Pageable pageable) {
+        return fundraisers.feedForFollower(followerId, pageable).map(this::toSummary);
+    }
+
     public Page<FundraiserSummary> listByOrganizer(UUID organizerId, Pageable pageable) {
         User organizer = users.findById(organizerId).orElseThrow();
         return fundraisers.findByOrganizerOrderByCreatedAtDesc(organizer, pageable).map(this::toSummary);
     }
 
-    public Page<FundraiserSummary> near(double lat, double lon, double radiusKm, Pageable pageable) {
-        return fundraisers.searchActiveWithinRadius(lat, lon, radiusKm, pageable).map(this::toSummary);
+    public Page<FundraiserSummary> near(NearRequest req, Pageable pageable) {
+        return fundraisers.searchActiveWithinRadius(req.lat(), req.lon(), req.radiusKm(), pageable).map(this::toSummary);
     }
 
     public Page<FundraiserSummary> startingSoon(Pageable pageable) {

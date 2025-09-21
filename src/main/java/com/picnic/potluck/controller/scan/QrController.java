@@ -26,6 +26,7 @@ public class QrController {
         var organizerId = UUID.fromString(jwt.getSubject());
         var f = fundraiserRepository.findById(id).orElseThrow();
         if (!f.getOrganizer().getId().equals(organizerId)) throw new AccessDeniedException("Not your fundraiser");
+        if (!f.isReward()) throw new AccessDeniedException("Rewards for this fundraiser are currently disabled");
         return qrService.generateQr(organizerId, id);
     }
 }

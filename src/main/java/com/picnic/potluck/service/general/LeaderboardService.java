@@ -1,5 +1,6 @@
 package com.picnic.potluck.service.general;
 
+import com.picnic.potluck.dto.user.LeaderboardEntry;
 import com.picnic.potluck.model.User;
 import com.picnic.potluck.repository.points.PointsTransactionRepository;
 import com.picnic.potluck.repository.user.UserRepository;
@@ -16,8 +17,6 @@ public class LeaderboardService {
 
     private final PointsTransactionRepository pointsRepo;
     private final UserRepository userRepo;
-
-    public record LeaderboardEntry(UUID userId, String username, long totalPoints, long rank) {}
 
     public Page<LeaderboardEntry> getLeaderboard(Pageable pageable) {
         return pointsRepo.leaderboard(pageable)

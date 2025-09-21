@@ -30,20 +30,20 @@ class FundraiserRepositoryImpl implements FundraiserRepositoryCustom {
 
         // Using Haversine formula to calculate distance
         String select = """
-        SELECT * FROM (
-            SELECT f.*,
+        select * from (
+            select f.*,
                  (6371 * acos(
                    cos(radians(:lat)) * cos(radians(f.lat)) *
                    cos(radians(f.lon) - radians(:lon)) +
                    sin(radians(:lat)) * sin(radians(f.lat))
-                 )) AS distance_km
-            FROM fundraisers f
-            WHERE f.active = true
-                AND f.lat BETWEEN :minLat AND :maxLat
-                AND f.lon BETWEEN :minLon AND :maxLon
+                 )) as distance_km
+            from fundraisers f
+            where f.active = true
+                and f.lat between :minLat and :maxLat
+                and f.lon between :minLon and :maxLon
         ) s
-        WHERE s.distance_km <= :radiusKm
-        ORDER BY s.distance_km
+        where s.distance_km <= :radiusKm
+        order by s.distance_km
         """;
 
         var query = em.createNativeQuery(select, Fundraiser.class)
@@ -60,7 +60,7 @@ class FundraiserRepositoryImpl implements FundraiserRepositoryCustom {
         @SuppressWarnings("unchecked")
         List<Fundraiser> content = query.getResultList();
 
-        String countSql = "SELECT count(*) FROM (" + select + ") t";
+        String countSql = "select count(*) from (" + select + ") t";
         var count = ((Number) em.createNativeQuery(countSql)
                 .setParameter("lat", lat)
                 .setParameter("lon", lon)

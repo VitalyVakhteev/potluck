@@ -53,6 +53,12 @@ public class User extends AuditedEntity {
     @Column(name = "password_hash", length = 100)
     private String passwordHash;
 
+    @Column(name = "first_name", length = 50)
+    private String firstName;
+
+    @Column(name = "last_name", length = 50)
+    private String lastName;
+
     @Size(max = 160)
     private String bio;
 
@@ -80,6 +86,9 @@ public class User extends AuditedEntity {
     @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
     @Column(name = "banner_color", length = 7)
     private String bannerColor;
+
+    @Column(name = "display_name", nullable = false)
+    private boolean displayName;
 
     @Column(name = "display_email", nullable = false)
     private boolean displayEmail;

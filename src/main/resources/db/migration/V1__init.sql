@@ -1,11 +1,11 @@
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY,
     role VARCHAR(16) NOT NULL,
     active BOOLEAN NOT NULL,
     username VARCHAR(40) NOT NULL,
     password_hash VARCHAR(100),
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
     bio VARCHAR(160),
     email VARCHAR(254),
     phone_number VARCHAR(20),
@@ -29,10 +29,11 @@ CREATE UNIQUE INDEX uc_users_email_ci ON users ((lower(email)));
 CREATE INDEX idx_users_active ON users (active);
 CREATE INDEX idx_users_total_points_desc ON users (total_points DESC);
 
-CREATE TABLE fundraisers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS fundraisers (
+    id UUID PRIMARY KEY,
     organizer_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     active BOOLEAN NOT NULL DEFAULT TRUE,
+    reward BOOLEAN NOT NULL DEFAULT TRUE,
     title VARCHAR(80) NOT NULL,
     description VARCHAR(500),
     email VARCHAR(254),
@@ -48,20 +49,22 @@ CREATE INDEX IF NOT EXISTS idx_fundraisers_active_lat_lon ON fundraisers (active
 CREATE INDEX IF NOT EXISTS idx_fundraisers_organizer ON fundraisers (organizer_id);
 CREATE INDEX IF NOT EXISTS idx_fundraisers_starts_at ON fundraisers (starts_at);
 CREATE INDEX IF NOT EXISTS idx_fundraisers_ends_at ON fundraisers (ends_at);
+CREATE INDEX IF NOT EXISTS idx_fundraisers_created_at_desc ON fundraisers (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_fundraisers_organizer_created_at_desc ON fundraisers (organizer_id, created_at DESC);
 
-CREATE TABLE user_favorite_fundraisers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS user_favorite_fundraisers (
+    id UUID PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     fundraiser_id UUID NOT NULL REFERENCES fundraisers(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL,
     CONSTRAINT pk_user_fav UNIQUE (user_id, fundraiser_id)
 );
 CREATE INDEX idx_user_fav_user ON user_favorite_fundraisers (user_id);
 CREATE INDEX idx_user_fav_fundraiser ON user_favorite_fundraisers (fundraiser_id);
 
-CREATE TABLE user_followers (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS user_followers (
+    id UUID PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     follower_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -72,8 +75,8 @@ CREATE TABLE user_followers (
 CREATE INDEX idx_follow_user ON user_followers (user_id);
 CREATE INDEX idx_follow_follower ON user_followers (follower_user_id);
 
-CREATE TABLE scans (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS scans (
+    id UUID PRIMARY KEY,
     fundraiser_id UUID NOT NULL,
     participant_user_id UUID NOT NULL,
     organizer_user_id UUID NOT NULL,
@@ -93,8 +96,8 @@ CREATE TABLE scans (
 CREATE INDEX idx_scans_participant_created_at ON scans (participant_user_id, created_at DESC);
 
 
-CREATE TABLE points_transactions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+CREATE TABLE IF NOT EXISTS points_transactions (
+    id UUID PRIMARY KEY,
     user_id UUID NOT NULL,
     fundraiser_id UUID NOT NULL,
     scan_id UUID NOT NULL,

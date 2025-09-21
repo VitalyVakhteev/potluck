@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users/me/favorites")
+@RequestMapping("/api/users/favorites")
 @RequiredArgsConstructor
 public class FavoriteController {
     private final FavoriteService favoriteService;
@@ -32,10 +32,16 @@ public class FavoriteController {
         return favoriteService.remove(UUID.fromString(jwt.getSubject()), req.fundraiserId());
     }
 
-    // I really don't likew mixing services but it's 3 am and I would like to sleep :)
+    // 9-20-2025 3 AM I really don't like mixing services, but it's 3 am and I would like to sleep :)
+    // 9-20-2025 6 PM I don't know what I was complaining about; this is better than directly using the FavoriteRepo.
     @GetMapping
     public Page<FundraiserSummary> myFavorites(@AuthenticationPrincipal Jwt jwt, Pageable p) {
         var userId = UUID.fromString(jwt.getSubject());
+        return fundraisers.list(userId, p);
+    }
+
+    @GetMapping("/{userId}/")
+    public Page<FundraiserSummary> favoritesOf(@PathVariable UUID userId, Pageable p) {
         return fundraisers.list(userId, p);
     }
 }

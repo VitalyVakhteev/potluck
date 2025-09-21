@@ -41,6 +41,7 @@ public class FundraiserService {
                 .lon(req.lon())
                 .starts_at(req.startsAt())
                 .ends_at(req.endsAt())
+                .reward(req.reward())
                 .build();
 
         fundraiserRepository.save(fundraiser);
@@ -87,6 +88,9 @@ public class FundraiserService {
         }
         if (req.endsAt() != null) {
             fundraiser.setEnds_at(req.endsAt());
+        }
+        if (req.reward() != null) {
+            fundraiser.setReward(req.reward());
         }
 
         fundraiserRepository.save(fundraiser);

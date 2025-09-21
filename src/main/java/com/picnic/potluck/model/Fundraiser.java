@@ -14,7 +14,9 @@ import java.util.UUID;
                 @Index(name = "idx_fundraisers_active_lat_lon", columnList = "active,lat,lon"),
                 @Index(name = "idx_fundraisers_organizer", columnList = "organizer_id"),
                 @Index(name = "idx_fundraisers_starts_at", columnList = "starts_at"),
-                @Index(name = "idx_fundraisers_ends_at", columnList = "ends_at")
+                @Index(name = "idx_fundraisers_ends_at", columnList = "ends_at"),
+                @Index(name = "idx_fundraisers_created_at_desc", columnList = "created_at DESC"),
+                @Index(name = "idx_fundraisers_organizer_created_at_desc", columnList = "organizer_id,created_at DESC")
         }
 )
 @Getter
@@ -43,6 +45,9 @@ public class Fundraiser extends AuditedEntity {
     @Column(nullable = false)
     private boolean active;
 
+    @Column(nullable = false)
+    private boolean reward;
+
     @NotBlank
     @Column(nullable = false, length = 80)
     private String title;
@@ -61,13 +66,13 @@ public class Fundraiser extends AuditedEntity {
     private String phone;
 
     @NotNull
-    @Column(name = "lat", nullable = false)
+    @Column(nullable = false)
     @DecimalMin("-90.0")
     @DecimalMax("90.0")
     private Double lat;
 
     @NotNull
-    @Column(name = "lon", nullable = false)
+    @Column(nullable = false)
     @DecimalMin("-180.0")
     @DecimalMax("180.0")
     private Double lon;
