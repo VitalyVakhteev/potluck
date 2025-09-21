@@ -11,10 +11,10 @@ import java.util.UUID;
 
 public interface PointsTransactionRepository extends JpaRepository<PointsTransaction, UUID> {
     @Query(value = """
-    select user_id, total, rnk from (
+    select s.user_id as userId, s.total as total, s.rnk as rnk from (
       select t.user_id,
-             COALESCE(SUM(t.delta),0) as total,
-             RANK() over (order by COALESCE(SUM(t.delta),0) desc ) as rnk
+             coalesce(sum(t.delta),0) as total,
+             rank() over (order by coalesce(sum(t.delta),0) desc ) as rnk
       from points_transactions t
       group by t.user_id
     ) s
@@ -28,11 +28,28 @@ public interface PointsTransactionRepository extends JpaRepository<PointsTransac
         long getRnk();
     }
 
-    @Query("""
-         select p.user.id as userId, sum(p.delta) as total
-         from PointsTransaction p
-         group by p.user.id
-         order by total desc
-         """)
+    @Query(value = """
+    with totals as (
+        select t.user_id, coalesce(sum(t.delta), 0) as total
+        from points_transactions t
+        group by t.user_id
+    ),
+    ranked as (
+        select user_id,
+            total,
+            rank() over (order by total desc, user_id asc) as rnk
+        from totals
+    )
+    select user_id as userId, total as total, rnk as rnk
+    from ranked
+    order by total desc, user_id asc
+    """,
+    countQuery = """
+    select count(*) from (
+      select 1
+      from points_transactions t
+      group by t.user_id
+    ) x
+    """, nativeQuery = true)
     Page<RankRow> leaderboard(Pageable pageable);
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
     name = "scans",
     uniqueConstraints = {
             @UniqueConstraint(name = "uk_scans_idempotency_key", columnNames = "idempotency_key"),
-            @UniqueConstraint(name = "uk_scans_same", columnNames={"participant","fundraiser"})
+            @UniqueConstraint(name = "uk_scans_same", columnNames={"participant_user_id","fundraiser_id"})
     },
     indexes = {
             @Index(name = "idx_scans_participant_created_at", columnList = "participant_user_id,created_at DESC")

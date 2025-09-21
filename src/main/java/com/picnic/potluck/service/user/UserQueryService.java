@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -21,26 +22,31 @@ public class UserQueryService {
     private final UserFollowRepository userFollowRepository;
     private final UserFavoriteFundraiserRepository userFavoriteFundraiserRepository;
 
+    @Transactional(readOnly = true)
     public UserDetail getUserForViewer(UUID targetUserId, @Nullable UUID viewerUserId) {
         var user = userRepository.findById(targetUserId).orElseThrow();
         return buildDetail(user, viewerUserId);
     }
 
+    @Transactional(readOnly = true)
     public UserDetail getUserForViewer(String username, @Nullable UUID viewerUserId) {
         var user = userRepository.findByUsernameIgnoreCase(username).orElseThrow();
         return buildDetail(user, viewerUserId);
     }
 
+    @Transactional(readOnly = true)
     public UserSummary getSummary(UUID userId) {
         var u = userRepository.findById(userId).orElseThrow();
         return new UserSummary(u.getId(), u.getUsername(), u.getTotalPoints(), u.getTotalFundraisers());
     }
 
+    @Transactional(readOnly = true)
     public UserSummary getSummary(String username) {
         var u = userRepository.findByUsernameIgnoreCase(username).orElseThrow();
         return new UserSummary(u.getId(), u.getUsername(), u.getTotalPoints(), u.getTotalFundraisers());
     }
 
+    @Transactional(readOnly = true)
     public Page<UserSummary> search(String q, Pageable pageable) {
         String term = q == null ? "" : q.trim();
         if (term.isEmpty()) return Page.empty(pageable);

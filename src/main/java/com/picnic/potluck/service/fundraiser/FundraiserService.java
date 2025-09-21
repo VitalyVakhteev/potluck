@@ -8,7 +8,7 @@ import com.picnic.potluck.model.Fundraiser;
 import com.picnic.potluck.model.User;
 import com.picnic.potluck.repository.fundraiser.FundraiserRepository;
 import com.picnic.potluck.repository.user.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ public class LeaderboardService {
     private final PointsTransactionRepository pointsRepo;
     private final UserRepository userRepo;
 
+    @Transactional(readOnly = true)
     public Page<LeaderboardEntry> getLeaderboard(Pageable pageable) {
         return pointsRepo.leaderboard(pageable)
                 .map(row -> {
@@ -32,6 +34,7 @@ public class LeaderboardService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public LeaderboardEntry getUserEntry(UUID userId) {
         var rankUser = pointsRepo.rankForUser(userId);
         var username = userRepo.findById(userId).orElseThrow().getUsername();

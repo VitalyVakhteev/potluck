@@ -34,6 +34,7 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-please-change-me}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-please-change-me}
+      QR_SECRET: ${QR_SECRET:-please-change-me}
       JWT_SECRET: ${JWT_SECRET:-please-change-me-32bytes-min}
       TZ: UTC
     ports:

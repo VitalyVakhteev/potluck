@@ -7,13 +7,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 public interface FundraiserRepositoryCustom {
+    @EntityGraph(attributePaths = "organizer")
     Page<Fundraiser> searchActiveWithinRadius(double lat, double lon, double radiusKm, Pageable pageable);
+
+    @EntityGraph(attributePaths = "organizer")
     Page<Fundraiser> startingSoon(Pageable pageable);
+
+    @EntityGraph(attributePaths = "organizer")
     Page<Fundraiser> endingSoon(Pageable pageable);
 }
 

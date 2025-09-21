@@ -9,7 +9,7 @@ import com.picnic.potluck.repository.user.UserRepository;
 import com.picnic.potluck.service.points.PointsService;
 import com.picnic.potluck.util.Source;
 import com.picnic.potluck.util.Status;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

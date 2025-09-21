@@ -4,7 +4,7 @@ import com.picnic.potluck.dto.user.FavoriteResponse;
 import com.picnic.potluck.model.Fundraiser;
 import com.picnic.potluck.repository.fundraiser.FundraiserRepository;
 import com.picnic.potluck.repository.user.UserFavoriteFundraiserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     location VARCHAR(120),
     banner_color VARCHAR(7),
 
+    display_name BOOLEAN NOT NULL DEFAULT FALSE,
     display_email BOOLEAN NOT NULL DEFAULT FALSE,
     display_phone BOOLEAN NOT NULL DEFAULT FALSE,
 

@@ -3,6 +3,7 @@ package com.picnic.potluck.security;
 import com.picnic.potluck.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,8 @@ public class JwtService {
                 .claim("role", user.getRole().name())
                 .build();
 
-        return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        JwsHeader headers = JwsHeader.with(MacAlgorithm.HS256).type("JWT").build();
+
+        return encoder.encode(JwtEncoderParameters.from(headers, claims)).getTokenValue();
     }
 }

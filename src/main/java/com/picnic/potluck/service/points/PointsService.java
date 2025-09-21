@@ -7,7 +7,7 @@ import com.picnic.potluck.model.User;
 import com.picnic.potluck.repository.points.PointsTransactionRepository;
 import com.picnic.potluck.repository.user.UserRepository;
 import com.picnic.potluck.util.Reason;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -4,7 +4,7 @@ import com.picnic.potluck.dto.user.ProfileRequest;
 import com.picnic.potluck.dto.user.ProfileResponse;
 import com.picnic.potluck.model.User;
 import com.picnic.potluck.repository.user.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

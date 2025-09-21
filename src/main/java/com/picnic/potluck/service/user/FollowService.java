@@ -3,7 +3,7 @@ package com.picnic.potluck.service.user;
 import com.picnic.potluck.dto.user.FollowResponse;
 import com.picnic.potluck.dto.user.UserSummary;
 import com.picnic.potluck.repository.user.UserFollowRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
