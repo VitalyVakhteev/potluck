@@ -35,7 +35,7 @@ public class UserService {
 			throw new IllegalArgumentException("Phone number in use");
 		});
 		if (req.role() == Role.ADMIN) throw new IllegalArgumentException("Signup does not support ADMIN roles");
-		String e164 = PhoneNormalizer.toE164(req.phone(), "US");
+		String e164 = PhoneNormalizer.toE164(req.phone(), "+1");
 		// Todo: validate email?
 
 		var user = User.builder()
