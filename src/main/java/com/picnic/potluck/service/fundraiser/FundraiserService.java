@@ -1,9 +1,6 @@
 package com.picnic.potluck.service.fundraiser;
 
-import com.picnic.potluck.dto.fundraiser.CreateFundraiserRequest;
-import com.picnic.potluck.dto.fundraiser.CreateFundraiserResponse;
-import com.picnic.potluck.dto.fundraiser.PatchFundraiserRequest;
-import com.picnic.potluck.dto.fundraiser.PatchFundraiserResponse;
+import com.picnic.potluck.dto.fundraiser.*;
 import com.picnic.potluck.model.Fundraiser;
 import com.picnic.potluck.model.User;
 import com.picnic.potluck.repository.fundraiser.FundraiserRepository;
@@ -104,11 +101,13 @@ public class FundraiserService {
     }
 
     @Transactional
-    public void delete(UUID organizerId, UUID fundraiserId) {
+    public DeleteFundraiserResponse delete(UUID organizerId, UUID fundraiserId) {
         var f = fundraiserRepository.findById(fundraiserId).orElseThrow();
         if (!f.getOrganizer().getId().equals(organizerId)) throw new AccessDeniedException("Not your fundraiser");
         fundraiserRepository.delete(f);
         if (f.isActive()) userRepository.incrementTotalFundraisers(organizerId, -1);
-
+        return new DeleteFundraiserResponse(
+                fundraiserId
+        );
     }
 }

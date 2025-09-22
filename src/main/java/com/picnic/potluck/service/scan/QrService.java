@@ -25,7 +25,9 @@ public class QrService {
         var exp = Instant.now().plusSeconds(ttlSeconds).getEpochSecond();
         var data = fundraiserId + "." + organizerId + "." + exp;
         var sig = hmacSha256Hex(secret, data);
-        // Todo: Ideally, the frontend QR code points to this once we build it:
+        // Todo: Ideally, the frontend QR code points to this once we build it.
+        // We can also have the frontend point to different URL that sends a request to this URL
+        // Either way, revisit this when the time comes.
         var claimPath = "/api/scans/claim?f=" + fundraiserId + "&o=" + organizerId + "&t=" + exp + "&sig=" + sig;
         return new QrResponse(claimPath, exp);
     }

@@ -27,10 +27,8 @@ public class UserService {
         userRepository.findByEmailIgnoreCase(req.email()).ifPresent(u -> { throw new IllegalArgumentException("Email in use"); });
         userRepository.findByUsernameIgnoreCase(req.username()).ifPresent(u -> { throw new IllegalArgumentException("Username in use"); });
         userRepository.findByPhoneNumberIgnoreCase(req.phone()).ifPresent(u -> { throw new IllegalArgumentException("Phone number in use"); });
-        Role final_role = req.role();
-        if (final_role == Role.ADMIN) {
-            // Todo: log here that this endpoint doesn't support admin signups. For now, we default to organizer.
-            final_role = Role.ORGANIZER;
+        if (req.role() == Role.ADMIN) {
+            throw new IllegalArgumentException("Signup does not support ADMIN roles");
         }
 
         var user = User.builder()
@@ -38,7 +36,7 @@ public class UserService {
                 .email(req.email())
                 .phoneNumber(req.phone())
                 .passwordHash(passwordEncoder.encode(req.password()))
-                .role(final_role)
+                .role(req.role())
                 .active(true)
                 .build();
 

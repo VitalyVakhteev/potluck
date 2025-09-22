@@ -2,6 +2,7 @@ package com.picnic.potluck.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.picnic.potluck.service.auth.DbUserDetailsService;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -39,7 +40,6 @@ public class SecurityConfig {
                 .scheme("bearer");
     }
 
-    // Todo: Get rid of API doc for Prod
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI().addSecurityItem(new SecurityRequirement().
@@ -98,7 +98,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider,
                                             JwtAuthenticationConverter conv) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable) // Todo: figure out how to allow oidc with csrf disabled
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
             .authenticationProvider(provider)
             .authorizeHttpRequests(auth -> auth
@@ -107,7 +107,7 @@ public class SecurityConfig {
                         "/api/fundraisers", "/api/fundraisers/**",
                         "/api/users/id/**", "/api/users/u/**",
                         "/api/leaderboard/**",
-                        "/api/auth/login", "/api/auth/signup", "/api/auth/oidc/me"
+                        "/api/auth/login", "/api/auth/signup"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

@@ -30,15 +30,15 @@ public class FollowService {
     }
 
     @Transactional
-    public Page<UserSummary> followers(UUID me, Pageable p) {
-        return followRepository.findByUserId(me, p)
+    public Page<UserSummary> followers(UUID user, Pageable p) {
+        return followRepository.findByUserId(user, p)
                 .map(f -> new UserSummary(f.getFollower().getId(), f.getFollower().getUsername(),
                         f.getFollower().getTotalPoints(), f.getFollower().getTotalFundraisers()));
     }
 
     @Transactional
-    public Page<UserSummary> following(UUID me, Pageable p) {
-        return followRepository.findByFollowerId(me, p)
+    public Page<UserSummary> following(UUID user, Pageable p) {
+        return followRepository.findByFollowerId(user, p)
                 .map(f -> new UserSummary(f.getUser().getId(), f.getUser().getUsername(),
                         f.getUser().getTotalPoints(), f.getUser().getTotalFundraisers()));
     }
