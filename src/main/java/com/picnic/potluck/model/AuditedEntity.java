@@ -14,11 +14,11 @@ import java.time.Instant;
 @Getter
 @Setter
 public abstract class AuditedEntity {
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
+	@CreatedDate
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private Instant createdAt;
 
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+	@LastModifiedDate
+	@Column(name = "updated_at", nullable = false)
+	private Instant updatedAt;
 }

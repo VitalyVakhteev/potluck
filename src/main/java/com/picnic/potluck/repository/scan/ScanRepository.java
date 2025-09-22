@@ -10,6 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ScanRepository extends JpaRepository<Scan, UUID> {
-    @EntityGraph(attributePaths = {"fundraiser", "participant", "organizer"})
-    Optional<Scan> findByIdempotencyKey(String idempotencyKey);
+	@EntityGraph(attributePaths = {"fundraiser", "participant", "organizer"})
+	Optional<Scan> findByIdempotencyKey(String idempotencyKey);
 }

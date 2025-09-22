@@ -22,29 +22,29 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class QrController {
-    private final QrService qrService;
-    private final FundraiserRepository fundraiserRepository;
+	private final QrService qrService;
+	private final FundraiserRepository fundraiserRepository;
 
-    @Operation(
-            summary = "Generate a QR Code.",
-            description = "If a user is an organizer or an admin and the OP, create a QR code for a fundraiser.",
-            security = { @SecurityRequirement(name = "Bearer Authentication") }
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Leaderboard row fetched successfully"),
-            @ApiResponse(responseCode = "400", description = "Illegal argument (Rewards are disabled)"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized request"),
-            @ApiResponse(responseCode = "403", description = "Access Denied (Not the OP)"),
-            @ApiResponse(responseCode = "404", description = "The given fundraiser was not found")
-    })
-    @Tag(name="QR/Points", description="QR/Points management API")
-    @PreAuthorize("hasAnyRole('ORGANIZER','ADMIN')")
-    @GetMapping("/api/fundraisers/{id}/qr")
-    public QrResponse qr(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
-        var organizerId = UUID.fromString(jwt.getSubject());
-        var f = fundraiserRepository.findById(id).orElseThrow();
-        if (!f.getOrganizer().getId().equals(organizerId)) throw new AccessDeniedException("Not your fundraiser");
-        if (!f.isReward()) throw new IllegalArgumentException("Rewards for this fundraiser are currently disabled");
-        return qrService.generateQr(organizerId, id);
-    }
+	@Operation(
+			summary = "Generate a QR Code.",
+			description = "If a user is an organizer or an admin and the OP, create a QR code for a fundraiser.",
+			security = {@SecurityRequirement(name = "Bearer Authentication")}
+	)
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Leaderboard row fetched successfully"),
+			@ApiResponse(responseCode = "400", description = "Illegal argument (Rewards are disabled)"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized request"),
+			@ApiResponse(responseCode = "403", description = "Access Denied (Not the OP)"),
+			@ApiResponse(responseCode = "404", description = "The given fundraiser was not found")
+	})
+	@Tag(name = "QR/Points", description = "QR/Points management API")
+	@PreAuthorize("hasAnyRole('ORGANIZER','ADMIN')")
+	@GetMapping("/api/fundraisers/{id}/qr")
+	public QrResponse qr(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
+		var organizerId = UUID.fromString(jwt.getSubject());
+		var f = fundraiserRepository.findById(id).orElseThrow();
+		if (!f.getOrganizer().getId().equals(organizerId)) throw new AccessDeniedException("Not your fundraiser");
+		if (!f.isReward()) throw new IllegalArgumentException("Rewards for this fundraiser are currently disabled");
+		return qrService.generateQr(organizerId, id);
+	}
 }

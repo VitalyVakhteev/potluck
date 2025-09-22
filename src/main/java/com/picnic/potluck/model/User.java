@@ -13,16 +13,16 @@ import java.util.UUID;
 
 @Entity
 @Table(
-    name = "users",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uc_users_username", columnNames = "username"),
-        @UniqueConstraint(name = "uc_users_email", columnNames = "email"),
-        @UniqueConstraint(name = "uc_users_phone", columnNames = "phone_number")
-    },
-    indexes = {
-        @Index(name = "idx_users_active", columnList = "active"),
-        @Index(name = "idx_users_total_points_desc", columnList = "total_points DESC")
-    }
+		name = "users",
+		uniqueConstraints = {
+				@UniqueConstraint(name = "uc_users_username", columnNames = "username"),
+				@UniqueConstraint(name = "uc_users_email", columnNames = "email"),
+				@UniqueConstraint(name = "uc_users_phone", columnNames = "phone_number")
+		},
+		indexes = {
+				@Index(name = "idx_users_active", columnList = "active"),
+				@Index(name = "idx_users_total_points_desc", columnList = "total_points DESC")
+		}
 )
 @Getter
 @Setter
@@ -32,67 +32,66 @@ import java.util.UUID;
 @ToString(exclude = "passwordHash")
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 public class User extends AuditedEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
-    private UUID id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	@EqualsAndHashCode.Include
+	private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 16)
-    private Role role;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 16)
+	private Role role;
 
-    @Column(nullable = false)
-    private boolean active;
+	@Column(nullable = false)
+	private boolean active;
 
-    @NotBlank
-    @Size(min = 3, max = 40)
-    @Column(nullable = false, length = 40)
-    private String username;
+	@NotBlank
+	@Size(min = 3, max = 40)
+	@Column(nullable = false, length = 40)
+	private String username;
 
-    @JsonIgnore
-    @Column(name = "password_hash", length = 100)
-    private String passwordHash;
+	@JsonIgnore
+	@Column(name = "password_hash", length = 100)
+	private String passwordHash;
 
-    @Column(name = "first_name", length = 50)
-    private String firstName;
+	@Column(name = "first_name", length = 50)
+	private String firstName;
 
-    @Column(name = "last_name", length = 50)
-    private String lastName;
+	@Column(name = "last_name", length = 50)
+	private String lastName;
 
-    @Size(max = 160)
-    private String bio;
+	@Size(max = 160)
+	private String bio;
 
-    @Email
-    @Size(max = 254)
-    @Column(length = 254)
-    private String email;
+	@Email
+	@Size(max = 254)
+	@Column(length = 254)
+	private String email;
 
-    @Column(name = "total_points")
-    private int totalPoints;
+	@Column(name = "total_points")
+	private int totalPoints;
 
-    @Column(name = "total_fundraisers")
-    private int totalFundraisers;
+	@Column(name = "total_fundraisers")
+	private int totalFundraisers;
 
-    // Note that this isn't a lat/lon object, rather a str location
-    @Size(max = 120)
-    @Column(name = "location", length = 120)
-    private String location;
+	// Note that this isn't a lat/lon object, rather a str location
+	@Size(max = 120)
+	@Column(name = "location", length = 120)
+	private String location;
 
-    // Note: we'll have to strip away any dashes inputted by users on the frontend
-    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
-    @Column(name = "phone_number", length = 20)
-    private String phoneNumber;
+	@Pattern(regexp = "^[0-9()\\s+\\-.]{7,32}$")
+	@Column(name = "phone_number", length = 32)
+	private String phoneNumber;
 
-    @Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
-    @Column(name = "banner_color", length = 7)
-    private String bannerColor;
+	@Pattern(regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")
+	@Column(name = "banner_color", length = 7)
+	private String bannerColor;
 
-    @Column(name = "display_name", nullable = false)
-    private boolean displayName;
+	@Column(name = "display_name", nullable = false)
+	private boolean displayName;
 
-    @Column(name = "display_email", nullable = false)
-    private boolean displayEmail;
+	@Column(name = "display_email", nullable = false)
+	private boolean displayEmail;
 
-    @Column(name = "display_phone", nullable = false)
-    private boolean displayPhone;
+	@Column(name = "display_phone", nullable = false)
+	private boolean displayPhone;
 }

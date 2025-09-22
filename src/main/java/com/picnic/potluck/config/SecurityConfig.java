@@ -2,7 +2,6 @@ package com.picnic.potluck.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.picnic.potluck.service.auth.DbUserDetailsService;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -13,6 +12,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.http.HttpMethod;
@@ -35,95 +35,95 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private SecurityScheme createAPIKeyScheme() {
-        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
-                .bearerFormat("JWT")
-                .scheme("bearer");
-    }
+	private SecurityScheme createAPIKeyScheme() {
+		return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+				.bearerFormat("JWT")
+				.scheme("bearer");
+	}
 
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI().addSecurityItem(new SecurityRequirement()
-                        .addList("Bearer Authentication"))
-                        .components(new Components()
-                        .addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
-                        .info(new Info().title("Potluck API")
-                        .description("The Potluck SpringBoot API.")
-                        .version("1.0").contact(new Contact().name("Vitaly Vakhteev")
-                        .email( "www.techusage.com").url("vitaly.v@techusage.com"))
-                        .license(new License().name("GPL-3.0")
-                        .url("https://www.gnu.org/licenses/gpl.html")));
-    }
+	@Bean
+	public OpenAPI openAPI() {
+		return new OpenAPI().addSecurityItem(new SecurityRequirement()
+						.addList("Bearer Authentication"))
+				.components(new Components()
+						.addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
+				.info(new Info().title("Potluck API")
+						.description("The Potluck SpringBoot API.")
+						.version("1.0").contact(new Contact().name("Vitaly Vakhteev")
+								.email("www.techusage.com").url("vitaly.v@techusage.com"))
+						.license(new License().name("GPL-3.0")
+								.url("https://www.gnu.org/licenses/gpl.html")));
+	}
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    JwtEncoder jwtEncoder(@Value("${app.jwt.secret}") String secret) {
-        var key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
-        var jwkSource = new ImmutableSecret<>(key);
-        return new NimbusJwtEncoder(jwkSource);
-    }
+	@Bean
+	JwtEncoder jwtEncoder(@Value("${app.jwt.secret}") String secret) {
+		var key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+		var jwkSource = new ImmutableSecret<>(key);
+		return new NimbusJwtEncoder(jwkSource);
+	}
 
-    @Bean
-    JwtDecoder jwtDecoder(@Value("${app.jwt.secret}") String secret) {
-        var key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
-        return NimbusJwtDecoder.withSecretKey(key).build();
-    }
+	@Bean
+	JwtDecoder jwtDecoder(@Value("${app.jwt.secret}") String secret) {
+		var key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+		return NimbusJwtDecoder.withSecretKey(key).build();
+	}
 
-    @Bean
-    JwtAuthenticationConverter jwtAuthConverter() {
-        var c = new JwtAuthenticationConverter();
-        c.setJwtGrantedAuthoritiesConverter(jwt -> {
-            var role = (String) jwt.getClaims().getOrDefault("role", "SEEKER");
-            return java.util.List.of(new SimpleGrantedAuthority("ROLE_" + role));
-        });
-        return c;
-    }
+	@Bean
+	JwtAuthenticationConverter jwtAuthConverter() {
+		var c = new JwtAuthenticationConverter();
+		c.setJwtGrantedAuthoritiesConverter(jwt -> {
+			var role = (String) jwt.getClaims().getOrDefault("role", "SEEKER");
+			return java.util.List.of(new SimpleGrantedAuthority("ROLE_" + role));
+		});
+		return c;
+	}
 
-    @Bean
-    AuthenticationProvider authProvider(DbUserDetailsService uds, PasswordEncoder enc) {
-        var provider = new DaoAuthenticationProvider(uds);
-        provider.setPasswordEncoder(enc);
-        return provider;
-    }
+	@Bean
+	AuthenticationProvider authProvider(DbUserDetailsService uds, PasswordEncoder enc) {
+		var provider = new DaoAuthenticationProvider(uds);
+		provider.setPasswordEncoder(enc);
+		return provider;
+	}
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider,
-                                            JwtAuthenticationConverter conv) throws Exception {
-        http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .authenticationProvider(provider)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                        "/actuator/health", "/swagger-ui/**", "/v3/api-docs/**",
-                        "/api/auth/login", "/api/auth/signup"
-                ).permitAll()
-                .requestMatchers(HttpMethod.GET,
-                    "/api/users/**",
-                    "/api/leaderboard/**",
-                    "/api/fundraisers/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-            )
-            .oauth2Login(oauth -> oauth
-                    .successHandler((req, res, auth) -> {
-                        res.sendRedirect("/auth/success");
-                    })
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
-            .exceptionHandling(ex -> ex
-                    .authenticationEntryPoint((req, res, e) -> res.sendError(401))
-                    .accessDeniedHandler((req,res,e) -> res.sendError(403))
-            );
-        return http.build();
-    }
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider,
+											JwtAuthenticationConverter conv) throws Exception {
+		http
+				.csrf(AbstractHttpConfigurer::disable)
+				.cors(Customizer.withDefaults())
+				.authenticationProvider(provider)
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(
+								"/actuator/health", "/swagger-ui/**", "/v3/api-docs/**",
+								"/api/auth/login", "/api/auth/signup"
+						).permitAll()
+						.requestMatchers(HttpMethod.GET,
+								"/api/users/**",
+								"/api/leaderboard/**",
+								"/api/fundraisers/**"
+						).permitAll()
+						.anyRequest().authenticated()
+				)
+				.oauth2Login(oauth -> oauth
+						.successHandler((req, res, auth) -> {
+							res.sendRedirect("/auth/success");
+						})
+				)
+				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
+				.exceptionHandling(ex -> ex
+						.authenticationEntryPoint((req, res, e) -> res.sendError(401))
+						.accessDeniedHandler((req, res, e) -> res.sendError(403))
+				);
+		return http.build();
+	}
 }

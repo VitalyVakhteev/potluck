@@ -4,8 +4,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 public record CreateFundraiserResponse(
-        UUID id,
-        String title,
-        Instant startsAt,
-        Instant endsAt
-) {}
+		UUID id,
+		String title,
+		Instant startsAt,
+		Instant endsAt
+) {
+}

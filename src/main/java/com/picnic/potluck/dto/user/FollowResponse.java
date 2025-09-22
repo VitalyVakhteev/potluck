@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record FollowResponse(
-        @NotNull UUID userId,
-        @NotNull UUID targetId,
-        Boolean isFollowed
-) {}
+		@NotNull UUID userId,
+		@NotNull UUID targetId,
+		Boolean isFollowed
+) {
+}

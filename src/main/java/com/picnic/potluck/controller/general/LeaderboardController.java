@@ -18,31 +18,31 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LeaderboardController {
 
-    private final LeaderboardService leaderboardService;
+	private final LeaderboardService leaderboardService;
 
-    @Operation(
-            summary = "Get the leaderboard.",
-            description = "Returns a pageable entry of the leaderboard.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Leaderboard fetched successfully"),
-            @ApiResponse(responseCode = "404", description = "A user referenced on the leaderboard DNE (this is a critical bug and should be a task if it occurs)")
-    })
-    @Tag(name="Leaderboard", description="Leaderboard management API")
-    @GetMapping
-    public Page<LeaderboardEntry> getLeaderboard(Pageable pageable) {
-        return leaderboardService.getLeaderboard(pageable);
-    }
+	@Operation(
+			summary = "Get the leaderboard.",
+			description = "Returns a pageable entry of the leaderboard.")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Leaderboard fetched successfully"),
+			@ApiResponse(responseCode = "404", description = "A user referenced on the leaderboard DNE (this is a critical bug and should be a task if it occurs)")
+	})
+	@Tag(name = "Leaderboard", description = "Leaderboard management API")
+	@GetMapping
+	public Page<LeaderboardEntry> getLeaderboard(Pageable pageable) {
+		return leaderboardService.getLeaderboard(pageable);
+	}
 
-    @Operation(
-            summary = "Get a user's rank.",
-            description = "Returns a user's row on the leaderboard.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Leaderboard row fetched successfully"),
-            @ApiResponse(responseCode = "404", description = "The given user was not found")
-    })
-    @Tag(name="Leaderboard", description="Leaderboard management API")
-    @GetMapping("/{userId}")
-    public LeaderboardEntry getUserEntry(@PathVariable UUID userId) {
-        return leaderboardService.getUserEntry(userId);
-    }
+	@Operation(
+			summary = "Get a user's rank.",
+			description = "Returns a user's row on the leaderboard.")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Leaderboard row fetched successfully"),
+			@ApiResponse(responseCode = "404", description = "The given user was not found")
+	})
+	@Tag(name = "Leaderboard", description = "Leaderboard management API")
+	@GetMapping("/{userId}")
+	public LeaderboardEntry getUserEntry(@PathVariable UUID userId) {
+		return leaderboardService.getUserEntry(userId);
+	}
 }

@@ -14,11 +14,11 @@ import java.util.Objects;
 @EnableScheduling
 @RequiredArgsConstructor
 public class CachingConfig {
-    private final CacheManager cacheManager;
+	private final CacheManager cacheManager;
 
-    @Scheduled(fixedRateString = "PT5M")
-    public void sweep() {
-        cacheManager.getCacheNames()
-                .forEach(n -> Objects.requireNonNull(cacheManager.getCache(n)).invalidate());
-    }
+	@Scheduled(fixedRateString = "PT5M")
+	public void sweep() {
+		cacheManager.getCacheNames()
+				.forEach(n -> Objects.requireNonNull(cacheManager.getCache(n)).invalidate());
+	}
 }

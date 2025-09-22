@@ -14,19 +14,19 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class FavoriteService {
-    private final UserFavoriteFundraiserRepository favoriteRepository;
-    private final FundraiserRepository fundraisers;
+	private final UserFavoriteFundraiserRepository favoriteRepository;
+	private final FundraiserRepository fundraisers;
 
-    @Transactional
-    public FavoriteResponse add(UUID userId, UUID fundraiserId) {
-        Fundraiser f = fundraisers.findById(fundraiserId).orElseThrow();
-        favoriteRepository.upsert(userId, f.getId());
-        return new FavoriteResponse(userId, f.getId(), true);
-    }
+	@Transactional
+	public FavoriteResponse add(UUID userId, UUID fundraiserId) {
+		Fundraiser f = fundraisers.findById(fundraiserId).orElseThrow();
+		favoriteRepository.upsert(userId, f.getId());
+		return new FavoriteResponse(userId, f.getId(), true);
+	}
 
-    @Transactional
-    public FavoriteResponse remove(UUID userId, UUID fundraiserId) {
-        favoriteRepository.deleteByUserIdAndFundraiserId(userId, fundraiserId);
-        return new FavoriteResponse(userId, fundraiserId, false);
-    }
+	@Transactional
+	public FavoriteResponse remove(UUID userId, UUID fundraiserId) {
+		favoriteRepository.deleteByUserIdAndFundraiserId(userId, fundraiserId);
+		return new FavoriteResponse(userId, fundraiserId, false);
+	}
 }

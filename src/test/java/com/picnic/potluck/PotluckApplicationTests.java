@@ -12,22 +12,22 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 class PotluckApplicationTests {
 
-    @Container
-    static PostgreSQLContainer<?> postgres =
-            new PostgreSQLContainer<>("postgres:16.10")
-                    .withDatabaseName("potluck")
-                    .withUsername("admin")
-                    .withPassword("admin");
+	@Container
+	static PostgreSQLContainer<?> postgres =
+			new PostgreSQLContainer<>("postgres:16.10")
+					.withDatabaseName("potluck")
+					.withUsername("admin")
+					.withPassword("admin");
 
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry r) {
-        r.add("spring.datasource.url", postgres::getJdbcUrl);
-        r.add("spring.datasource.username", postgres::getUsername);
-        r.add("spring.datasource.password", postgres::getPassword);
-        r.add("spring.flyway.url", postgres::getJdbcUrl);
-        r.add("spring.flyway.user", postgres::getUsername);
-        r.add("spring.flyway.password", postgres::getPassword);
-    }
+	@DynamicPropertySource
+	static void registerProps(DynamicPropertyRegistry r) {
+		r.add("spring.datasource.url", postgres::getJdbcUrl);
+		r.add("spring.datasource.username", postgres::getUsername);
+		r.add("spring.datasource.password", postgres::getPassword);
+		r.add("spring.flyway.url", postgres::getJdbcUrl);
+		r.add("spring.flyway.user", postgres::getUsername);
+		r.add("spring.flyway.password", postgres::getPassword);
+	}
 
 	@Test
 	void contextLoads() {

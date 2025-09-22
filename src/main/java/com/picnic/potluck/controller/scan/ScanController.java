@@ -21,24 +21,24 @@ import java.util.UUID;
 @RequestMapping("/api/scans")
 @RequiredArgsConstructor
 public class ScanController {
-    private final ScanService scanService;
+	private final ScanService scanService;
 
-    @Operation(
-            summary = "Claim points from a QR Code.",
-            description = "If a user is a seeker or an admin, check the expiry and signature, then award points.",
-            security = { @SecurityRequirement(name = "Bearer Authentication") }
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Points awarded successfully"),
-            @ApiResponse(responseCode = "400", description = "Illegal argument (Expired QR code, invalid signature)"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized request"),
-            @ApiResponse(responseCode = "404", description = "The given fundraiser, fundraiser's organizer, or participant was not found")
-    })
-    @Tag(name="QR/Points", description="QR/Points management API")
-    @PreAuthorize("hasAnyRole('SEEKER', 'ADMIN')")
-    @PostMapping("/claim")
-    public ClaimResponse claim(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid ClaimRequest req) {
-        var participantId = UUID.fromString(jwt.getSubject());
-        return scanService.claim(participantId, req);
-    }
+	@Operation(
+			summary = "Claim points from a QR Code.",
+			description = "If a user is a seeker or an admin, check the expiry and signature, then award points.",
+			security = {@SecurityRequirement(name = "Bearer Authentication")}
+	)
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Points awarded successfully"),
+			@ApiResponse(responseCode = "400", description = "Illegal argument (Expired QR code, invalid signature)"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized request"),
+			@ApiResponse(responseCode = "404", description = "The given fundraiser, fundraiser's organizer, or participant was not found")
+	})
+	@Tag(name = "QR/Points", description = "QR/Points management API")
+	@PreAuthorize("hasAnyRole('SEEKER', 'ADMIN')")
+	@PostMapping("/claim")
+	public ClaimResponse claim(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid ClaimRequest req) {
+		var participantId = UUID.fromString(jwt.getSubject());
+		return scanService.claim(participantId, req);
+	}
 }

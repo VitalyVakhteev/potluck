@@ -19,49 +19,50 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ScanService {
-    private final QrService qrService;
-    private final ScanRepository scanRepo;
-    private final UserRepository users;
-    private final FundraiserRepository funds;
-    private final PointsService points;
-    @Value("${app.base-points.per-scan}") private int perScan;
+	private final QrService qrService;
+	private final ScanRepository scanRepo;
+	private final UserRepository users;
+	private final FundraiserRepository funds;
+	private final PointsService points;
+	@Value("${app.base-points.per-scan}")
+	private int perScan;
 
-    @Transactional
-    public ClaimResponse claim(UUID participantId, ClaimRequest req) {
-        UUID fundraiserId = req.fundraiserId();
-        UUID organizerId = req.organizerId();
-        long exp = req.time();
-        String sig = req.signature();
+	@Transactional
+	public ClaimResponse claim(UUID participantId, ClaimRequest req) {
+		UUID fundraiserId = req.fundraiserId();
+		UUID organizerId = req.organizerId();
+		long exp = req.time();
+		String sig = req.signature();
 
-        qrService.verify(fundraiserId, organizerId, exp, sig);
+		qrService.verify(fundraiserId, organizerId, exp, sig);
 
-        var participant = users.findById(participantId).orElseThrow();
-        var organizer = users.findById(organizerId).orElseThrow();
-        var fundraiser = funds.findById(fundraiserId).orElseThrow();
+		var participant = users.findById(participantId).orElseThrow();
+		var organizer = users.findById(organizerId).orElseThrow();
+		var fundraiser = funds.findById(fundraiserId).orElseThrow();
 
-        if (!fundraiser.isReward()) {
-            return new ClaimResponse(false, false, perScan, "no-reward");
-        }
+		if (!fundraiser.isReward()) {
+			return new ClaimResponse(false, false, perScan, "no-reward");
+		}
 
-        var idemp = participantId + "." + fundraiserId;
+		var idemp = participantId + "." + fundraiserId;
 
-        var existing = scanRepo.findByIdempotencyKey(idemp);
-        if (existing.isPresent()) {
-            return new ClaimResponse(true, false, perScan, "already-claimed");
-        }
+		var existing = scanRepo.findByIdempotencyKey(idemp);
+		if (existing.isPresent()) {
+			return new ClaimResponse(true, false, perScan, "already-claimed");
+		}
 
-        var scan = Scan.builder()
-                .fundraiser(fundraiser)
-                .participant(participant)
-                .organizer(organizer)
-                .source(Source.QR)
-                .status(Status.ACCEPTED)
-                .idempotencyKey(idemp)
-                .build();
-        scanRepo.save(scan);
+		var scan = Scan.builder()
+				.fundraiser(fundraiser)
+				.participant(participant)
+				.organizer(organizer)
+				.source(Source.QR)
+				.status(Status.ACCEPTED)
+				.idempotencyKey(idemp)
+				.build();
+		scanRepo.save(scan);
 
-        points.awardScanPoints(organizer, participant, fundraiser, scan, perScan);
+		points.awardScanPoints(organizer, participant, fundraiser, scan, perScan);
 
-        return new ClaimResponse(false, true, perScan, "ok");
-    }
+		return new ClaimResponse(false, true, perScan, "ok");
+	}
 }
