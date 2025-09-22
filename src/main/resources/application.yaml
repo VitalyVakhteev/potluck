@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: potluck
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/potluck}
+    username: ${SPRING_DATASOURCE_USERNAME:admin}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+    properties:
+      hibernate.jdbc.time_zone: ${TZ:UTC}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:please-change-me}
+            client-secret: ${GOOGLE_CLIENT_SECRET:please-change-me}
+            scope: openid,email,profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+app:
+  qr:
+    secret: ${QR_SECRET:please-change-me}
+    ttl-seconds: 600
+  # Todo: we should probably add points that scale if you have a streak (easy to do if you reference timestamp for consecutive scans)
+  base-points:
+    per-scan: 50
+  jwt:
+    secret: ${JWT_SECRET:please-change-me-32bytes-min}
+    issuer: potluck
+    access-minutes: 60
+
+logging:
+  file:
+    name: logs/app.log
+    path: logs
+  level:
+    org.hibernate.SQL: warn
+    org.hibernate.orm.jdbc.bind: warn
+    root: warn
+    com.picnic: warn
