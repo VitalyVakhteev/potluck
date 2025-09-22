@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -37,7 +38,12 @@ public class UserController {
 	})
 	@Tag(name = "User", description = "User management API")
 	@GetMapping("/search")
-	public Page<UserSummary> search(@RequestParam String q, @PageableDefault(size = 20) Pageable pageable) {
+	public Page<UserSummary> search(@RequestParam String q,
+                                    @PageableDefault(
+                                            size = 20,
+                                            sort = "createdAt",
+                                            direction = Sort.Direction.DESC
+                                    ) Pageable pageable) {
 		return userQueryService.search(q, pageable);
 	}
 

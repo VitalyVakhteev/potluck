@@ -49,19 +49,20 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-		var fields = ex.getBindingResult()
-				.getFieldErrors()
-				.stream()
-				.collect(Collectors.toMap(
-						FieldError::getField,
-						// IDE warns that function may return null, might need looking into if it causes issues
-						DefaultMessageSourceResolvable::getDefaultMessage,
-						(a, b) -> a));
+//		var fields = ex.getBindingResult()
+//				.getFieldErrors()
+//				.stream()
+//				.collect(Collectors.toMap(
+//						FieldError::getField,
+//						// IDE warns that function may return null, might need looking into if it causes issues
+//						DefaultMessageSourceResolvable::getDefaultMessage,
+//						(a, b) -> a));
+//      Until I can make sure that getDefaultMessage never returns null, I'm commenting this
 		return ResponseEntity
 				.status(HttpStatus.BAD_REQUEST)
 				.body(Map.of(
 						"error", "Validation Failed",
-						"fields", fields,
+//						"fields", fields,
 						"status", 400,
 						"timestamp", LocalDateTime.now()
 				));

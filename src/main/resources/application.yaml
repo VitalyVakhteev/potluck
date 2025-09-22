@@ -49,5 +49,5 @@ logging:
     org.hibernate.SQL: warn
     org.hibernate.orm.jdbc.bind: warn
     # Todo: change when we deploy to prod
-    root: debug
-    com.picnic: debug
+    root: warn
+    com.picnic: warn

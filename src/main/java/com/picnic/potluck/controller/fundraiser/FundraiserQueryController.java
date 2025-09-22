@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -36,7 +37,12 @@ public class FundraiserQueryController {
 	})
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
 	@GetMapping("/feed/me")
-	public Page<FundraiserSummary> myFeed(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+	public Page<FundraiserSummary> myFeed(@AuthenticationPrincipal Jwt jwt,
+                                          @PageableDefault(
+                                                  size = 20,
+                                                  sort = "createdAt",
+                                                  direction = Sort.Direction.DESC)
+                                          Pageable pageable) {
 		return fundraiserQueryService.feed(UUID.fromString(jwt.getSubject()), pageable);
 	}
 
@@ -50,7 +56,11 @@ public class FundraiserQueryController {
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
 	@GetMapping("/near")
 	public Page<FundraiserSummary> near(@RequestBody @Valid NearRequest req,
-										@PageableDefault(size = 20) Pageable pageable) {
+										@PageableDefault(
+                                                size = 20,
+                                                sort = "createdAt",
+                                                direction = Sort.Direction.DESC)
+                                        Pageable pageable) {
 		return fundraiserQueryService.near(req, pageable);
 	}
 
@@ -62,7 +72,11 @@ public class FundraiserQueryController {
 	})
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
 	@GetMapping("/starting-soon")
-	public Page<FundraiserSummary> startingSoon(@PageableDefault(size = 20) Pageable pageable) {
+	public Page<FundraiserSummary> startingSoon(@PageableDefault(
+                                                        size = 20,
+                                                        sort = "createdAt",
+                                                        direction = Sort.Direction.DESC)
+                                                Pageable pageable) {
 		return fundraiserQueryService.startingSoon(pageable);
 	}
 
@@ -74,7 +88,11 @@ public class FundraiserQueryController {
 	})
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
 	@GetMapping("/ending-soon")
-	public Page<FundraiserSummary> endingSoon(@PageableDefault(size = 20) Pageable pageable) {
+	public Page<FundraiserSummary> endingSoon(@PageableDefault(
+                                                        size = 20,
+                                                        sort = "createdAt",
+                                                        direction = Sort.Direction.DESC)
+                                              Pageable pageable) {
 		return fundraiserQueryService.endingSoon(pageable);
 	}
 
@@ -86,8 +104,11 @@ public class FundraiserQueryController {
 	})
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
 	@GetMapping
-	public Page<FundraiserSummary> listActive(@PageableDefault(size = 20, sort = "createdAt",
-			direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
+	public Page<FundraiserSummary> listActive(@PageableDefault(
+                                                    size = 20,
+                                                    sort = "createdAt",
+			                                        direction = org.springframework.data.domain.Sort.Direction.DESC)
+                                              Pageable pageable) {
 		return fundraiserQueryService.listActive(pageable);
 	}
 
@@ -99,7 +120,12 @@ public class FundraiserQueryController {
 	})
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
 	@GetMapping("/search")
-	public Page<FundraiserSummary> search(@RequestParam String q, @PageableDefault(size = 20) Pageable pageable) {
+	public Page<FundraiserSummary> search(@RequestParam String q,
+                                          @PageableDefault(
+                                                  size = 20,
+                                                  sort = "createdAt",
+                                                  direction = Sort.Direction.DESC
+                                          ) Pageable pageable) {
 		return fundraiserQueryService.search(q, pageable);
 	}
 
@@ -126,9 +152,11 @@ public class FundraiserQueryController {
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
 	@GetMapping("/organizer/{organizerId}")
 	public Page<FundraiserSummary> byOrganizer(@PathVariable UUID organizerId,
-											   @PageableDefault(size = 20, sort = "createdAt",
-													   direction = org.springframework.data.domain.Sort.Direction.DESC)
-											   Pageable pageable) {
+											   @PageableDefault(
+                                                       size = 20,
+                                                       sort = "createdAt",
+													   direction = org.springframework.data.domain.Sort.Direction.DESC
+                                               ) Pageable pageable) {
 		return fundraiserQueryService.listByOrganizer(organizerId, pageable);
 	}
 }

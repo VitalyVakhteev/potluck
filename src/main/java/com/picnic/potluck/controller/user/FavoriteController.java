@@ -14,6 +14,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -74,7 +76,12 @@ public class FavoriteController {
 	})
 	@Tag(name = "Favorites", description = "Favorites management API")
 	@GetMapping
-	public Page<FundraiserSummary> myFavorites(@AuthenticationPrincipal Jwt jwt, Pageable p) {
+	public Page<FundraiserSummary> myFavorites(@AuthenticationPrincipal Jwt jwt,
+                                               @PageableDefault(
+                                                    size = 20,
+                                                    sort = "createdAt",
+                                                    direction = Sort.Direction.DESC
+                                               ) Pageable p) {
 		var userId = UUID.fromString(jwt.getSubject());
 		return fundraisers.list(userId, p);
 	}
@@ -87,7 +94,12 @@ public class FavoriteController {
 	})
 	@Tag(name = "Favorites", description = "Favorites management API")
 	@GetMapping("/{userId}/")
-	public Page<FundraiserSummary> favoritesOf(@PathVariable UUID userId, Pageable p) {
+	public Page<FundraiserSummary> favoritesOf(@PathVariable UUID userId,
+                                               @PageableDefault(
+                                                   size = 20,
+                                                   sort = "createdAt",
+                                                   direction = Sort.Direction.DESC
+                                               ) Pageable p) {
 		return fundraisers.list(userId, p);
 	}
 }

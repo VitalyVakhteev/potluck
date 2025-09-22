@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -29,7 +31,11 @@ public class LeaderboardController {
 	})
 	@Tag(name = "Leaderboard", description = "Leaderboard management API")
 	@GetMapping
-	public Page<LeaderboardEntry> getLeaderboard(Pageable pageable) {
+	public Page<LeaderboardEntry> getLeaderboard(@PageableDefault(
+                                                    size = 20,
+                                                    sort = "createdAt",
+                                                    direction = Sort.Direction.DESC
+                                                 ) Pageable pageable) {
 		return leaderboardService.getLeaderboard(pageable);
 	}
 
