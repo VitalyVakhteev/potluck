@@ -23,7 +23,7 @@ public class ProfileService {
             u.setFirstName(trimToNull(req.firstName()));
         }
         if (req.lastName() != null) {
-            u.setFirstName(trimToNull(req.lastName()));
+            u.setLastName(trimToNull(req.lastName()));
         }
         if (req.bio() != null) {
             u.setBio(trimToNull(req.bio()));

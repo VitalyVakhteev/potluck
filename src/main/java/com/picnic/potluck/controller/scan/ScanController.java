@@ -26,10 +26,10 @@ public class ScanController {
     @Operation(
             summary = "Claim points from a QR Code.",
             description = "If a user is a seeker or an admin, check the expiry and signature, then award points.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Points awarded successfully"),
+            @ApiResponse(responseCode = "200", description = "Points awarded successfully"),
             @ApiResponse(responseCode = "400", description = "Illegal argument (Expired QR code, invalid signature)"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request"),
             @ApiResponse(responseCode = "404", description = "The given fundraiser, fundraiser's organizer, or participant was not found")

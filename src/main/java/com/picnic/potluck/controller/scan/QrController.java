@@ -28,10 +28,10 @@ public class QrController {
     @Operation(
             summary = "Generate a QR Code.",
             description = "If a user is an organizer or an admin and the OP, create a QR code for a fundraiser.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Leaderboard row fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Leaderboard row fetched successfully"),
             @ApiResponse(responseCode = "400", description = "Illegal argument (Rewards are disabled)"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request"),
             @ApiResponse(responseCode = "403", description = "Access Denied (Not the OP)"),

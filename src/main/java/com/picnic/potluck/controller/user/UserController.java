@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -33,9 +34,10 @@ public class UserController {
             summary = "Search for users.",
             description = "Return a pageable object of users if the keyword matches certain fields.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fetched successfully")
     })
     @Tag(name="User", description="User management API")
+    @Cacheable(cacheNames = "userSearch", unless = "#result.empty()")
     @GetMapping("/search")
     public Page<UserSummary> search(@RequestParam String q, @PageableDefault(size = 20) Pageable pageable) {
         return userQueryService.search(q, pageable);
@@ -45,7 +47,7 @@ public class UserController {
             summary = "Get a user.",
             description = "Return a user based on their id.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fetched successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @Tag(name="User", description="User management API")
@@ -59,7 +61,7 @@ public class UserController {
             summary = "Get a user's summary.",
             description = "Return a user's summary based on their id.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fetched successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @Tag(name="User", description="User management API")
@@ -72,7 +74,7 @@ public class UserController {
             summary = "Get a user.",
             description = "Return a user based on their username.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fetched successfully"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @Tag(name="User", description="User management API")
@@ -85,10 +87,10 @@ public class UserController {
     @Operation(
             summary = "Get oneself.",
             description = "Return oneself.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fetched successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request"),
             @ApiResponse(responseCode = "404", description = "User not found (if this triggers, this is bad; auth check failed)")
     })
@@ -102,10 +104,10 @@ public class UserController {
     @Operation(
             summary = "Edit oneself.",
             description = "Edit the profile of oneself.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Patched successfully"),
+            @ApiResponse(responseCode = "200", description = "Patched successfully"),
             @ApiResponse(responseCode = "400", description = "Illegal argument"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request"),
             @ApiResponse(responseCode = "404", description = "User not found (if this triggers, this is bad; auth check failed)")

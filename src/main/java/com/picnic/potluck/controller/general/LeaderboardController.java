@@ -24,7 +24,7 @@ public class LeaderboardController {
             summary = "Get the leaderboard.",
             description = "Returns a pageable entry of the leaderboard.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Leaderboard fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Leaderboard fetched successfully"),
             @ApiResponse(responseCode = "404", description = "A user referenced on the leaderboard DNE (this is a critical bug and should be a task if it occurs)")
     })
     @Tag(name="Leaderboard", description="Leaderboard management API")
@@ -37,7 +37,7 @@ public class LeaderboardController {
             summary = "Get a user's rank.",
             description = "Returns a user's row on the leaderboard.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Leaderboard row fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Leaderboard row fetched successfully"),
             @ApiResponse(responseCode = "404", description = "The given user was not found")
     })
     @Tag(name="Leaderboard", description="Leaderboard management API")

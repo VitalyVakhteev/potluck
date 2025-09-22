@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -31,10 +32,11 @@ public class FundraiserQueryController {
             summary = "Fetch your fundraiser feed.",
             description = "Any logged in user can fetch their feed. Returns the latest fundraisers from followed users.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Feed fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Feed fetched successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
+    @Cacheable(cacheNames = "followerFundraisers", unless = "#result.empty()")
     @GetMapping("/feed/me")
     public Page<FundraiserSummary> myFeed(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
         return fundraiserQueryService.feed(UUID.fromString(jwt.getSubject()), pageable);
@@ -44,7 +46,7 @@ public class FundraiserQueryController {
             summary = "Fetch nearby fundraisers.",
             description = "Within a certain radius of a lat/lon, returns the latest fundraisers.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fundraisers fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fundraisers fetched successfully"),
             @ApiResponse(responseCode = "400", description = "Illegal argument (invalid lat,lon,radius)")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
@@ -58,7 +60,7 @@ public class FundraiserQueryController {
             summary = "Fetch fundraisers starting soon.",
             description = "Sorted by ascending delta from now to start, returns fundraisers.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fundraisers fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fundraisers fetched successfully")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
     @GetMapping("/starting-soon")
@@ -70,7 +72,7 @@ public class FundraiserQueryController {
             summary = "Fetch fundraisers ending soon.",
             description = "Sorted by ascending delta from now to end, returns fundraisers.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fundraisers fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fundraisers fetched successfully")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
     @GetMapping("/ending-soon")
@@ -82,7 +84,7 @@ public class FundraiserQueryController {
             summary = "Fetch latest fundraisers.",
             description = "Returns fundraisers by the latest creation date.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fundraisers fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fundraisers fetched successfully")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
     @GetMapping
@@ -95,9 +97,10 @@ public class FundraiserQueryController {
             summary = "Fetch fundraisers by keyword.",
             description = "Returns fundraisers if certain terms match the keyword.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fundraisers fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fundraisers fetched successfully")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
+    @Cacheable(cacheNames = "searchFundraisers", unless = "#result.empty()")
     @GetMapping("/search")
     public Page<FundraiserSummary> search(@RequestParam String q, @PageableDefault(size = 20) Pageable pageable) {
         return fundraiserQueryService.search(q, pageable);
@@ -107,7 +110,7 @@ public class FundraiserQueryController {
             summary = "Get a specific fundraiser.",
             description = "Returns a fundraiser with a matching id.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fundraisers fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fundraisers fetched successfully"),
             @ApiResponse(responseCode = "404", description = "Fundraiser not found")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
@@ -120,10 +123,11 @@ public class FundraiserQueryController {
             summary = "Get organizer's fundraisers.",
             description = "Returns an organizer's latest fundraisers by creation date.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fundraisers fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fundraisers fetched successfully"),
             @ApiResponse(responseCode = "404", description = "Organizer not found")
     })
     @Tag(name="Fundraiser", description="Fundraiser management API")
+    @Cacheable(cacheNames = "organizerFundraisers", unless = "#result.empty()")
     @GetMapping("/organizer/{organizerId}")
     public Page<FundraiserSummary> byOrganizer(@PathVariable UUID organizerId,
                                                @PageableDefault(size = 20, sort = "createdAt",

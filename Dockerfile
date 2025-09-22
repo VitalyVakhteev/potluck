@@ -1,4 +1,4 @@
-FROM openjdk:25-jdk-oracle
+FROM openjdk:25-jdk-slim
 RUN groupadd spring && useradd spring -g spring
 USER spring:spring
 ARG JAR_FILE=target/*.jar

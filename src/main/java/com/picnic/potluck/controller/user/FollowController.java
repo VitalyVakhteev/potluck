@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,10 +27,10 @@ public class FollowController {
     @Operation(
             summary = "Follow.",
             description = "Follow the requested user.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Followed successfully"),
+            @ApiResponse(responseCode = "200", description = "Followed successfully"),
             @ApiResponse(responseCode = "400", description = "Illegal argument (cannot follow self)"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request")
     })
@@ -42,10 +43,10 @@ public class FollowController {
     @Operation(
             summary = "Unfollow.",
             description = "Unfollow the requested user.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Unfollowed successfully"),
+            @ApiResponse(responseCode = "200", description = "Unfollowed successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request")
     })
     @Tag(name="Follows", description="Follows management API")
@@ -58,10 +59,11 @@ public class FollowController {
             summary = "Get followers.",
             description = "Get the followers of the requested user.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fetched successfully")
     })
     @Tag(name="Follows", description="Follows management API")
     @GetMapping("/followers/{userId}")
+    @Cacheable(cacheNames = "followersDetail", unless = "#result.empty()")
     public Page<UserSummary> followers(@PathVariable UUID userId, Pageable p) {
         return followService.followers(userId, p);
     }
@@ -70,9 +72,10 @@ public class FollowController {
             summary = "Get following.",
             description = "Get the users the requested user is following")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fetched successfully")
     })
     @Tag(name="Follows", description="Follows management API")
+    @Cacheable(cacheNames = "followingDetail", unless = "#result.empty()")
     @GetMapping("/following/{userId}")
     public Page<UserSummary> following(@PathVariable UUID userId, Pageable p) {
         return followService.following(userId, p);
@@ -81,10 +84,10 @@ public class FollowController {
     @Operation(
             summary = "Get one's followers.",
             description = "Get the followers of oneself.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fetched successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request")
     })
     @Tag(name="Follows", description="Follows management API")
@@ -96,10 +99,10 @@ public class FollowController {
     @Operation(
             summary = "Get one's following.",
             description = "Get the users being followed by oneself.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fetched successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request")
     })
     @Tag(name="Follows", description="Follows management API")

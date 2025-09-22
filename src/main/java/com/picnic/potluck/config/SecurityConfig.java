@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -42,16 +43,16 @@ public class SecurityConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI().addSecurityItem(new SecurityRequirement().
-                        addList("Bearer Authentication"))
-                .components(new Components().addSecuritySchemes
-                        ("Bearer Authentication", createAPIKeyScheme()))
-                .info(new Info().title("Potluck API")
+        return new OpenAPI().addSecurityItem(new SecurityRequirement()
+                        .addList("Bearer Authentication"))
+                        .components(new Components()
+                        .addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
+                        .info(new Info().title("Potluck API")
                         .description("The Potluck SpringBoot API.")
                         .version("1.0").contact(new Contact().name("Vitaly Vakhteev")
-                                .email( "www.techusage.com").url("vitaly.v@techusage.com"))
+                        .email( "www.techusage.com").url("vitaly.v@techusage.com"))
                         .license(new License().name("GPL-3.0")
-                                .url("https://www.gnu.org/licenses/gpl.html")));
+                        .url("https://www.gnu.org/licenses/gpl.html")));
     }
 
     @Bean
@@ -104,10 +105,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/actuator/health", "/swagger-ui/**", "/v3/api-docs/**",
-                        "/api/fundraisers", "/api/fundraisers/**",
-                        "/api/users/id/**", "/api/users/u/**",
-                        "/api/leaderboard/**",
                         "/api/auth/login", "/api/auth/signup"
+                ).permitAll()
+                .requestMatchers(HttpMethod.GET,
+                    "/api/users/**",
+                    "/api/leaderboard/**",
+                    "/api/fundraisers/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -119,6 +122,7 @@ public class SecurityConfig {
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
             .exceptionHandling(ex -> ex
                     .authenticationEntryPoint((req, res, e) -> res.sendError(401))
+                    .accessDeniedHandler((req,res,e) -> res.sendError(403))
             );
         return http.build();
     }

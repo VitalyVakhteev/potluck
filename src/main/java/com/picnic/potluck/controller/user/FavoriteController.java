@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,10 +31,10 @@ public class FavoriteController {
     @Operation(
             summary = "Favorite.",
             description = "Favorite the requested fundraiser.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Favorited successfully"),
+            @ApiResponse(responseCode = "200", description = "Favorited successfully"),
             @ApiResponse(responseCode = "400", description = "Illegal argument"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request"),
             @ApiResponse(responseCode = "404", description = "The given fundraiser was not found")
@@ -47,10 +48,10 @@ public class FavoriteController {
     @Operation(
             summary = "Unfavorite.",
             description = "Unfavorite the requested fundraiser.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Unfavorited successfully"),
+            @ApiResponse(responseCode = "200", description = "Unfavorited successfully"),
             @ApiResponse(responseCode = "400", description = "Illegal argument"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request"),
             @ApiResponse(responseCode = "404", description = "The given fundraiser was not found")
@@ -66,10 +67,10 @@ public class FavoriteController {
     @Operation(
             summary = "Fetch favorites",
             description = "Get logged in user's favorites.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully"),
+            @ApiResponse(responseCode = "200", description = "Fetched successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized request")
     })
     @Tag(name="Favorites", description="Favorites management API")
@@ -83,9 +84,10 @@ public class FavoriteController {
             summary = "Fetch favorites of user",
             description = "Get requested user's favorites.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Fetched successfully")
+            @ApiResponse(responseCode = "200", description = "Fetched successfully")
     })
     @Tag(name="Favorites", description="Favorites management API")
+    @Cacheable(cacheNames = "favoriteFundraisers", unless = "#result.empty()")
     @GetMapping("/{userId}/")
     public Page<FundraiserSummary> favoritesOf(@PathVariable UUID userId, Pageable p) {
         return fundraisers.list(userId, p);
