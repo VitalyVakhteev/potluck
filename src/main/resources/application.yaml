@@ -40,6 +40,10 @@ app:
     secret: ${JWT_SECRET:please-change-me-32bytes-min}
     issuer: potluck
     access-minutes: 60
+    cookie-name: ${COOKIE_NAME:potluck_token}
+    cookie-samesite: ${COOKIE_SAMESITE:Lax} # None, Lax, Strict
+    cookie-secure: ${COOKIE_SECURE:false} # Todo: set to true in prod (requires HTTPS)
+    cookie-max-age-seconds: ${COOKIE_MAX_AGE_SECONDS:0} # session cookie
 
 logging:
   file:

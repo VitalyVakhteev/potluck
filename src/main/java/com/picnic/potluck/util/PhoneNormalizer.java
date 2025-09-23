@@ -1,7 +1,8 @@
 package com.picnic.potluck.util;
 
 public final class PhoneNormalizer {
-	private PhoneNormalizer() {}
+	private PhoneNormalizer() {
+	}
 
 	public static String toE164(String raw, String defaultCountryCode) {
 		if (raw == null) throw new IllegalArgumentException("Phone is blank");

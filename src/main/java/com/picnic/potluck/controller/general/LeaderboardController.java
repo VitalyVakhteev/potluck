@@ -32,10 +32,10 @@ public class LeaderboardController {
 	@Tag(name = "Leaderboard", description = "Leaderboard management API")
 	@GetMapping
 	public Page<LeaderboardEntry> getLeaderboard(@PageableDefault(
-                                                    size = 20,
-                                                    sort = "createdAt",
-                                                    direction = Sort.Direction.DESC
-                                                 ) Pageable pageable) {
+			size = 20,
+			sort = "createdAt",
+			direction = Sort.Direction.DESC
+	) Pageable pageable) {
 		return leaderboardService.getLeaderboard(pageable);
 	}
 

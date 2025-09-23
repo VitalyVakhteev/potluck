@@ -39,11 +39,11 @@ public class UserController {
 	@Tag(name = "User", description = "User management API")
 	@GetMapping("/search")
 	public Page<UserSummary> search(@RequestParam String q,
-                                    @PageableDefault(
-                                            size = 20,
-                                            sort = "createdAt",
-                                            direction = Sort.Direction.DESC
-                                    ) Pageable pageable) {
+									@PageableDefault(
+											size = 20,
+											sort = "createdAt",
+											direction = Sort.Direction.DESC
+									) Pageable pageable) {
 		return userQueryService.search(q, pageable);
 	}
 

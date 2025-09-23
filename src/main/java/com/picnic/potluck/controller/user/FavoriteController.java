@@ -77,11 +77,11 @@ public class FavoriteController {
 	@Tag(name = "Favorites", description = "Favorites management API")
 	@GetMapping
 	public Page<FundraiserSummary> myFavorites(@AuthenticationPrincipal Jwt jwt,
-                                               @PageableDefault(
-                                                    size = 20,
-                                                    sort = "createdAt",
-                                                    direction = Sort.Direction.DESC
-                                               ) Pageable p) {
+											   @PageableDefault(
+													   size = 20,
+													   sort = "createdAt",
+													   direction = Sort.Direction.DESC
+											   ) Pageable p) {
 		var userId = UUID.fromString(jwt.getSubject());
 		return fundraisers.list(userId, p);
 	}
@@ -95,11 +95,11 @@ public class FavoriteController {
 	@Tag(name = "Favorites", description = "Favorites management API")
 	@GetMapping("/{userId}/")
 	public Page<FundraiserSummary> favoritesOf(@PathVariable UUID userId,
-                                               @PageableDefault(
-                                                   size = 20,
-                                                   sort = "createdAt",
-                                                   direction = Sort.Direction.DESC
-                                               ) Pageable p) {
+											   @PageableDefault(
+													   size = 20,
+													   sort = "createdAt",
+													   direction = Sort.Direction.DESC
+											   ) Pageable p) {
 		return fundraisers.list(userId, p);
 	}
 }

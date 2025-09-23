@@ -65,11 +65,11 @@ public class FollowController {
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/followers/{userId}")
 	public Page<UserSummary> followers(@PathVariable UUID userId,
-                                       @PageableDefault(
-                                           size = 20,
-                                           sort = "createdAt",
-                                           direction = Sort.Direction.DESC
-                                       ) Pageable p) {
+									   @PageableDefault(
+											   size = 20,
+											   sort = "createdAt",
+											   direction = Sort.Direction.DESC
+									   ) Pageable p) {
 		return followService.followers(userId, p);
 	}
 
@@ -82,11 +82,11 @@ public class FollowController {
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/following/{userId}")
 	public Page<UserSummary> following(@PathVariable UUID userId,
-                                       @PageableDefault(
-                                               size = 20,
-                                               sort = "createdAt",
-                                               direction = Sort.Direction.DESC
-                                       ) Pageable p) {
+									   @PageableDefault(
+											   size = 20,
+											   sort = "createdAt",
+											   direction = Sort.Direction.DESC
+									   ) Pageable p) {
 		return followService.following(userId, p);
 	}
 
@@ -102,11 +102,11 @@ public class FollowController {
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/followers/me")
 	public Page<UserSummary> myFollowers(@AuthenticationPrincipal Jwt jwt,
-                                         @PageableDefault(
-                                                 size = 20,
-                                                 sort = "createdAt",
-                                                 direction = Sort.Direction.DESC
-                                         ) Pageable p) {
+										 @PageableDefault(
+												 size = 20,
+												 sort = "createdAt",
+												 direction = Sort.Direction.DESC
+										 ) Pageable p) {
 		return followService.followers(UUID.fromString(jwt.getSubject()), p);
 	}
 
@@ -122,11 +122,11 @@ public class FollowController {
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/following/me")
 	public Page<UserSummary> myFollowing(@AuthenticationPrincipal Jwt jwt,
-                                         @PageableDefault(
-                                                 size = 20,
-                                                 sort = "createdAt",
-                                                 direction = Sort.Direction.DESC
-                                         ) Pageable p) {
+										 @PageableDefault(
+												 size = 20,
+												 sort = "createdAt",
+												 direction = Sort.Direction.DESC
+										 ) Pageable p) {
 		return followService.following(UUID.fromString(jwt.getSubject()), p);
 	}
 }

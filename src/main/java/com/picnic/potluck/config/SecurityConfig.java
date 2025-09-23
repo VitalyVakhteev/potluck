@@ -105,7 +105,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(
 								"/actuator/health", "/swagger-ui/**", "/v3/api-docs/**",
-								"/api/auth/login", "/api/auth/signup"
+								"/api/auth/login", "/api/auth/logout", "/api/auth/signup"
 						).permitAll()
 						.requestMatchers(HttpMethod.GET,
 								"/api/users/**",
