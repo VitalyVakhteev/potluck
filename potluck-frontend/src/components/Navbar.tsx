@@ -33,41 +33,49 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/app/providers";
 
-const components: { title: string; href: string; description: string }[] = [
+interface Card {
+	title: string;
+	href: string;
+	description: string;
+}
+
+const RESTRICTED = new Set(["Favorites", "Follower Fundraisers"]);
+
+const components: Card[] = [
 	{
-		title: "Alert Dialog",
-		href: "/docs/primitives/alert-dialog",
+		title: "Follower Fundraisers",
+		href: "/fundraisers/followers",
 		description:
-			"A modal dialog that interrupts the user with important content and expects a response.",
+			"The latest fundraisers from your followers.",
 	},
 	{
-		title: "Hover Card",
-		href: "/docs/primitives/hover-card",
+		title: "Favorites",
+		href: "/fundraisers/favorites",
 		description:
-			"For sighted users to preview content available behind a link.",
+			"Fundraisers on your favorites list.",
 	},
 	{
-		title: "Progress",
-		href: "/docs/primitives/progress",
-		description:
-			"Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+		title: "Starting Soon",
+		href: "/fundraisers/starting-soon",
+		description: "Fundraisers that are starting soon.",
 	},
 	{
-		title: "Scroll-area",
-		href: "/docs/primitives/scroll-area",
-		description: "Visually or semantically separates content.",
+		title: "Ending Soon",
+		href: "/fundraisers/ending-soon",
+		description:
+			"Fundraisers that are ending soon.",
 	},
 	{
-		title: "Tabs",
-		href: "/docs/primitives/tabs",
+		title: "Nearby Fundraisers",
+		href: "/fundraisers/near",
 		description:
-			"A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+			"Fundraisers near you.",
 	},
 	{
-		title: "Tooltip",
-		href: "/docs/primitives/tooltip",
+		title: "Recently Created",
+		href: "/fundraisers/recent",
 		description:
-			"A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+			"Recently created fundraisers.",
 	},
 ]
 
@@ -87,13 +95,11 @@ export default function Navbar() {
 	const avatarBg = isDark ? "bg-zinc-700" : "bg-primary";
 	const avatarText = isDark ? "text-zinc-100" : "text-primary-foreground";
 
-	const avatarHover =
-		isDark
-			? "hover:bg-zinc-600"
-			: "hover:bg-primary-foreground hover:text-primary";
+	const avatarHover = isDark ? "hover:bg-zinc-600" : "hover:bg-primary-foreground hover:text-primary";
 
-	const canCreate =
-		!!user && (user.role === "ORGANIZER" || user.role === "ADMIN");
+	const canCreate = !!user && (user.role === "ORGANIZER" || user.role === "ADMIN");
+
+	const filterCards = (cards: Card[]) => !!user ? cards : cards.filter(c => !RESTRICTED.has(c.title));
 
 	return (
 		<header className="w-full">
@@ -122,7 +128,7 @@ export default function Navbar() {
 								<NavigationMenuTrigger>Fundraisers</NavigationMenuTrigger>
 								<NavigationMenuContent>
 									<ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-										{components.map((component) => (
+										{filterCards(components).map((component) => (
 											<ListItem
 												key={component.title}
 												title={component.title}

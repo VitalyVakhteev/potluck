@@ -1,7 +1,10 @@
 package com.picnic.potluck.service.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,5 +41,21 @@ public class JwtCookieCreator {
 				.path("/")
 				.maxAge(0)
 				.build();
+	}
+
+	@Bean
+	BearerTokenResolver cookieBearerResolver(@Value("${app.jwt.cookie-name:potluck_token}") String cookieName) {
+		return new BearerTokenResolver() {
+			@Override
+			public String resolve(HttpServletRequest request) {
+				if (request.getCookies() == null) return null;
+				for (var c : request.getCookies()) {
+					if (cookieName.equals(c.getName())) {
+						return c.getValue();
+					}
+				}
+				return null;
+			}
+		};
 	}
 }

@@ -11,6 +11,32 @@ export const FundraiserSummary = z.looseObject({
 });
 export type FundraiserSummary = z.infer<typeof FundraiserSummary>;
 
+export type Role = "SEEKER" | "ORGANIZER";
+
+export interface LoginPayload {
+	username: string;
+	password: string;
+}
+
+export interface SignupPayload extends LoginPayload {
+	email: string;
+	phone: string;
+	role: Role;
+}
+
+export const LoginSchema = z.object({
+	username: z.string().min(3, "Username must be at least 3 characters."),
+	password: z.string().min(8, "Password must be at least 8 characters."),
+});
+
+export const SignupSchema = z.object({
+	username: z.string().min(3, "Username must be at least 3 characters."),
+	password: z.string().min(8, "Password must be at least 8 characters."),
+	email: z.email("Enter a valid email."),
+	phone: z.string().min(8, "Enter a valid phone number."),
+	role: z.enum(["SEEKER", "ORGANIZER"]),
+});
+
 export const UserDetail = z.looseObject({
 	id: z.uuid(),
 	username: z.string(),

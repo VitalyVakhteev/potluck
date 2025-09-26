@@ -4,6 +4,7 @@ import com.picnic.potluck.dto.user.ProfileRequest;
 import com.picnic.potluck.dto.user.ProfileResponse;
 import com.picnic.potluck.dto.user.UserDetail;
 import com.picnic.potluck.dto.user.UserSummary;
+import com.picnic.potluck.repository.user.UserRepository;
 import com.picnic.potluck.service.user.ProfileService;
 import com.picnic.potluck.service.user.UserQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,7 @@ import java.util.UUID;
 public class UserController {
 	private final UserQueryService userQueryService;
 	private final ProfileService profileService;
+	private final UserRepository userRepository;
 
 	@Operation(
 			summary = "Search for users.",
@@ -101,8 +104,14 @@ public class UserController {
 	@Tag(name = "User", description = "User management API")
 	@GetMapping("/me")
 	public UserDetail me(@AuthenticationPrincipal Jwt jwt) {
-		UUID me = UUID.fromString(jwt.getSubject());
-		return userQueryService.getUserForViewer(me, me);
+		if (jwt == null) {
+			throw new AuthenticationException("Unauthenticated") {;
+			};
+		}
+		var userId = UUID.fromString(jwt.getSubject());
+		var user = userRepository.findById(userId)
+				.orElseThrow();
+		return UserDetail();
 	}
 
 	@Operation(

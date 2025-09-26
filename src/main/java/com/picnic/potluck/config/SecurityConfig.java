@@ -29,6 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -97,7 +98,7 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider,
-											JwtAuthenticationConverter conv) throws Exception {
+											JwtAuthenticationConverter conv, BearerTokenResolver cookieBearerResolver) throws Exception {
 		http
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())
@@ -122,7 +123,9 @@ public class SecurityConfig {
 							res.sendRedirect("/auth/success");
 						})
 				)
-				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
+				.oauth2ResourceServer(oauth2 -> oauth2
+						.bearerTokenResolver(cookieBearerResolver)
+						.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((req, res, e) -> res.sendError(401))
 						.accessDeniedHandler((req, res, e) -> res.sendError(403))
