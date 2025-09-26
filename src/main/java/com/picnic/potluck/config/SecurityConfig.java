@@ -98,7 +98,7 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider,
-											JwtAuthenticationConverter conv, BearerTokenResolver cookieBearerResolver) throws Exception {
+											JwtAuthenticationConverter conv, BearerTokenResolver headerThenCookieResolver) throws Exception {
 		http
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())
@@ -109,7 +109,9 @@ public class SecurityConfig {
 								"/api/auth/login", "/api/auth/logout", "/api/auth/signup"
 						).permitAll()
 						.requestMatchers(HttpMethod.GET,
-								"/api/users/**",
+								"/api/users/search",
+								"/api/users/id/**",
+								"/api/users/u/**",
 								"/api/leaderboard/**",
 								"/api/fundraisers/**"
 						).permitAll()
@@ -124,7 +126,7 @@ public class SecurityConfig {
 						})
 				)
 				.oauth2ResourceServer(oauth2 -> oauth2
-						.bearerTokenResolver(cookieBearerResolver)
+						.bearerTokenResolver(headerThenCookieResolver)
 						.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((req, res, e) -> res.sendError(401))

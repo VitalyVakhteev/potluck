@@ -18,10 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -105,13 +106,11 @@ public class UserController {
 	@GetMapping("/me")
 	public UserDetail me(@AuthenticationPrincipal Jwt jwt) {
 		if (jwt == null) {
-			throw new AuthenticationException("Unauthenticated") {;
-			};
+			throw new ResponseStatusException(
+					HttpStatus.UNAUTHORIZED);
 		}
-		var userId = UUID.fromString(jwt.getSubject());
-		var user = userRepository.findById(userId)
-				.orElseThrow();
-		return UserDetail();
+		UUID me = UUID.fromString(jwt.getSubject());
+		return userQueryService.getUserForViewer(me, me);
 	}
 
 	@Operation(
@@ -128,6 +127,10 @@ public class UserController {
 	@Tag(name = "User", description = "User management API")
 	@PatchMapping("/me")
 	public ProfileResponse modifyProfile(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid ProfileRequest req) {
+		if (jwt == null) {
+			throw new ResponseStatusException(
+					HttpStatus.UNAUTHORIZED);
+		}
 		UUID userId = UUID.fromString(jwt.getSubject());
 		return profileService.modifyProfile(userId, req);
 	}
