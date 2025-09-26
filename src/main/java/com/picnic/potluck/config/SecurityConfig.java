@@ -112,6 +112,9 @@ public class SecurityConfig {
 								"/api/leaderboard/**",
 								"/api/fundraisers/**"
 						).permitAll()
+						.requestMatchers(HttpMethod.POST,
+								"/api/fundraisers/near"
+						).permitAll()
 						.anyRequest().authenticated()
 				)
 				.oauth2Login(oauth -> oauth

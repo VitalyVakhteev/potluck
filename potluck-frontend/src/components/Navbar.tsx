@@ -30,7 +30,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useAuth } from "@/app/providers";
 
 const components: { title: string; href: string; description: string }[] = [
 	{
@@ -72,13 +73,27 @@ const components: { title: string; href: string; description: string }[] = [
 
 export default function Navbar() {
 	const { resolvedTheme, setTheme } = useTheme()
+	const { user } = useAuth();
 	const [mounted, setMounted] = React.useState(false)
-	const [auth, setAuth] = React.useState(true)  // Todo: inherit auth through a better code structure
 	React.useEffect(() => setMounted(true), [])
 
 	const flipTheme = () => {
 		setTheme(resolvedTheme === "dark" ? "light" : "dark")
 	}
+
+	const initial = (user?.username?.[0]?.toUpperCase() ?? "P");
+	const isDark = resolvedTheme === "dark";
+
+	const avatarBg = isDark ? "bg-zinc-700" : "bg-primary";
+	const avatarText = isDark ? "text-zinc-100" : "text-primary-foreground";
+
+	const avatarHover =
+		isDark
+			? "hover:bg-zinc-600"
+			: "hover:bg-primary-foreground hover:text-primary";
+
+	const canCreate =
+		!!user && (user.role === "ORGANIZER" || user.role === "ADMIN");
 
 	return (
 		<header className="w-full">
@@ -89,7 +104,8 @@ export default function Navbar() {
 						aria-label="Potluck home"
 						className="select-none whitespace-nowrap shrink-0
 						text-xl sm:text-2xl font-semibold tracking-tight
-						text-primary-foreground dark:text-secondary-foreground"
+						text-primary-foreground dark:text-secondary-foreground
+						mb-1"
 					>
 						Potluck
 					</Link>
@@ -132,24 +148,6 @@ export default function Navbar() {
 
 					</Input>
 
-					{auth && (
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button
-									variant="outline"
-									aria-pressed={resolvedTheme === "dark"}
-									aria-label="Create"
-									className="bg-primary mr-4 hover:bg-primary-foreground"
-								>
-									Create
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>Create a Fundraiser</p>
-							</TooltipContent>
-						</Tooltip>
-					)}
-
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<Button
@@ -169,37 +167,91 @@ export default function Navbar() {
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent>
-							<p>Change Theme</p>
+							Change Theme
 						</TooltipContent>
 					</Tooltip>
 
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Avatar className="mr-4">
-								<AvatarImage src="https://github.com/shadcn.png" />
-								<AvatarFallback>CN</AvatarFallback>
-							</Avatar>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent className="w-56 mt-4 mr-8" align="start">
-							<DropdownMenuLabel>My Account</DropdownMenuLabel>
-							<DropdownMenuGroup>
+					{canCreate && (
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<div className="mr-4">
+									<Link href="/fundraisers/new">
+										<Button
+											variant="outline"
+											aria-pressed={resolvedTheme === "dark"}
+											aria-label="Create"
+											className="bg-primary hover:bg-primary-foreground"
+										>
+											Create
+										</Button>
+									</Link>
+								</div>
+							</TooltipTrigger>
+							<TooltipContent>
+								Create a Fundraiser
+							</TooltipContent>
+						</Tooltip>
+					)}
+
+					{user ? (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Avatar className=
+									"mr-4 h-9 w-9 ring-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+								>
+									<AvatarFallback
+										className={[
+											"h-full w-full select-none font-semibold",
+											"flex items-center justify-center rounded-full transition-colors",
+											avatarBg,
+											avatarText,
+											avatarHover,
+										].join(" ")}
+										aria-label={user.username}
+									>
+										{initial}
+									</AvatarFallback>
+								</Avatar>
+							</DropdownMenuTrigger>
+
+							<DropdownMenuContent className="w-56 mt-4 mr-8" align="start">
+								<DropdownMenuLabel>My Account</DropdownMenuLabel>
+								<DropdownMenuGroup>
+									<Link href="/profile">
+										<DropdownMenuItem>
+											Profile
+										</DropdownMenuItem>
+									</Link>
+									<Link href="/profile/edit">
+										<DropdownMenuItem>
+											Settings
+										</DropdownMenuItem>
+									</Link>
+								</DropdownMenuGroup>
+								<DropdownMenuSeparator />
+								<Link href="https://github.com/VitalyVakhteev/potluck">
+									<DropdownMenuItem>
+										GitHub
+									</DropdownMenuItem>
+								</Link>
+								<DropdownMenuSeparator />
 								<DropdownMenuItem>
-									Profile
-								{/*	Todo: link to profile */}
+									Log out
 								</DropdownMenuItem>
-								<DropdownMenuItem>
-									Settings
-								{/*	Todo: link to page to modify settings */}
-								</DropdownMenuItem>
-							</DropdownMenuGroup>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem>GitHub</DropdownMenuItem>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem>
-								Log out
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : (
+						<Link href="/login">
+							<Button
+								variant="outline"
+								aria-pressed={resolvedTheme === "dark"}
+								aria-label="Log In"
+								className="bg-primary mr-4 hover:bg-primary-foreground"
+							>
+								Log In
+							</Button>
+						</Link>
+					)}
 				</div>
 			</div>
 		</header>

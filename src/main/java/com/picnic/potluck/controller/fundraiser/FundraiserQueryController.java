@@ -54,7 +54,7 @@ public class FundraiserQueryController {
 			@ApiResponse(responseCode = "400", description = "Illegal argument (invalid lat,lon,radius)")
 	})
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
-	@GetMapping("/near")
+	@PostMapping("/near")
 	public Page<FundraiserSummary> near(@RequestBody @Valid NearRequest req,
 										@PageableDefault(
 												size = 20,
