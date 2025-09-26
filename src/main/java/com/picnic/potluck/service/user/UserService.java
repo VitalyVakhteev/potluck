@@ -25,17 +25,17 @@ public class UserService {
 
 	@Transactional
 	public AuthResponse signup(SignupRequest req) {
+		if (req.role() == Role.ADMIN) throw new IllegalArgumentException("Signup does not support ADMIN roles");
 		userRepository.findByEmailIgnoreCase(req.email()).ifPresent(u -> {
 			throw new IllegalArgumentException("Email in use");
 		});
 		userRepository.findByUsernameIgnoreCase(req.username()).ifPresent(u -> {
 			throw new IllegalArgumentException("Username in use");
 		});
+		String e164 = PhoneNormalizer.toE164(req.phone(), "+1");
 		userRepository.findByPhoneNumberIgnoreCase(req.phone()).ifPresent(u -> {
 			throw new IllegalArgumentException("Phone number in use");
 		});
-		if (req.role() == Role.ADMIN) throw new IllegalArgumentException("Signup does not support ADMIN roles");
-		String e164 = PhoneNormalizer.toE164(req.phone(), "+1");
 		// Todo: validate email?
 
 		var user = User.builder()

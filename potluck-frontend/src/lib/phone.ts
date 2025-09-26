@@ -1,7 +1,15 @@
 export function normalizePhone(input: string): string | null {
-	const digits = input.replace(/[^\d+]/g, "");
-	if (/^\+\d{8,15}$/.test(digits)) return digits;
-	const ten = digits.replace(/\D/g, "");
-	if (/^\d{10}$/.test(ten)) return `+1${ten}`;
+	const s: string = input.trim().replace(/[^\d+]/g, "");
+	if (/^\+\d{8,15}$/.test(s)) {
+		if (/^\+0/.test(s)) return null;
+		return s;
+	}
+	const digits = s.replace(/\D/g, "");
+	const nanp = digits.length === 11 && digits.startsWith("1")
+		? digits.slice(1)
+		: digits;
+	if (/^\d{10}$/.test(nanp)) {
+		return `+1${nanp}`;
+	}
 	return null;
 }

@@ -32,6 +32,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/app/providers";
+import {logout} from "@/lib/api/auth";
+import {toast} from "sonner";
 
 interface Card {
 	title: string;
@@ -81,7 +83,7 @@ const components: Card[] = [
 
 export default function Navbar() {
 	const { resolvedTheme, setTheme } = useTheme()
-	const { user } = useAuth();
+	const { user, setUser } = useAuth();
 	const [mounted, setMounted] = React.useState(false)
 	React.useEffect(() => setMounted(true), [])
 
@@ -93,13 +95,20 @@ export default function Navbar() {
 	const isDark = resolvedTheme === "dark";
 
 	const avatarBg = isDark ? "bg-zinc-700" : "bg-primary";
-	const avatarText = isDark ? "text-zinc-100" : "text-primary-foreground";
+	const avatarText = isDark ? "text-zinc-100" : "text-foreground";
 
 	const avatarHover = isDark ? "hover:bg-zinc-600" : "hover:bg-primary-foreground hover:text-primary";
 
 	const canCreate = !!user && (user.role === "ORGANIZER" || user.role === "ADMIN");
 
 	const filterCards = (cards: Card[]) => !!user ? cards : cards.filter(c => !RESTRICTED.has(c.title));
+
+	const triggerLogout = () => {
+		logout().then(() => {
+			toast.success("Logged out!");
+			setUser(null)
+		})
+	}
 
 	return (
 		<header className="w-full">
@@ -221,7 +230,7 @@ export default function Navbar() {
 							</DropdownMenuTrigger>
 
 							<DropdownMenuContent className="w-56 mt-4 mr-8" align="start">
-								<DropdownMenuLabel>My Account</DropdownMenuLabel>
+								<DropdownMenuLabel className="text-lg">{user.username}</DropdownMenuLabel>
 								<DropdownMenuGroup>
 									<Link href="/profile">
 										<DropdownMenuItem>
@@ -241,9 +250,11 @@ export default function Navbar() {
 									</DropdownMenuItem>
 								</Link>
 								<DropdownMenuSeparator />
-								<DropdownMenuItem>
-									Log out
-								</DropdownMenuItem>
+								<div onClick={triggerLogout}>
+									<DropdownMenuItem>
+											Log out
+									</DropdownMenuItem>
+								</div>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					) : (

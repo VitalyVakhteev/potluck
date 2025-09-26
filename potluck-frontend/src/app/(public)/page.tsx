@@ -37,7 +37,7 @@ export default async function PublicHome() {
 		<main className="flex flex-col ml-4 mr-4 px-4 py-6">
 			<h1 className="text-2xl font-bold tracking-tight">Fundraisers</h1>
 
-			{user && (
+			{!!user && (
 				<>
 					<Section title="Follower Activity" href="/fundraisers/feed/me">
 						<FundraiserList items={feed?.content ?? []} initialShow={4} emptyText="No recent activity." />

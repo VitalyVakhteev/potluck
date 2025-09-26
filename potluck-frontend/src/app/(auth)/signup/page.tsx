@@ -163,7 +163,7 @@ export default function SignupPage() {
 							/>
 						</div>
 
-						<Button type="submit" className="w-full bg-primary hover:bg-primary-foreground">
+						<Button type="submit" variant="outline" className="w-full bg-primary dark:bg-primary-foreground">
 							<p className="text-foreground">Sign Up</p>
 						</Button>
 					</div>
@@ -171,7 +171,7 @@ export default function SignupPage() {
 			</CardContent>
 			<CardFooter className="flex-col gap-2">
 				<Button asChild variant="link" className="w-full">
-					<Link href="/login" className="text-primary-foreground">
+					<Link href="/login" className="text-primary-foreground dark:text-primary">
 						Back to Login
 					</Link>
 				</Button>

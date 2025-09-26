@@ -56,7 +56,7 @@ export default function LoginPage() {
 				<CardTitle>Login to your account</CardTitle>
 				<CardDescription>Enter your credentials below to login</CardDescription>
 				<CardAction>
-					<Button asChild variant="link" className="text-primary-foreground">
+					<Button asChild variant="link" className="text-primary-foreground dark:text-primary">
 						<Link href="/signup">Sign Up</Link>
 					</Button>
 				</CardAction>
@@ -93,14 +93,14 @@ export default function LoginPage() {
 								required
 							/>
 						</div>
-						<Button type="submit" className="w-full bg-primary hover:bg-primary-foreground">
+						<Button type="submit" variant="outline" className="w-full bg-primary dark:bg-primary-foreground">
 							<p className="text-foreground">Login</p>
 						</Button>
 					</div>
 				</form>
 			</CardContent>
 			<CardFooter className="flex-col gap-2">
-				<Button variant="outline" className="w-full">
+				<Button variant="outline" className="w-full bg-primary dark:bg-primary-foreground">
 					<p className="text-foreground">Login with Google</p>
 				</Button>
 			</CardFooter>
