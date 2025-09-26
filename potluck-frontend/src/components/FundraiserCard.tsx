@@ -11,6 +11,7 @@ export default function FundraiserCard({ fundraiser }: { fundraiser: FundraiserS
 		<div className="rounded-2xl border p-4 hover:shadow-sm transition">
 			<div className="flex items-center justify-between mb-2">
 				<h3 className="font-medium line-clamp-1">{fundraiser.title}</h3>
+				{/* Todo: see if this looks good, otherwise switch to shadcn badges */}
 				{fundraiser.active ? (
 					<span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">
 						Active
