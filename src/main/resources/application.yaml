@@ -43,7 +43,7 @@ app:
     cookie-name: ${COOKIE_NAME:potluck_token}
     cookie-samesite: ${COOKIE_SAMESITE:Lax} # None, Lax, Strict
     cookie-secure: ${COOKIE_SECURE:false} # Todo: set to true in prod (requires HTTPS)
-    cookie-max-age-seconds: ${COOKIE_MAX_AGE_SECONDS:0} # session cookie
+    cookie-max-age-seconds: ${COOKIE_MAX_AGE_SECONDS:3600} # session cookie (14 days regularly)
 
 logging:
   file:

@@ -6,6 +6,8 @@ import SkeletonRow from "@/components/SkeletonRow";
 import Link from "next/link";
 import { getSession } from "@/lib/session";
 
+export const dynamic = "force-dynamic";
+
 async function Section({title, href, children,}: {
 	title: string;
 	href: string;
@@ -24,14 +26,16 @@ async function Section({title, href, children,}: {
 
 export default async function PublicHome() {
 	const user = await getSession();
-	const [recent, soon, ending] = await Promise.all([
+
+	const [startingSoon, endingSoon, recent] = await Promise.all([
 		FundraisersApi.startingSoon(0, 10),
 		FundraisersApi.endingSoon(0, 10),
 		FundraisersApi.recent(0, 10),
 	]);
-	const favoritesPromise = user ? await FundraisersApi.favorites(0, 10) : null;
-	const feedPromise = user ? await FundraisersApi.feedMe(0, 10) : null;
-	const [favorites, feed] = await Promise.all([favoritesPromise, feedPromise]);
+	const [favorites, feed] = user ? await Promise.all([
+		FundraisersApi.favorites(0, 10),
+		FundraisersApi.feedMe(0, 10)])
+		: [null, null];
 
 	return (
 		<main className="flex flex-col ml-4 mr-4 px-4 py-6">
@@ -39,11 +43,11 @@ export default async function PublicHome() {
 
 			{!!user && (
 				<>
-					<Section title="Follower Activity" href="/fundraisers/feed/me">
+					<Section title="Follower Activity" href="/fundraisers/feed">
 						<FundraiserList items={feed?.content ?? []} initialShow={4} emptyText="No recent activity." />
 					</Section>
 
-					<Section title="Favorites" href="/users/favorites">
+					<Section title="Favorites" href="/fundraisers/favorites">
 						<FundraiserList items={favorites?.content ?? []} initialShow={4} emptyText="No favorites yet." />
 					</Section>
 				</>
@@ -56,14 +60,14 @@ export default async function PublicHome() {
 			</Section>
 
 			<Section title="Starting Soon" href="/fundraisers/starting-soon">
-				<FundraiserList items={soon.content} initialShow={4} />
+				<FundraiserList items={startingSoon.content} initialShow={4} />
 			</Section>
 
 			<Section title="Ending Soon" href="/fundraisers/ending-soon">
-				<FundraiserList items={ending.content} initialShow={4} />
+				<FundraiserList items={endingSoon.content} initialShow={4} />
 			</Section>
 
-			<Section title="Recently Created" href="/fundraisers?sort=createdAt,desc">
+			<Section title="Recently Created" href="/fundraisers">
 				<FundraiserList items={recent.content} initialShow={4} />
 			</Section>
 		</main>

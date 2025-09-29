@@ -7,7 +7,8 @@ export async function apiGet<T>(url: string, schema: z.ZodSchema<T>, { auth = fa
 		...(init?.headers ?? {}),
 	};
 
-	const res = await fetch(buildApiUrl(url), {
+	const fullUrl = await buildApiUrl(url);
+	const res = await fetch(fullUrl, {
 		method: "GET",
 		headers,
 		cache: "no-store",

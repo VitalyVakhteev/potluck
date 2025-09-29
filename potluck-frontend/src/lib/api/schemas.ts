@@ -13,17 +13,6 @@ export type FundraiserSummary = z.infer<typeof FundraiserSummary>;
 
 export type Role = "SEEKER" | "ORGANIZER";
 
-export interface LoginPayload {
-	username: string;
-	password: string;
-}
-
-export interface SignupPayload extends LoginPayload {
-	email: string;
-	phone: string;
-	role: Role;
-}
-
 export const LoginSchema = z.object({
 	username: z.string().min(3, "Username must be at least 3 characters."),
 	password: z.string().min(8, "Password must be at least 8 characters."),
@@ -39,9 +28,23 @@ export const SignupSchema = z.object({
 
 export const UserDetail = z.looseObject({
 	id: z.uuid(),
-	username: z.string(),
-	totalPoints: z.number(),
 	role: z.string(),
+	username: z.string(),
+	bio: z.string().optional().nullable(),
+	location: z.string().optional().nullable(),
+	bannerColor: z.string().optional().nullable(),
+	totalPoints: z.coerce.number().optional().nullable().default(0),
+	totalFundraisers: z.coerce.number().optional().nullable().default(0),
+	followersCount: z.number().optional().nullable().default(0),
+	followingCount: z.number().optional().nullable().default(0),
+	favoritesCount: z.number().optional().nullable().default(0),
+	firstName: z.string(),
+	lastName: z.string(),
+	email: z.string(),
+	phoneNumber: z.string(),
+	displayName: z.boolean().default(false),
+	displayEmail: z.boolean().default(false),
+	displayPhone: z.boolean().default(false),
 });
 export type SessionUser = z.infer<typeof UserDetail>;
 

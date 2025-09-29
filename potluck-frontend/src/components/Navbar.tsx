@@ -34,6 +34,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/app/providers";
 import {logout} from "@/lib/api/auth";
 import {toast} from "sonner";
+import {useRouter} from "next/navigation";
 
 interface Card {
 	title: string;
@@ -46,7 +47,7 @@ const RESTRICTED = new Set(["Favorites", "Follower Fundraisers"]);
 const components: Card[] = [
 	{
 		title: "Follower Fundraisers",
-		href: "/fundraisers/followers",
+		href: "/fundraisers/feed",
 		description:
 			"The latest fundraisers from your followers.",
 	},
@@ -82,6 +83,7 @@ const components: Card[] = [
 ]
 
 export default function Navbar() {
+	const { refresh } = useRouter();
 	const { resolvedTheme, setTheme } = useTheme()
 	const { user, setUser } = useAuth();
 	const [mounted, setMounted] = React.useState(false)
@@ -96,10 +98,10 @@ export default function Navbar() {
 
 	const avatarBg = isDark ? "bg-zinc-700" : "bg-primary";
 	const avatarText = isDark ? "text-zinc-100" : "text-foreground";
-
 	const avatarHover = isDark ? "hover:bg-zinc-600" : "hover:bg-primary-foreground hover:text-primary";
 
 	const canCreate = !!user && (user.role === "ORGANIZER" || user.role === "ADMIN");
+	const selfUrl = `/user/${user?.username}`;
 
 	const filterCards = (cards: Card[]) => !!user ? cards : cards.filter(c => !RESTRICTED.has(c.title));
 
@@ -107,7 +109,9 @@ export default function Navbar() {
 		logout().then(() => {
 			toast.success("Logged out!");
 			setUser(null)
+			refresh();
 		})
+		.catch(() => toast.error("Logout failed."));
 	}
 
 	return (
@@ -169,7 +173,7 @@ export default function Navbar() {
 								variant="outline"
 								size="icon"
 								onClick={flipTheme}
-								aria-pressed={resolvedTheme === "dark"}
+								aria-pressed={mounted ? isDark : undefined}
 								aria-label="Toggle theme"
 								className="mr-4"
 							>
@@ -193,7 +197,6 @@ export default function Navbar() {
 									<Link href="/fundraisers/new">
 										<Button
 											variant="outline"
-											aria-pressed={resolvedTheme === "dark"}
 											aria-label="Create"
 											className="bg-primary hover:bg-primary-foreground"
 										>
@@ -215,13 +218,13 @@ export default function Navbar() {
 									"mr-4 h-9 w-9 ring-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
 								>
 									<AvatarFallback
-										className={[
+										className={mounted ? [
 											"h-full w-full select-none font-semibold",
 											"flex items-center justify-center rounded-full transition-colors",
 											avatarBg,
 											avatarText,
 											avatarHover,
-										].join(" ")}
+										].join(" ") : undefined}
 										aria-label={user.username}
 									>
 										{initial}
@@ -232,12 +235,12 @@ export default function Navbar() {
 							<DropdownMenuContent className="w-56 mt-4 mr-8" align="start">
 								<DropdownMenuLabel className="text-lg">{user.username}</DropdownMenuLabel>
 								<DropdownMenuGroup>
-									<Link href="/profile">
+									<Link href={selfUrl}>
 										<DropdownMenuItem>
 											Profile
 										</DropdownMenuItem>
 									</Link>
-									<Link href="/profile/edit">
+									<Link href="/settings">
 										<DropdownMenuItem>
 											Settings
 										</DropdownMenuItem>
@@ -261,7 +264,6 @@ export default function Navbar() {
 						<Link href="/login">
 							<Button
 								variant="outline"
-								aria-pressed={resolvedTheme === "dark"}
 								aria-label="Log In"
 								className="bg-primary mr-4 hover:bg-primary-foreground"
 							>

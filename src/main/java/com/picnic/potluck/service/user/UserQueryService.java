@@ -79,6 +79,7 @@ public class UserQueryService {
 
 		return new UserDetail(
 				user.getId(),
+				user.getRole(),
 				user.getUsername(),
 				user.getBio(),
 				user.getLocation(),

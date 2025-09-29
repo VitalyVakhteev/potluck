@@ -1,5 +1,5 @@
 export async function login(username: string, password: string) {
-	const res = await fetch("/api/auth/login", {
+	const res = await fetch("/next-api/auth/login", {
 		method: "POST",
 		headers: { "content-type": "application/json" },
 		credentials: "include",
@@ -11,7 +11,7 @@ export async function login(username: string, password: string) {
 export async function signup(payload: {
 	username: string; email: string; phone: string; password: string; role: "SEEKER" | "ORGANIZER";
 }) {
-	const res = await fetch("/api/auth/signup", {
+	const res = await fetch("/next-api/auth/signup", {
 		method: "POST",
 		headers: { "content-type": "application/json" },
 		credentials: "include",
@@ -21,7 +21,7 @@ export async function signup(payload: {
 }
 
 export async function logout() {
-	const res = await fetch("/api/auth/logout", {
+	const res = await fetch("/next-api/auth/logout", {
 		method: "POST",
 		credentials: "include",
 	});

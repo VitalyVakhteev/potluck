@@ -96,6 +96,25 @@ public class SecurityConfig {
 		return provider;
 	}
 
+
+	@Bean
+	BearerTokenResolver headerThenCookieResolver(@Value("${app.jwt.cookie-name:potluck_token}") String cookieName) {
+		return request -> {
+			String auth = request.getHeader("Authorization");
+			if (auth != null && auth.startsWith("Bearer ")) {
+				return auth.substring(7);
+			}
+			if (request.getCookies() != null) {
+				for (var c : request.getCookies()) {
+					if (cookieName.equals(c.getName())) {
+						return c.getValue();
+					}
+				}
+			}
+			return null;
+		};
+	}
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider,
 											JwtAuthenticationConverter conv, BearerTokenResolver headerThenCookieResolver) throws Exception {

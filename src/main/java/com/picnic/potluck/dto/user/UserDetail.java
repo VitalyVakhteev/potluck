@@ -1,9 +1,12 @@
 package com.picnic.potluck.dto.user;
 
+import com.picnic.potluck.util.Role;
+
 import java.util.UUID;
 
 public record UserDetail(
 		UUID id,
+		Role role,
 		String username,
 		String bio,
 		String location,

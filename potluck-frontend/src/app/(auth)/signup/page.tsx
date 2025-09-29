@@ -72,10 +72,11 @@ export default function SignupPage() {
 
 			await login(username, password);
 
-			const meRes = await fetch("/api/users/me", { credentials: "include" });
+			const meRes = await fetch("/next-api/users/me", { credentials: "include" });
 			if (meRes.ok) setUser(await meRes.json());
 
 			router.replace("/");
+			router.refresh();
 		} catch {
 			toast.error("Signup failed.");
 		}

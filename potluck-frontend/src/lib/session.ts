@@ -1,22 +1,36 @@
-import { headers } from "next/headers";
-import {SessionUser, UserDetail} from "@/lib/api/schemas";
+import 'server-only';
+import { cache } from 'react';
+import { headers } from 'next/headers';
+import { UserDetail, type SessionUser } from '@/lib/api/schemas';
+import {serverCookieHeader} from "@/lib/http";
 
-const BASE = process.env.BACKEND_URL ?? "http://localhost:8080";
+const getOrigin = async () => {
+	const h = await headers();
+	const proto = h.get('x-forwarded-proto') ?? 'http';
+	const host = h.get('x-forwarded-host') ?? h.get('host')!;
+	if (!host) throw new Error("Host header missing");
+	return `${proto}://${host}`;
+};
 
-export async function getSession(): Promise<SessionUser | null> {
-	const cookie = (await headers()).get("cookie") ?? "";
+export const getSession = cache(async (): Promise<SessionUser | null> => {
+	const origin = await getOrigin();
+	const hdrs = await serverCookieHeader();
 
-	const res = await fetch(`${BASE}/api/users/me`, {
+	const res = await fetch(`${origin}/next-api/users/me`, {
 		method: "GET",
-		headers: { cookie },
 		cache: "no-store",
+		headers: hdrs,
 	});
 
-	if (res.ok) {
-		const json = await res.json();
-		const parsed = UserDetail.safeParse(json);
-		return parsed.success ? parsed.data : null;
-	}
+	if (res.status === 401) return null;
+	if (!res.ok) return null;
 
-	return null;
-}
+	const json = await res.json();
+	const parsed = UserDetail.safeParse(json);
+	// if (!parsed.success) {
+	// 	console.error("getSession: Zod parse failed (check yo fields twin)", parsed.error.issues, json);
+	// 	return null;
+	// }
+	// Keeping this around in case I screw up SpringBoot model -> zod object conversion
+	return parsed.success ? parsed.data : null;
+});

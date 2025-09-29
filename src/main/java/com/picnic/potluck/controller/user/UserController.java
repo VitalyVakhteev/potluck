@@ -4,7 +4,6 @@ import com.picnic.potluck.dto.user.ProfileRequest;
 import com.picnic.potluck.dto.user.ProfileResponse;
 import com.picnic.potluck.dto.user.UserDetail;
 import com.picnic.potluck.dto.user.UserSummary;
-import com.picnic.potluck.repository.user.UserRepository;
 import com.picnic.potluck.service.user.ProfileService;
 import com.picnic.potluck.service.user.UserQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +31,6 @@ import java.util.UUID;
 public class UserController {
 	private final UserQueryService userQueryService;
 	private final ProfileService profileService;
-	private final UserRepository userRepository;
 
 	@Operation(
 			summary = "Search for users.",

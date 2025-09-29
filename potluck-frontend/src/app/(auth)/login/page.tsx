@@ -40,11 +40,12 @@ export default function LoginPage() {
 		try {
 			await login(username, password);
 			toast.success("Logged in!");
-			const meRes = await fetch("/api/users/me", { credentials: "include" });
+			const meRes = await fetch("/next-api/users/me", { credentials: "include" });
 			if (meRes.ok) {
 				setUser(await meRes.json());
 			}
 			router.replace("/");
+			router.refresh();
 		} catch {
 			toast.error("Login failed.");
 		}
