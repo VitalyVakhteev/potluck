@@ -1,1 +1,0 @@
-// Todo: add route to fetch UserDetail of user by username
