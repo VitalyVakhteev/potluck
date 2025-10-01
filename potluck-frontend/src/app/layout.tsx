@@ -24,9 +24,7 @@ export default async function RootLayout({children}: Readonly<{children: React.R
 
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
+			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<Providers initialUser={user}>
 					{children}
 				</Providers>

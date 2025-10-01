@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 
-type FollowState = "following" | "not-following" | "requested" | "unknown";
+type FollowState = "following" | "not-following" | "unknown";
 
 export default function FollowButton({viewerId, viewedUserId, initialState = "unknown",}: {
 	viewerId: string | null;
@@ -48,7 +48,7 @@ export default function FollowButton({viewerId, viewedUserId, initialState = "un
 					</DialogHeader>
 					<DialogFooter className="gap-2 sm:justify-end">
 						<Button variant="secondary" onClick={() => setOpen(false)}>Close</Button>
-						<Button asChild className="bg-primary hover:bg-primary-foreground">
+						<Button asChild className="bg-primary">
 							<Link href="/login">Go to Login</Link>
 						</Button>
 					</DialogFooter>
@@ -58,10 +58,8 @@ export default function FollowButton({viewerId, viewedUserId, initialState = "un
 	}
 
 	return state === "following" ? (
-		<Button variant="secondary" onClick={unfollow}>Following</Button>
-	) : state === "requested" ? (
-		<Button variant="secondary" disabled>Requested</Button>
+		<Button variant="outline" className="bg-primary hover:bg-primary-foreground" onClick={unfollow}>Following</Button>
 	) : (
-		<Button className="bg-primary hover:bg-primary-foreground" onClick={follow}>Follow</Button>
+		<Button variant="outline" className="bg-primary hover:bg-primary-foreground" onClick={follow}>Follow</Button>
 	);
 }

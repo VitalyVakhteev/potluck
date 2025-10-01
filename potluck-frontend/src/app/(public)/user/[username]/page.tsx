@@ -8,6 +8,8 @@ import SkeletonRow from "@/components/SkeletonRow";
 
 import FollowButton from "@/components/FollowButton";
 import EditProfileDialog from "@/components/EditProfileDialog";
+import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -48,9 +50,15 @@ export default async function ProfilePage({ params }: { params: { username: stri
 	const user = await fetchUser(username);
 	if (!user) {
 		return (
-			<main className="mx-4 px-4 py-10">
-				<h1 className="text-2xl font-semibold">404: User not found</h1>
+			<main className="flex flex-col h-screen items-center justify-center gap-4">
+				<h1 className="text-6xl font-semibold">404</h1>
+				<h2>User not found</h2>
 				<p className="text-muted-foreground mt-2">The user &#34;{username}&#34; does not exist.</p>
+				<Link href="/" className="mt-4">
+					<Button variant="outline">
+						Back
+					</Button>
+				</Link>
 			</main>
 		);
 	}
@@ -72,67 +80,69 @@ export default async function ProfilePage({ params }: { params: { username: stri
 	return (
 		<main className="flex flex-col md:mx-6 mx-2 md:px-6 px-2 py-6">
 			<div
-				className="w-full h-40 md:h-56 rounded-xl"
-				style={{ background: banner }}
+				className="w-full h-40 md:h-56 rounded-xl bg-muted"
+				// style={{ background: banner }}
 			/>
 
-			<div className="-mt-12 md:-mt-16 flex flex-row gap-4 items-end">
+			<div className="-mt-12 md:-mt-24 flex flex-row gap-4 items-end">
 				<div className="relative">
 					<div className="h-24 w-24 md:h-32 md:w-32 rounded-full ring-4 ring-background overflow-hidden bg-background">
 						<Avatar className="h-full w-full">
 							<AvatarImage src={undefined} alt={user.username} />
-							<AvatarFallback className="text-xl md:text-2xl font-semibold">
+							<AvatarFallback className="text-xl md:text-2xl font-semibold bg-primary dark:bg-zinc-700">
 								{initials}
 							</AvatarFallback>
 						</Avatar>
 					</div>
 				</div>
 
-				<div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-between gap-3 pb-2">
+				<div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 					<div>
 						<div className="flex items-center gap-3">
 							<h1 className="text-2xl md:text-3xl font-bold">{user.username}</h1>
-							<Badge variant="secondary" className="uppercase">{user.role}</Badge>
+							<Badge variant="secondary" className="uppercase bg-primary-foreground">{user.role}</Badge>
 						</div>
 
-						<div className="text-sm text-muted-foreground mt-1 flex gap-4">
+						<div className="text-sm text-muted-foreground mt-8 flex gap-4">
 							<span><strong>{user.followersCount ?? 0}</strong> Followers</span>
 							<span><strong>{user.followingCount ?? 0}</strong> Following</span>
 							<span><strong>{user.favoritesCount ?? 0}</strong> Favorites</span>
 						</div>
 					</div>
 
-					<div className="flex flex-col items-start md:items-end gap-1">
-						<div className="text-sm">
-							<span className="font-semibold">Total Points:</span> {user.totalPoints ?? 0}
+					<div className="flex flex-col md:items-end gap-1 mr-4 -mb-4">
+						<div className="mb-4">
+							<div className="text-sm">
+								<span className="font-semibold">Total Points:</span> {user.totalPoints ?? 0}
+							</div>
+							{isOrganizer && (
+								<div className="text-sm">
+									<span className="font-semibold">Fundraisers:</span> {user.totalFundraisers ?? 0}
+								</div>
+							)}
+							{nameShown && (
+								<div className="text-sm">
+									<span className="font-semibold">Name:</span> {user.firstName} {user.lastName}
+								</div>
+							)}
+							{emailShown && (
+								<div className="text-sm">
+									<span className="font-semibold">Email:</span> {user.email}
+								</div>
+							)}
+							{phoneShown && (
+								<div className="text-sm">
+									<span className="font-semibold">Phone:</span> {user.phoneNumber}
+								</div>
+							)}
+							{!!user.location && (
+								<div className="text-sm">
+									<span className="font-semibold">Location:</span> {user.location}
+								</div>
+							)}
 						</div>
-						{isOrganizer && (
-							<div className="text-sm">
-								<span className="font-semibold">Fundraisers:</span> {user.totalFundraisers ?? 0}
-							</div>
-						)}
-						{nameShown && (
-							<div className="text-sm">
-								<span className="font-semibold">Name:</span> {user.firstName} {user.lastName}
-							</div>
-						)}
-						{emailShown && (
-							<div className="text-sm">
-								<span className="font-semibold">Email:</span> {user.email}
-							</div>
-						)}
-						{phoneShown && (
-							<div className="text-sm">
-								<span className="font-semibold">Phone:</span> {user.phoneNumber}
-							</div>
-						)}
-						{!!user.location && (
-							<div className="text-sm">
-								<span className="font-semibold">Location:</span> {user.location}
-							</div>
-						)}
 
-						<div className="mt-2">
+						<div className="mt-4">
 							{isSelf ? (
 								<EditProfileDialog
 									initial={{

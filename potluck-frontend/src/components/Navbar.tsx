@@ -214,9 +214,7 @@ export default function Navbar() {
 					{user ? (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Avatar className=
-									"mr-4 h-9 w-9 ring-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-								>
+								<Avatar className="mr-4 h-9 w-9 ring-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
 									<AvatarFallback
 										className={mounted ? [
 											"h-full w-full select-none font-semibold",
