@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, ctx: { params: { username: string } 
 	const ctx_params = await ctx.params;
 	const { username } = ctx_params;
 
-	const upstream = await fetch(`${BASE}/api/users/u/${encodeURIComponent(username)}`, {
+	const upstream = await fetch(`${BASE}/api/users/${encodeURIComponent(username)}`, {
 		method: "GET",
 		headers: { cookie: inCookie },
 		cache: "no-store",

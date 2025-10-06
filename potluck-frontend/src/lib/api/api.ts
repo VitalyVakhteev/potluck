@@ -21,7 +21,10 @@ export async function apiGet<T>(url: string, schema: z.ZodSchema<T>, { auth = fa
 		return schema.parse(empty);
 	}
 
-	if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+	if (!res.ok) {
+		const text = await res.text().catch(() => "");
+		throw new Error(`${res.status} ${res.statusText || ""} :: ${text.slice(0, 500)}`);
+	}
 
 	const json = await res.json();
 	const parsed = schema.safeParse(json);

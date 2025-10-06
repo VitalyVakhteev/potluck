@@ -3,6 +3,7 @@ package com.picnic.potluck.controller.user;
 import com.picnic.potluck.dto.fundraiser.FundraiserSummary;
 import com.picnic.potluck.dto.user.FavoriteRequest;
 import com.picnic.potluck.dto.user.FavoriteResponse;
+import com.picnic.potluck.repository.user.UserRepository;
 import com.picnic.potluck.service.fundraiser.FundraiserQueryService;
 import com.picnic.potluck.service.user.FavoriteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class FavoriteController {
 	private final FavoriteService favoriteService;
 	private final FundraiserQueryService fundraisers;
+	private final UserRepository userRepository;
 
 	@Operation(
 			summary = "Favorite.",
@@ -83,7 +85,8 @@ public class FavoriteController {
 													   direction = Sort.Direction.DESC
 											   ) Pageable p) {
 		var userId = UUID.fromString(jwt.getSubject());
-		return fundraisers.list(userId, p);
+		var user = userRepository.findById(userId).orElseThrow();
+		return fundraisers.list(user.getUsername(), p);
 	}
 
 	@Operation(
@@ -93,13 +96,13 @@ public class FavoriteController {
 			@ApiResponse(responseCode = "200", description = "Fetched successfully")
 	})
 	@Tag(name = "Favorites", description = "Favorites management API")
-	@GetMapping("/{userId}/")
-	public Page<FundraiserSummary> favoritesOf(@PathVariable UUID userId,
+	@GetMapping("/{username}")
+	public Page<FundraiserSummary> favoritesOf(@PathVariable String username,
 											   @PageableDefault(
 													   size = 20,
 													   sort = "createdAt",
 													   direction = Sort.Direction.DESC
 											   ) Pageable p) {
-		return fundraisers.list(userId, p);
+		return fundraisers.list(username, p);
 	}
 }

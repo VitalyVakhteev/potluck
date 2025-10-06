@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import { FundraisersApi } from "@/lib/api/fundraisers";
-import NearbyClient from "@/app/(public)/NearbyClient";
-import FundraiserList from "@/components/FundraiserList";
-import SkeletonRow from "@/components/SkeletonRow";
+import NearbyClient from "@/components/NearbyClient";
+import FundraiserList from "@/components/fundraisers/FundraiserList";
+import SkeletonRow from "@/components/fundraisers/SkeletonRow";
 import { getSession } from "@/lib/api/session";
-import {Section} from "@/components/FundraiserSection";
+import {Section} from "@/components/fundraisers/FundraiserSection";
 
 export const dynamic = "force-dynamic";
 
@@ -12,14 +12,28 @@ export default async function PublicHome() {
 	const user = await getSession();
 
 	const [startingSoon, endingSoon, recent] = await Promise.all([
-		FundraisersApi.startingSoon(0, 10),
-		FundraisersApi.endingSoon(0, 10),
-		FundraisersApi.recent(0, 10),
+		FundraisersApi.startingSoon({
+			page: 0,
+			size: 4
+		}),
+		FundraisersApi.endingSoon({
+			page: 0,
+			size: 4
+		}),
+		FundraisersApi.recent({
+			page: 0,
+			size: 4
+		}),
 	]);
 	const [favorites, feed] = user ? await Promise.all([
-		FundraisersApi.favorites(0, 10),
-		FundraisersApi.feedMe(0, 10)])
-		: [null, null];
+		FundraisersApi.favorites({
+			page: 0,
+			size: 4
+		}),
+		FundraisersApi.feedMe({
+			page: 0,
+			size: 4
+		})]) : [null, null];
 
 	return (
 		<main className="flex flex-col ml-4 mr-4 px-4 py-6">

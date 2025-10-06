@@ -130,7 +130,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET,
 								"/api/users/search",
 								"/api/users/id/**",
-								"/api/users/u/**",
+								"/api/users/**",
 								"/api/leaderboard/**",
 								"/api/fundraisers/**"
 						).permitAll()

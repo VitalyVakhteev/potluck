@@ -150,13 +150,13 @@ public class FundraiserQueryController {
 			@ApiResponse(responseCode = "404", description = "Organizer not found")
 	})
 	@Tag(name = "Fundraiser", description = "Fundraiser management API")
-	@GetMapping("/organizer/{organizerId}")
-	public Page<FundraiserSummary> byOrganizer(@PathVariable UUID organizerId,
+	@GetMapping("/organizer/{organizerUsername}")
+	public Page<FundraiserSummary> byOrganizer(@PathVariable String organizerUsername,
 											   @PageableDefault(
 													   size = 20,
 													   sort = "createdAt",
-													   direction = org.springframework.data.domain.Sort.Direction.DESC
+													   direction = Sort.Direction.DESC
 											   ) Pageable pageable) {
-		return fundraiserQueryService.listByOrganizer(organizerId, pageable);
+		return fundraiserQueryService.listByOrganizer(organizerUsername, pageable);
 	}
 }

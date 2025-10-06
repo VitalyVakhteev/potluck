@@ -13,8 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/leaderboard")
 @RequiredArgsConstructor
@@ -47,8 +45,8 @@ public class LeaderboardController {
 			@ApiResponse(responseCode = "404", description = "The given user was not found")
 	})
 	@Tag(name = "Leaderboard", description = "Leaderboard management API")
-	@GetMapping("/{userId}")
-	public LeaderboardEntry getUserEntry(@PathVariable UUID userId) {
-		return leaderboardService.getUserEntry(userId);
+	@GetMapping("/{username}")
+	public LeaderboardEntry getUserEntry(@PathVariable String username) {
+		return leaderboardService.getUserEntry(username);
 	}
 }

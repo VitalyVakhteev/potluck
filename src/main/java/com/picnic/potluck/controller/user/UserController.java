@@ -50,43 +50,29 @@ public class UserController {
 
 	@Operation(
 			summary = "Get a user.",
-			description = "Return a user based on their id.")
-	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Fetched successfully"),
-			@ApiResponse(responseCode = "404", description = "User not found")
-	})
-	@Tag(name = "User", description = "User management API")
-	@GetMapping("/id/{id}")
-	public UserDetail getUser(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
-		UUID viewer = (jwt == null) ? null : UUID.fromString(jwt.getSubject());
-		return userQueryService.getUserForViewer(id, viewer);
-	}
-
-	@Operation(
-			summary = "Get a user's summary.",
-			description = "Return a user's summary based on their id.")
-	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Fetched successfully"),
-			@ApiResponse(responseCode = "404", description = "User not found")
-	})
-	@Tag(name = "User", description = "User management API")
-	@GetMapping("/id/{id}/summary")
-	public UserSummary summary(@PathVariable UUID id) {
-		return userQueryService.getSummary(id);
-	}
-
-	@Operation(
-			summary = "Get a user.",
 			description = "Return a user based on their username.")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "Fetched successfully"),
 			@ApiResponse(responseCode = "404", description = "User not found")
 	})
 	@Tag(name = "User", description = "User management API")
-	@GetMapping("/u/{username}")
+	@GetMapping("/{username}")
 	public UserDetail getUser(@AuthenticationPrincipal Jwt jwt, @PathVariable String username) {
 		UUID viewer = (jwt == null) ? null : UUID.fromString(jwt.getSubject());
 		return userQueryService.getUserForViewer(username, viewer);
+	}
+
+	@Operation(
+			summary = "Get a user's summary.",
+			description = "Return a user's summary based on their username.")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Fetched successfully"),
+			@ApiResponse(responseCode = "404", description = "User not found")
+	})
+	@Tag(name = "User", description = "User management API")
+	@GetMapping("/{username}/summary")
+	public UserSummary summary(@PathVariable String username) {
+		return userQueryService.getSummary(username);
 	}
 
 	@Operation(

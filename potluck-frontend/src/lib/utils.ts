@@ -1,9 +1,24 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import {type ClassValue, clsx} from "clsx"
+import {twMerge} from "tailwind-merge"
 import {NextRequest} from "next/server";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export const PAGE_SIZE = 20;
+
+export function toPageIndex(raw?: string | string[]) {
+	const n = Number(Array.isArray(raw) ? raw[0] : raw);
+	return Number.isFinite(n) && n > 0 ? n - 1 : 0;
+}
+
+export function toPageParam(index: number): number {
+	return index + 1;
+}
+
+export function toSort(raw?: string | string[], fallback = "createdAt,DESC") {
+	return (Array.isArray(raw) ? raw[0] : raw) || fallback;
 }
 
 export function pickContentType(req: NextRequest) {
@@ -12,7 +27,15 @@ export function pickContentType(req: NextRequest) {
 
 export const isOnlyDots = (s?: string) => !!s && /^\.+$/.test(s.trim());
 
-// What follows is a series of functions that help calculate what color the text should be
+export function combineLocalDateTime(d: Date | undefined, timeHHMMSS: string | undefined) {
+	if (!d || !timeHHMMSS) return null;
+	const [hh, mm, ss = "0"] = timeHHMMSS.split(":");
+	const dt = new Date(d);
+	dt.setHours(Number(hh), Number(mm), Number(ss), 0);
+	return dt;
+}
+
+// What follows is a series of functions that helpz calculate what color the text should be
 // all to match user banner color preference on the profile page...
 export function hexToRgb(hex: string): [number, number, number] | null {
 	const m = hex.trim().replace(/^#/, "");

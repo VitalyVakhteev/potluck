@@ -1,15 +1,15 @@
 import { getSession } from "@/lib/api/session";
-import { UserDetail, FundraiserPage, FundraiserSummary } from "@/lib/api/schemas";
+import { UserDetail, FundraiserPage } from "@/lib/api/schemas";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import FundraiserList from "@/components/FundraiserList";
-import {Section} from "@/components/FundraiserSection";
+import FundraiserList from "@/components/fundraisers/FundraiserList";
+import {Section} from "@/components/fundraisers/FundraiserSection";
 
 import FollowButton from "@/components/FollowButton";
 import EditProfileDialog from "@/components/EditProfileDialog";
 import {Button} from "@/components/ui/button";
-import {Banner} from "./Banner";
+import {Banner} from "@/components/Banner";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,7 @@ async function fetchUser(username: string) {
 
 async function fetchFavorites(username: string) {
 	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? ""}/next-api/favorites/u/${encodeURIComponent(username)}`, { cache: "no-store" });
+		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? ""}/next-api/favorites/${encodeURIComponent(username)}`, { cache: "no-store" });
 		if (!res.ok) return { content: [], empty: true };
 		const json = await res.json();
 		const parsed = FundraiserPage.safeParse(json);
@@ -36,7 +36,7 @@ async function fetchFavorites(username: string) {
 
 async function fetchFundraisers(username: string) {
 	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? ""}/next-api/fundraisers/u/${encodeURIComponent(username)}`, { cache: "no-store" });
+		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? ""}/next-api/fundraisers/organizer/${encodeURIComponent(username)}`, { cache: "no-store" });
 		if (!res.ok) return { content: [], empty: true };
 		const json = await res.json();
 		const parsed = FundraiserPage.safeParse(json);
@@ -169,12 +169,12 @@ export default async function ProfilePage({ params }: { params: { username: stri
 			</div>
 
 			<div className="flex flex-col">
-				<Section title="Favorites" href={`/fundraisers/user/${user.username}`}>
+				<Section title="Favorites" href={`/fundraisers/favorites/${user.username}`}>
 					<FundraiserList items={favorites.content} initialShow={4} emptyText="No favorites yet." />
 				</Section>
 
 				{isOrganizer && (
-					<Section title="Fundraisers" href={`/favorites/user/${user.username}`}>
+					<Section title="Fundraisers" href={`/fundraisers/user/${user.username}`}>
 						<FundraiserList items={fundraisers.content} initialShow={4} emptyText="No fundraisers yet." />
 					</Section>
 				)}

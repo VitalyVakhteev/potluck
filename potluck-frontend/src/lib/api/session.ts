@@ -27,10 +27,5 @@ export const getSession = cache(async (): Promise<SessionUser | null> => {
 
 	const json = await res.json();
 	const parsed = UserDetail.safeParse(json);
-	// if (!parsed.success) {
-	// 	console.error("getSession: Zod parse failed (check yo fields twin)", parsed.error.issues, json);
-	// 	return null;
-	// }
-	// Keeping this around in case I screw up SpringBoot model -> zod object conversion
 	return parsed.success ? parsed.data : null;
 });

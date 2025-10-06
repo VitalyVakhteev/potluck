@@ -4,16 +4,16 @@ import { toPageIndex, toSort } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export default async function ByUserPage({params, searchParams,}: {
+export default async function FavoritesUserPage({params, searchParams,}: {
 	params: { username: string };
 	searchParams: { page?: string; size?: string; sort?: string };
 }) {
 	const param = await searchParams;
-	const userParam = await params;
+	const userParams = await params;
 	const page = toPageIndex(param.page);
 	const size = Number(param.size ?? 20);
 	const sort = toSort(param.sort);
-	const data = await FundraisersApi.byUser(userParam.username, { page, size, sort });
+	const data = await FundraisersApi.favoritesByUser(userParams.username, { page, size, sort });
 
-	return <FundraiserListPage title={`Fundraisers by ${userParam.username}`} page={data} basePath={`/fundraisers/user/${userParam.username}`} />;
+	return <FundraiserListPage title={`Favorites of ${userParams.username}`} page={data} basePath={`/fundraisers/favorites/${userParams.username}`} />;
 }

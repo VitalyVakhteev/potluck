@@ -117,7 +117,7 @@ export default function Navbar() {
 	}
 
 	return (
-		<header className="w-full">
+		<header className="sticky top-0 w-full">
 			<div className="flex items-center justify-between w-full">
 				<div className="flex items-center gap-4 mt-4 ml-8">
 					<Link

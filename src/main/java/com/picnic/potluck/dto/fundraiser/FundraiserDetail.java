@@ -10,6 +10,7 @@ public record FundraiserDetail(
 		String email,
 		String phoneNumber,
 		boolean active,
+		boolean reward,
 		Double lat,
 		Double lon,
 		Instant startsAt,
