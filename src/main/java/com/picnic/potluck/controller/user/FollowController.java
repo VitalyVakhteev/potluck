@@ -17,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -128,5 +129,22 @@ public class FollowController {
 												 direction = Sort.Direction.DESC
 										 ) Pageable p) {
 		return followService.following(UUID.fromString(jwt.getSubject()), p);
+	}
+
+	@Operation(
+			summary = "Get the following status.",
+			description = "Returns if the target is being followed by the user.",
+			security = {@SecurityRequirement(name = "Bearer Authentication")}
+	)
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Fetched successfully"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized request")
+	})
+	@Tag(name = "Follows", description = "Follows management API")
+	@GetMapping("/{targetId}/status")
+	public Map<String, Boolean> status(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID targetId) {
+		var me = UUID.fromString(jwt.getSubject());
+		boolean following = followService.isFollowing(me, targetId);
+		return Map.of("following", following);
 	}
 }

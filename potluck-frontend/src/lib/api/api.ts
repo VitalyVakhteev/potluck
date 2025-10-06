@@ -1,5 +1,5 @@
 import { z } from "zod";
-import {buildApiUrl, serverCookieHeader} from "@/lib/http";
+import {buildApiUrl, serverCookieHeader} from "@/lib/api/http";
 
 export async function apiGet<T>(url: string, schema: z.ZodSchema<T>, { auth = false }: { auth?: boolean } = {}, init?: RequestInit): Promise<T> {
 	const headers: HeadersInit = {

@@ -28,9 +28,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
-import { SignupSchema } from "@/lib/api/schemas";
+import {SignupSchema} from "@/lib/api/schemas";
 import { normalizePhone } from "@/lib/phone";
 import type { Role } from "@/lib/api/schemas";
+import {isApiError} from "@/lib/api/error";
 
 export default function SignupPage() {
 	const router = useRouter();
@@ -69,7 +70,6 @@ export default function SignupPage() {
 		try {
 			await signup(parsed.data);
 			toast.success("Account created!");
-
 			await login(username, password);
 
 			const meRes = await fetch("/next-api/users/me", { credentials: "include" });
@@ -77,8 +77,30 @@ export default function SignupPage() {
 
 			router.replace("/");
 			router.refresh();
-		} catch {
-			toast.error("Signup failed.");
+		} catch (e) {
+			if (isApiError(e)) {
+				switch (e.code) {
+					case "USERNAME_TAKEN":
+						toast.error("That username is already taken.");
+						break;
+					case "EMAIL_TAKEN":
+						toast.error("That email is already registered.");
+						break;
+					case "PHONE_TAKEN":
+						toast.error("That phone number is already in use.");
+						break;
+					case "VALIDATION_FAILED": {
+						const fields = e.fields ?? {};
+						const first = Object.values(fields)[0];
+						toast.error(Array.isArray(first) ? first[0] : String(first ?? "Invalid input."));
+						break;
+					}
+					default:
+						toast.error(e.message || "Signup failed.");
+				}
+			} else {
+				toast.error("Signup failed.");
+			}
 		}
 	}
 

@@ -1,14 +1,15 @@
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/api/session";
 import { UserDetail, FundraiserPage, FundraiserSummary } from "@/lib/api/schemas";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import FundraiserList from "@/components/FundraiserList";
-import SkeletonRow from "@/components/SkeletonRow";
+import {Section} from "@/components/FundraiserSection";
 
 import FollowButton from "@/components/FollowButton";
 import EditProfileDialog from "@/components/EditProfileDialog";
 import {Button} from "@/components/ui/button";
+import {Banner} from "./Banner";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +66,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
 
 	const isSelf = viewer?.id === user.id;
 	const isOrganizer = user.role === "ORGANIZER";
-	const banner = user.bannerColor || "hsl(var(--primary))";
+	const banner = user.bannerColor ?? 'var(--secondary)';
 
 	const [favorites, fundraisers] = await Promise.all([
 		fetchFavorites(user.username),
@@ -79,93 +80,83 @@ export default async function ProfilePage({ params }: { params: { username: stri
 
 	return (
 		<main className="flex flex-col md:mx-6 mx-2 md:px-6 px-2 py-6">
-			<div
-				className="w-full h-40 md:h-56 rounded-xl bg-muted"
-				// style={{ background: banner }}
-			/>
-
-			<div className="-mt-12 md:-mt-24 flex flex-row gap-4 items-end">
-				<div className="relative">
-					<div className="h-24 w-24 md:h-32 md:w-32 rounded-full ring-4 ring-background overflow-hidden bg-background">
-						<Avatar className="h-full w-full">
-							<AvatarImage src={undefined} alt={user.username} />
-							<AvatarFallback className="text-xl md:text-2xl font-semibold bg-primary dark:bg-zinc-700">
-								{initials}
-							</AvatarFallback>
-						</Avatar>
-					</div>
-				</div>
-
-				<div className="flex-1 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-					<div>
-						<div className="flex items-center gap-3">
-							<h1 className="text-2xl md:text-3xl font-bold">{user.username}</h1>
-							<Badge variant="secondary" className="uppercase bg-primary-foreground">{user.role}</Badge>
-						</div>
-
-						<div className="text-sm text-muted-foreground mt-8 flex gap-4">
-							<span><strong>{user.followersCount ?? 0}</strong> Followers</span>
-							<span><strong>{user.followingCount ?? 0}</strong> Following</span>
-							<span><strong>{user.favoritesCount ?? 0}</strong> Favorites</span>
-						</div>
-					</div>
-
-					<div className="flex flex-col md:items-end gap-1 mr-4 -mb-4">
-						<div className="mb-4">
-							<div className="text-sm">
-								<span className="font-semibold">Total Points:</span> {user.totalPoints ?? 0}
+			<Banner color={banner} className="">
+				<div
+					className="relative px-4 md:px-6 py-4 md:py-6 grid gap-4 grid-cols-[auto,1fr]
+					md:grid-cols-2 items-end min-h-40 md:min-h-56"
+				>
+					<div className="flex flex-row gap-8 items-end">
+						<div className="relative">
+							<div className="h-24 w-24 md:h-32 md:w-32 rounded-full ring-4 ring-background overflow-hidden bg-background">
+								<Avatar className="h-full w-full">
+									<AvatarImage src={undefined} alt={user.username} />
+									<AvatarFallback className="text-xl md:text-2xl font-semibold bg-primary dark:bg-zinc-700">
+										{initials}
+									</AvatarFallback>
+								</Avatar>
 							</div>
-							{isOrganizer && (
-								<div className="text-sm">
-									<span className="font-semibold">Fundraisers:</span> {user.totalFundraisers ?? 0}
-								</div>
-							)}
-							{nameShown && (
-								<div className="text-sm">
-									<span className="font-semibold">Name:</span> {user.firstName} {user.lastName}
-								</div>
-							)}
-							{emailShown && (
-								<div className="text-sm">
-									<span className="font-semibold">Email:</span> {user.email}
-								</div>
-							)}
-							{phoneShown && (
-								<div className="text-sm">
-									<span className="font-semibold">Phone:</span> {user.phoneNumber}
-								</div>
-							)}
-							{!!user.location && (
-								<div className="text-sm">
-									<span className="font-semibold">Location:</span> {user.location}
-								</div>
-							)}
 						</div>
 
-						<div className="mt-4">
-							{isSelf ? (
-								<EditProfileDialog
-									initial={{
-										firstName: user.firstName ?? "",
-										lastName: user.lastName ?? "",
-										bio: user.bio ?? "",
-										location: user.location ?? "",
-										bannerColor: user.bannerColor ?? "",
-										displayName: user.displayName ?? false,
-										displayEmail: user.displayEmail ?? false,
-										displayPhone: user.displayPhone ?? false,
-									}}
-								/>
-							) : (
-								<FollowButton
-									viewerId={viewer?.id ?? null}
-									viewedUserId={user.id}
-									initialState={"unknown"}
-								/>
-							)}
+						<div className="flex flex-col gap-2">
+							<div className="flex items-center gap-3 mb-4">
+								<h1 className="text-2xl md:text-3xl font-bold">
+									{user.username}
+								</h1>
+								<Badge variant="secondary" className="uppercase bg-primary-foreground md:mt-2">
+									{user.role}
+								</Badge>
+							</div>
+
+							<div className="text-sm/6 flex flex-wrap gap-x-4 gap-y-1">
+								<span><strong>{user.followersCount ?? 0}</strong> Followers</span>
+								<span><strong>{user.followingCount ?? 0}</strong> Following</span>
+								<span><strong>{user.favoritesCount ?? 0}</strong> Favorites</span>
+							</div>
 						</div>
 					</div>
+
+					<div className="hidden md:flex flex-col items-end gap-1 text-sm">
+						<div><span className="font-semibold">Total Points:</span> {user.totalPoints ?? 0}</div>
+						{isOrganizer && (
+							<div><span className="font-semibold">Fundraisers:</span> {user.totalFundraisers ?? 0}</div>
+						)}
+						{nameShown && user.firstName && user.lastName && (
+							<div><span className="font-semibold">Name:</span> {user.firstName} {user.lastName}</div>
+						)}
+						{emailShown && (
+							<div><span className="font-semibold">Email:</span> {user.email}</div>
+						)}
+						{phoneShown && (
+							<div><span className="font-semibold">Phone:</span> {user.phoneNumber}</div>
+						)}
+						{!!user.location && (
+							<div><span className="font-semibold">Location:</span> {user.location}</div>
+						)}
+					</div>
 				</div>
+			</Banner>
+
+			<div className="mt-3 flex justify-end">
+				{isSelf ? (
+					<EditProfileDialog
+						initial={{
+							firstName: user.firstName ?? "",
+							lastName: user.lastName ?? "",
+							bio: user.bio ?? "",
+							location: user.location ?? "",
+							bannerColor: user.bannerColor ?? "",
+							displayName: user.displayName ?? false,
+							displayEmail: user.displayEmail ?? false,
+							displayPhone: user.displayPhone ?? false,
+						}}
+					/>
+				) : (
+					<FollowButton
+						viewerId={viewer?.id ?? null}
+						viewedUserId={user.id}
+						initialState={"unknown"}
+					/>
+				)}
 			</div>
 
 			<div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -177,28 +168,16 @@ export default async function ProfilePage({ params }: { params: { username: stri
 				</section>
 			</div>
 
-			<div className="mt-6 flex flex-col">
-				<section className="lg:col-span-2">
-					<h2 className="text-lg font-semibold mb-2">Favorites</h2>
-					{favorites.content?.length ? (
-						<FundraiserList items={favorites.content} initialShow={6} emptyText="No favorites yet." />
-					) : (
-						<p className="text-sm text-muted-foreground">No favorites yet.</p>
-					)}
+			<div className="flex flex-col">
+				<Section title="Favorites" href={`/fundraisers/user/${user.username}`}>
+					<FundraiserList items={favorites.content} initialShow={4} emptyText="No favorites yet." />
+				</Section>
 
-					<div className="mt-6">
-						<h2 className="text-lg font-semibold mb-2">Fundraisers</h2>
-						{isOrganizer ? (
-							fundraisers.content?.length ? (
-								<FundraiserList items={fundraisers.content} initialShow={6} emptyText="No fundraisers yet." />
-							) : (
-								<p className="text-sm text-muted-foreground">No fundraisers yet.</p>
-							)
-						) : (
-							<p className="text-sm text-muted-foreground">No fundraisers yet.</p>
-						)}
-					</div>
-				</section>
+				{isOrganizer && (
+					<Section title="Fundraisers" href={`/favorites/user/${user.username}`}>
+						<FundraiserList items={fundraisers.content} initialShow={4} emptyText="No fundraisers yet." />
+					</Section>
+				)}
 			</div>
 		</main>
 	);

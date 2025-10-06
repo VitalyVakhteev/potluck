@@ -19,7 +19,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { LoginSchema } from "@/lib/api/schemas";
+import {LoginSchema} from "@/lib/api/schemas";
+import {isApiError} from "@/lib/api/error";
 
 export default function LoginPage() {
 	const router = useRouter();
@@ -41,13 +42,19 @@ export default function LoginPage() {
 			await login(username, password);
 			toast.success("Logged in!");
 			const meRes = await fetch("/next-api/users/me", { credentials: "include" });
-			if (meRes.ok) {
-				setUser(await meRes.json());
-			}
+			if (meRes.ok) setUser(await meRes.json());
 			router.replace("/");
 			router.refresh();
-		} catch {
-			toast.error("Login failed.");
+		} catch (e) {
+			if (isApiError(e)) {
+				if (e.code === "INVALID_CREDENTIALS" || e.status === 401) {
+					toast.error("Invalid username or password");
+				} else {
+					toast.error(e.message || "Login failed.");
+				}
+			} else {
+				toast.error("Login failed.");
+			}
 		}
 	}
 

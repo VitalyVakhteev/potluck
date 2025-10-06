@@ -35,6 +35,7 @@ import { useAuth } from "@/app/providers";
 import {logout} from "@/lib/api/auth";
 import {toast} from "sonner";
 import {useRouter} from "next/navigation";
+import EditSettingsDialog from "@/components/EditSettingsDialog";
 
 interface Card {
 	title: string;
@@ -87,6 +88,7 @@ export default function Navbar() {
 	const { resolvedTheme, setTheme } = useTheme()
 	const { user, setUser } = useAuth();
 	const [mounted, setMounted] = React.useState(false)
+	const [settingsOpen, setSettingsOpen] = React.useState(false);
 	React.useEffect(() => setMounted(true), [])
 
 	const flipTheme = () => {
@@ -238,11 +240,12 @@ export default function Navbar() {
 											Profile
 										</DropdownMenuItem>
 									</Link>
-									<Link href="/settings">
-										<DropdownMenuItem>
-											Settings
-										</DropdownMenuItem>
-									</Link>
+									<DropdownMenuItem onSelect={(e) => {
+										e.preventDefault();
+										setSettingsOpen(true);
+									}}>
+										Settings
+									</DropdownMenuItem>
 								</DropdownMenuGroup>
 								<DropdownMenuSeparator />
 								<Link href="https://github.com/VitalyVakhteev/potluck">
@@ -271,6 +274,8 @@ export default function Navbar() {
 					)}
 				</div>
 			</div>
+
+			<EditSettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
 		</header>
 	);
 }

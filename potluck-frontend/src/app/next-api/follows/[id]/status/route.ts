@@ -1,13 +1,12 @@
-import {NextRequest, NextResponse} from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const BASE = process.env.BACKEND_URL ?? "http://localhost:8080";
 
-export async function GET(req: NextRequest, ctx: { params: { username: string } }) {
+export async function GET(req: NextRequest, ctx: { params: { id: string } }) {
 	const inCookie = req.headers.get("cookie") ?? "";
-	const ctx_params = await ctx.params;
-	const { username } = ctx_params;
+	const { id } = ctx.params;
 
-	const upstream = await fetch(`${BASE}/api/users/u/${encodeURIComponent(username)}`, {
+	const upstream = await fetch(`${BASE}/api/users/follows/${encodeURIComponent(id)}/status`, {
 		method: "GET",
 		headers: { cookie: inCookie },
 		cache: "no-store",
@@ -18,6 +17,6 @@ export async function GET(req: NextRequest, ctx: { params: { username: string } 
 
 	return new NextResponse(text, {
 		status: upstream.status,
-		headers: {"content-type": contentType},
+		headers: { "content-type": contentType },
 	});
 }

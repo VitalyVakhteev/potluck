@@ -1,11 +1,9 @@
 package com.picnic.potluck.controller.user;
 
-import com.picnic.potluck.dto.user.ProfileRequest;
-import com.picnic.potluck.dto.user.ProfileResponse;
-import com.picnic.potluck.dto.user.UserDetail;
-import com.picnic.potluck.dto.user.UserSummary;
+import com.picnic.potluck.dto.user.*;
 import com.picnic.potluck.service.user.ProfileService;
 import com.picnic.potluck.service.user.UserQueryService;
+import com.picnic.potluck.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -31,6 +29,7 @@ import java.util.UUID;
 public class UserController {
 	private final UserQueryService userQueryService;
 	private final ProfileService profileService;
+	private final UserService userService;
 
 	@Operation(
 			summary = "Search for users.",
@@ -126,10 +125,31 @@ public class UserController {
 	@PatchMapping("/me")
 	public ProfileResponse modifyProfile(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid ProfileRequest req) {
 		if (jwt == null) {
-			throw new ResponseStatusException(
-					HttpStatus.UNAUTHORIZED);
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 		}
 		UUID userId = UUID.fromString(jwt.getSubject());
 		return profileService.modifyProfile(userId, req);
+	}
+
+	@Operation(
+			summary = "Edit one's credentials.",
+			description = "Edit the credentials of oneself.",
+			security = {@SecurityRequirement(name = "Bearer Authentication")}
+	)
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Patched successfully"),
+			@ApiResponse(responseCode = "400", description = "Illegal argument"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized request"),
+			@ApiResponse(responseCode = "404", description = "User not found (if this triggers, this is bad; auth check failed)")
+	})
+	@Tag(name = "User", description = "User management API")
+	@PostMapping("/me/password")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void changePassword(@AuthenticationPrincipal Jwt jwt, @RequestBody @Valid ChangePasswordRequest req) {
+		if (jwt == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		}
+		UUID userId = UUID.fromString(jwt.getSubject());
+		userService.changePassword(userId, req);
 	}
 }

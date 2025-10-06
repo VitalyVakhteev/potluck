@@ -1,15 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-const BASE = process.env.BACKEND_URL ?? "http://localhost:8080";
+import { proxy } from "../../_proxy";
+import { NextRequest } from "next/server";
 
-export async function POST(_req: NextRequest) {
-	const upstream = await fetch(`${BASE}/api/auth/logout`, {
-		method: "POST",
-		redirect: "manual",
-		cache: "no-store",
-	});
-
-	const res = new NextResponse(null, { status: upstream.status });
-	const setCookie = upstream.headers.get("set-cookie");
-	if (setCookie) res.headers.set("set-cookie", setCookie);
-	return res;
+export async function POST(req: NextRequest) {
+	return proxy(req, "/api/auth/logout", { method: "POST" });
 }

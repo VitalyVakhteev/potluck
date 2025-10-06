@@ -1,5 +1,5 @@
 import { FundraiserPage } from "@/lib/api/schemas";
-import { apiGet } from "@/lib/api";
+import { apiGet } from "@/lib/api/api";
 
 export const FundraisersApi = {
 	favorites: (page = 0, size = 10) =>

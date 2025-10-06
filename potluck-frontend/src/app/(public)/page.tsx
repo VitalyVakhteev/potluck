@@ -3,26 +3,10 @@ import { FundraisersApi } from "@/lib/api/fundraisers";
 import NearbyClient from "@/app/(public)/NearbyClient";
 import FundraiserList from "@/components/FundraiserList";
 import SkeletonRow from "@/components/SkeletonRow";
-import Link from "next/link";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/api/session";
+import {Section} from "@/components/FundraiserSection";
 
 export const dynamic = "force-dynamic";
-
-async function Section({title, href, children,}: {
-	title: string;
-	href: string;
-	children: React.ReactNode;
-}) {
-	return (
-		<section className="mt-8">
-			<div className="flex items-baseline justify-between mb-3">
-				<h2 className="text-xl font-semibold">{title}</h2>
-				<Link href={href} className="text-sm text-primary-foreground dark:text-primary hover:underline">See all →</Link>
-			</div>
-			{children}
-		</section>
-	);
-}
 
 export default async function PublicHome() {
 	const user = await getSession();

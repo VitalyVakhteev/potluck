@@ -1,29 +1,26 @@
-export async function login(username: string, password: string) {
-	const res = await fetch("/next-api/auth/login", {
-		method: "POST",
-		headers: { "content-type": "application/json" },
-		credentials: "include",
-		body: JSON.stringify({ username, password }),
-	});
-	if (!res.ok) throw new Error("Login failed");
-}
+import {jsonFetch} from "@/lib/api/error";
 
-export async function signup(payload: {
-	username: string; email: string; phone: string; password: string; role: "SEEKER" | "ORGANIZER";
-}) {
-	const res = await fetch("/next-api/auth/signup", {
+export async function signup(payload: { username: string; email: string; phone: string; password: string; role: "SEEKER" | "ORGANIZER"; }) {
+	return jsonFetch<{ userId: string; username: string; role: string; }>("/next-api/auth/signup", {
 		method: "POST",
 		headers: { "content-type": "application/json" },
 		credentials: "include",
 		body: JSON.stringify(payload),
 	});
-	if (!res.ok) throw new Error("Signup failed");
+}
+
+export async function login(username: string, password: string) {
+	return jsonFetch<{ userId: string; username: string; role: string; }>("/next-api/auth/login", {
+		method: "POST",
+		headers: { "content-type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify({ username, password }),
+	});
 }
 
 export async function logout() {
-	const res = await fetch("/next-api/auth/logout", {
+	return jsonFetch<void>("/next-api/auth/logout", {
 		method: "POST",
 		credentials: "include",
 	});
-	if (!res.ok) throw new Error("Logout failed");
 }
