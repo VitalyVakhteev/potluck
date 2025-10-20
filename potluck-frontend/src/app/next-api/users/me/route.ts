@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
 	const upstream = await fetch(`${BASE}/api/users/me`, {
 		method: "GET",
-		headers: { cookie: inCookie },
+		headers: {cookie: inCookie},
 		cache: "no-store",
 	});
 
@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest) {
 
 	const upstream = await fetch(`${BASE}/api/users/me`, {
 		method: "PATCH",
-		headers: { cookie: inCookie, "content-type": contentType },
+		headers: {cookie: inCookie, "content-type": contentType},
 		body,
 		cache: "no-store",
 	});

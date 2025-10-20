@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
 	Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
@@ -25,7 +25,7 @@ export default function FollowButton({viewerId, viewedUserId, initialState = "un
 		if (state !== "unknown" || noViewer) return;
 		(async () => {
 			try {
-				const res = await fetch(`/next-api/follows/${viewedUserId}/status`, { credentials: "include" });
+				const res = await fetch(`/next-api/follows/${viewedUserId}/status`, {credentials: "include"});
 				if (!res.ok) throw new Error();
 				const json = await res.json() as { following: boolean };
 				setState(json.following ? "following" : "not-following");

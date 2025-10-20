@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
+import {Moon, Sun} from "lucide-react"
+import {useTheme} from "next-themes"
 
 import {
 	NavigationMenu,
@@ -28,10 +28,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { useAuth } from "@/app/providers";
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Avatar, AvatarFallback} from "@/components/ui/avatar"
+import {useAuth} from "@/app/providers";
 import {logout} from "@/lib/api/auth";
 import {toast} from "sonner";
 import {useRouter} from "next/navigation";
@@ -84,9 +84,9 @@ const components: Card[] = [
 ]
 
 export default function Navbar() {
-	const { refresh } = useRouter();
-	const { resolvedTheme, setTheme } = useTheme()
-	const { user, setUser } = useAuth();
+	const {refresh} = useRouter();
+	const {resolvedTheme, setTheme} = useTheme()
+	const {user, setUser} = useAuth();
 	const [mounted, setMounted] = React.useState(false)
 	const [settingsOpen, setSettingsOpen] = React.useState(false);
 	React.useEffect(() => setMounted(true), [])
@@ -103,7 +103,7 @@ export default function Navbar() {
 	const avatarHover = isDark ? "hover:bg-zinc-600" : "hover:bg-primary-foreground hover:text-primary";
 
 	const canCreate = !!user && (user.role === "ORGANIZER" || user.role === "ADMIN");
-	const selfUrl = `/user/${user?.username}`;
+	const selfUrl = `/users/${user?.username}`;
 
 	const filterCards = (cards: Card[]) => !!user ? cards : cards.filter(c => !RESTRICTED.has(c.title));
 
@@ -113,11 +113,11 @@ export default function Navbar() {
 			setUser(null)
 			refresh();
 		})
-		.catch(() => toast.error("Logout failed."));
+			.catch(() => toast.error("Logout failed."));
 	}
 
 	return (
-		<header className="sticky top-0 w-full">
+		<header className="sticky top-0 w-full bg-white dark:bg-background">
 			<div className="flex items-center justify-between w-full">
 				<div className="flex items-center gap-4 mt-4 ml-8">
 					<Link
@@ -181,8 +181,10 @@ export default function Navbar() {
 							>
 								{mounted && (
 									<>
-										<Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-										<Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+										<Sun
+											className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"/>
+										<Moon
+											className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"/>
 									</>
 								)}
 							</Button>
@@ -216,7 +218,8 @@ export default function Navbar() {
 					{user ? (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Avatar className="mr-4 h-9 w-9 ring-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
+								<Avatar
+									className="mr-4 h-9 w-9 ring-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
 									<AvatarFallback
 										className={mounted ? [
 											"h-full w-full select-none font-semibold",
@@ -247,16 +250,16 @@ export default function Navbar() {
 										Settings
 									</DropdownMenuItem>
 								</DropdownMenuGroup>
-								<DropdownMenuSeparator />
+								<DropdownMenuSeparator/>
 								<Link href="https://github.com/VitalyVakhteev/potluck">
 									<DropdownMenuItem>
 										GitHub
 									</DropdownMenuItem>
 								</Link>
-								<DropdownMenuSeparator />
+								<DropdownMenuSeparator/>
 								<div onClick={triggerLogout}>
 									<DropdownMenuItem>
-											Log out
+										Log out
 									</DropdownMenuItem>
 								</div>
 							</DropdownMenuContent>
@@ -275,7 +278,7 @@ export default function Navbar() {
 				</div>
 			</div>
 
-			<EditSettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+			<EditSettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen}/>
 		</header>
 	);
 }

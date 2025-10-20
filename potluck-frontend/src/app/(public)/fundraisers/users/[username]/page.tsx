@@ -1,6 +1,6 @@
 import FundraiserListPage from "@/components/fundraisers/FundraiserListPage";
-import { FundraisersApi } from "@/lib/api/fundraisers";
-import { toPageIndex, toSort } from "@/lib/utils";
+import {FundraisersApi} from "@/lib/api/fundraisers.server";
+import {toPageIndex, toSort} from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +13,7 @@ export default async function ByUserPage({params, searchParams,}: {
 	const page = toPageIndex(param.page);
 	const size = Number(param.size ?? 20);
 	const sort = toSort(param.sort);
-	const data = await FundraisersApi.byUser(userParam.username, { page, size, sort });
+	const data = await FundraisersApi.byUser(userParam.username, {page, size, sort});
 
-	return <FundraiserListPage title={`Fundraisers by ${userParam.username}`} page={data} basePath={`/fundraisers/user/${userParam.username}`} />;
+	return <FundraiserListPage title={`Fundraisers by ${userParam.username}`} page={data} basePath={`/fundraisers/user/${userParam.username}`}/>;
 }

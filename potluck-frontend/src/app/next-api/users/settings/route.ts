@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
 	const upstream = await fetch(`${BASE}/api/users/me/password`, {
 		method: "POST",
-		headers: { cookie: inCookie, "content-type": contentType },
+		headers: {cookie: inCookie, "content-type": contentType},
 		body,
 		cache: "no-store",
 		redirect: "manual",
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 	const status = upstream.status;
 
 	if (NO_BODY_STATUSES.has(status)) {
-		return new NextResponse(null, { status });
+		return new NextResponse(null, {status});
 	}
 
 	const respType = upstream.headers.get("content-type") ?? "application/json";

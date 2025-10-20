@@ -5,11 +5,11 @@ const BASE = process.env.BACKEND_URL ?? "http://localhost:8080";
 export async function POST(req: NextRequest, ctx: { params: { id: string } }) {
 	const inCookie = req.headers.get("cookie") ?? "";
 	const ctx_params = await ctx.params;
-	const { id } = ctx_params;
+	const {id} = ctx_params;
 
 	const upstream = await fetch(`${BASE}/api/users/follows/${encodeURIComponent(id)}`, {
 		method: "POST",
-		headers: { cookie: inCookie },
+		headers: {cookie: inCookie},
 		cache: "no-store",
 	});
 
@@ -25,11 +25,11 @@ export async function POST(req: NextRequest, ctx: { params: { id: string } }) {
 export async function DELETE(req: NextRequest, ctx: { params: { id: string } }) {
 	const inCookie = req.headers.get("cookie") ?? "";
 	const ctx_params = await ctx.params;
-	const { id } = ctx_params;
+	const {id} = ctx_params;
 
 	const upstream = await fetch(`${BASE}/api/users/follows/${encodeURIComponent(id)}`, {
 		method: "DELETE",
-		headers: { cookie: inCookie },
+		headers: {cookie: inCookie},
 		cache: "no-store",
 	});
 

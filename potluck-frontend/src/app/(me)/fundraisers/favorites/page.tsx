@@ -1,6 +1,6 @@
 import FundraiserListPage from "@/components/fundraisers/FundraiserListPage";
-import { FundraisersApi } from "@/lib/api/fundraisers";
-import { toPageIndex } from "@/lib/utils";
+import {FundraisersApi} from "@/lib/api/fundraisers.server";
+import {toPageIndex} from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +9,6 @@ export default async function FavoritesPage({searchParams,}: {
 }) {
 	const params = await searchParams;
 	const pageIndex = toPageIndex(params.page);
-	const data = await FundraisersApi.favorites({page: pageIndex});
-	return <FundraiserListPage title="Favorites" page={data} basePath="/fundraisers/favorites" />;
+	const data = await FundraisersApi.myFavorites({page: pageIndex});
+	return <FundraiserListPage title="Favorites" page={data} basePath="/fundraisers/favorites"/>;
 }

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 import {toPageIndex, toSort} from "@/lib/utils";
 
 export const CreateFundraiserSchema = z.object({
@@ -18,6 +18,13 @@ export const CreateFundraiserSchema = z.object({
 });
 export type CreateFundraiser = z.infer<typeof CreateFundraiserSchema>;
 
+export type CreateFundraiserResponse = {
+	id: string;
+	title: string;
+	startsAt: string;
+	endsAt: string
+};
+
 export const FundraiserSummary = z.looseObject({
 	id: z.uuid(),
 	title: z.string(),
@@ -26,6 +33,7 @@ export const FundraiserSummary = z.looseObject({
 	lon: z.number(),
 	startsAt: z.coerce.date(),
 	endsAt: z.coerce.date(),
+	organizerUsername: z.string(),
 });
 export type FundraiserSummary = z.infer<typeof FundraiserSummary>;
 
@@ -39,8 +47,8 @@ export const FundraiserDetail = z.looseObject({
 	reward: z.boolean(),
 	lat: z.number(),
 	lon: z.number(),
-	startsAt: z.date(),
-	endsAt: z.date(),
+	startsAt: z.coerce.date(),
+	endsAt: z.coerce.date(),
 	organizerId: z.string(),
 	organizerUsername: z.string(),
 });
@@ -91,7 +99,7 @@ export function parseNearby(searchParams: Record<string, string | string[] | und
 	const parsed = nearbyParamsSchema.safeParse(sp);
 	if (!parsed.success) return null;
 
-	const { page, size, sort, lat, lon, radiusKm } = parsed.data;
+	const {page, size, sort, lat, lon, radiusKm} = parsed.data;
 	return {
 		page: toPageIndex(page),
 		size: Number(size ?? 20),

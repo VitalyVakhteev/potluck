@@ -1,6 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import {useRouter} from "next/navigation";
+import {Button} from "@/components/ui/button";
 
 export default function GeolocateAndPush() {
 	const router = useRouter();
@@ -11,11 +11,12 @@ export default function GeolocateAndPush() {
 			(pos) => {
 				const lat = pos.coords.latitude.toFixed(6);
 				const lon = pos.coords.longitude.toFixed(6);
-				const params = new URLSearchParams({ lat, lon, radiusKm: "20", page: "1" });
+				const params = new URLSearchParams({lat, lon, radiusKm: "20", page: "1"});
 				router.replace(`/fundraisers/near?${params.toString()}`);
 			},
-			() => {},
-			{ enableHighAccuracy: false, timeout: 5000 }
+			() => {
+			},
+			{enableHighAccuracy: false, timeout: 5000}
 		);
 	};
 

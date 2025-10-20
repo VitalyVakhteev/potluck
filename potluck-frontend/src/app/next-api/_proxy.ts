@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
 const BASE = process.env.BACKEND_URL ?? "http://localhost:8080";
 

@@ -1,8 +1,8 @@
 import 'server-only';
-import { cache } from 'react';
-import { headers } from 'next/headers';
-import { UserDetail, type SessionUser } from '@/lib/api/schemas';
-import {serverCookieHeader} from "@/lib/api/http";
+import {cache} from 'react';
+import {headers} from 'next/headers';
+import {UserDetail, type SessionUser} from '@/lib/api/schemas';
+import {serverCookieHeader} from "@/lib/api/http/server";
 
 const getOrigin = async () => {
 	const h = await headers();

@@ -8,7 +8,7 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/components/ui/pagination";
-import { toPageParam } from "@/lib/utils";
+import {toPageParam} from "@/lib/utils";
 
 type Props = {
 	basePath: string;
@@ -17,7 +17,7 @@ type Props = {
 	query?: Record<string, string | number | undefined>;
 };
 
-export default function Paginator({ basePath, currentIndex, totalPages, query }: Props) {
+export default function Paginator({basePath, currentIndex, totalPages, query}: Props) {
 	if (totalPages <= 1) return null;
 
 	const current = toPageParam(currentIndex);
@@ -25,7 +25,7 @@ export default function Paginator({ basePath, currentIndex, totalPages, query }:
 	const next = current < totalPages ? current + 1 : totalPages;
 
 	const makeHref = (page: number) => {
-		const params = new URLSearchParams({ ...(query as object), page: String(page) });
+		const params = new URLSearchParams({...(query as object), page: String(page)});
 		return `${basePath}?${params.toString()}`;
 	};
 
@@ -33,7 +33,7 @@ export default function Paginator({ basePath, currentIndex, totalPages, query }:
 		<Pagination className="mt-6">
 			<PaginationContent>
 				<PaginationItem>
-					<PaginationPrevious href={makeHref(prev)} aria-disabled={current === 1} />
+					<PaginationPrevious href={makeHref(prev)} aria-disabled={current === 1}/>
 				</PaginationItem>
 
 				<PaginationItem>
@@ -59,7 +59,7 @@ export default function Paginator({ basePath, currentIndex, totalPages, query }:
 				)}
 
 				<PaginationItem>
-					<PaginationNext href={makeHref(next)} aria-disabled={current === totalPages} />
+					<PaginationNext href={makeHref(next)} aria-disabled={current === totalPages}/>
 				</PaginationItem>
 			</PaginationContent>
 		</Pagination>

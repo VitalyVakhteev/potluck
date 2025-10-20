@@ -1,6 +1,6 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
-import { getSession } from "@/lib/api/session";
+import {getSession} from "@/lib/api/session";
 import "./globals.css";
 import Providers from "@/app/providers";
 import {Toaster} from "sonner";
@@ -20,17 +20,17 @@ export const metadata: Metadata = {
 	description: "Potluck: The Fundraiser Site",
 };
 
-export default async function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
+export default async function RootLayout({children}: Readonly<{ children: React.ReactNode; }>) {
 	const user = await getSession();
 
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<Providers initialUser={user}>
-					{children}
-					<Toaster />
-				</Providers>
-			</body>
+		<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+		<Providers initialUser={user}>
+			{children}
+			<Toaster/>
+		</Providers>
+		</body>
 		</html>
 	);
 }

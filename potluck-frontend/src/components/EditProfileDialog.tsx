@@ -53,12 +53,12 @@ function formatFieldErrors(fields: Record<string, string | string[]>) {
 	});
 }
 
-export default function EditProfileDialog({ initial }: { initial: ProfileForm }) {
+export default function EditProfileDialog({initial}: { initial: ProfileForm }) {
 	const [open, setOpen] = React.useState(false);
 	const [form, setForm] = React.useState<ProfileForm>(initial);
 	const [busy, setBusy] = React.useState(false);
 
-	const set = <K extends keyof ProfileForm>(k: K, v: ProfileForm[K]) => setForm((f) => ({ ...f, [k]: v }));
+	const set = <K extends keyof ProfileForm>(k: K, v: ProfileForm[K]) => setForm((f) => ({...f, [k]: v}));
 
 	const onSave = async () => {
 		setBusy(true);
@@ -122,41 +122,45 @@ export default function EditProfileDialog({ initial }: { initial: ProfileForm })
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div className="grid grid-cols-1 gap-2">
 						<Label>First Name</Label>
-						<Input value={form.firstName} onChange={e => set("firstName", e.target.value)} placeholder={form.displayName ? "First name" : "..."} disabled={!form.displayName} />
+						<Input value={form.firstName} onChange={e => set("firstName", e.target.value)}
+							   placeholder={form.displayName ? "First name" : "..."} disabled={!form.displayName}/>
 					</div>
 					<div className="grid grid-cols-1 gap-2">
 						<Label>Last Name</Label>
-						<Input value={form.lastName} onChange={e => set("lastName", e.target.value)} placeholder={form.displayName ? "Last name" : "..."} disabled={!form.displayName} />
+						<Input value={form.lastName} onChange={e => set("lastName", e.target.value)}
+							   placeholder={form.displayName ? "Last name" : "..."} disabled={!form.displayName}/>
 					</div>
 					<div className="grid grid-cols-1 gap-2 md:col-span-2">
 						<Label>Bio</Label>
-						<Textarea rows={3} value={form.bio} onChange={e => set("bio", e.target.value)} />
+						<Textarea rows={3} value={form.bio} onChange={e => set("bio", e.target.value)}/>
 					</div>
 					<div className="grid grid-cols-1 gap-2">
 						<Label>Location</Label>
-						<Input value={form.location} onChange={e => set("location", e.target.value)} />
+						<Input value={form.location} onChange={e => set("location", e.target.value)}/>
 					</div>
 					<div className="grid grid-cols-1 gap-2">
 						<Label>Banner Color (hex)</Label>
-						<Input placeholder="#0ea5e9" value={form.bannerColor} onChange={e => set("bannerColor", e.target.value)} />
+						<Input placeholder="#0ea5e9" value={form.bannerColor}
+							   onChange={e => set("bannerColor", e.target.value)}/>
 					</div>
 					<div className="flex items-center gap-2">
-						<Switch checked={form.displayName} onCheckedChange={(v) => set("displayName", v)} />
+						<Switch checked={form.displayName} onCheckedChange={(v) => set("displayName", v)}/>
 						<Label>Display Name</Label>
 					</div>
 					<div className="flex items-center gap-2">
-						<Switch checked={form.displayEmail} onCheckedChange={(v) => set("displayEmail", v)} />
+						<Switch checked={form.displayEmail} onCheckedChange={(v) => set("displayEmail", v)}/>
 						<Label>Display Email</Label>
 					</div>
 					<div className="flex items-center gap-2">
-						<Switch checked={form.displayPhone} onCheckedChange={(v) => set("displayPhone", v)} />
+						<Switch checked={form.displayPhone} onCheckedChange={(v) => set("displayPhone", v)}/>
 						<Label>Display Phone</Label>
 					</div>
 				</div>
 
 				<DialogFooter>
 					<Button variant="secondary" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
-					<Button variant="outline" onClick={onSave} disabled={busy} className="bg-primary hover:bg-primary-foreground">
+					<Button variant="outline" onClick={onSave} disabled={busy}
+							className="bg-primary hover:bg-primary-foreground">
 						{busy ? "Saving..." : "Save"}
 					</Button>
 				</DialogFooter>

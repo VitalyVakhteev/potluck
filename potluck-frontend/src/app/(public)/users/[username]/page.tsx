@@ -1,7 +1,7 @@
-import { getSession } from "@/lib/api/session";
-import { UserDetail, FundraiserPage } from "@/lib/api/schemas";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {getSession} from "@/lib/api/session";
+import {UserDetail} from "@/lib/api/schemas";
+import {Badge} from "@/components/ui/badge";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 import FundraiserList from "@/components/fundraisers/FundraiserList";
 import {Section} from "@/components/fundraisers/FundraiserSection";
@@ -11,6 +11,7 @@ import EditProfileDialog from "@/components/EditProfileDialog";
 import {Button} from "@/components/ui/button";
 import {Banner} from "@/components/Banner";
 import Link from "next/link";
+import {FundraisersApi} from "@/lib/api/fundraisers.server";
 
 export const dynamic = "force-dynamic";
 
@@ -24,27 +25,7 @@ async function fetchUser(username: string) {
 	return parsed.success ? parsed.data : null;
 }
 
-async function fetchFavorites(username: string) {
-	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? ""}/next-api/favorites/${encodeURIComponent(username)}`, { cache: "no-store" });
-		if (!res.ok) return { content: [], empty: true };
-		const json = await res.json();
-		const parsed = FundraiserPage.safeParse(json);
-		return parsed.success ? parsed.data : { content: [], empty: true };
-	} catch { return { content: [], empty: true }; }
-}
-
-async function fetchFundraisers(username: string) {
-	try {
-		const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL ?? ""}/next-api/fundraisers/organizer/${encodeURIComponent(username)}`, { cache: "no-store" });
-		if (!res.ok) return { content: [], empty: true };
-		const json = await res.json();
-		const parsed = FundraiserPage.safeParse(json);
-		return parsed.success ? parsed.data : { content: [], empty: true };
-	} catch { return { content: [], empty: true }; }
-}
-
-export default async function ProfilePage({ params }: { params: { username: string } }) {
+export default async function ProfilePage({params}: { params: { username: string } }) {
 	const viewer = await getSession();
 	const param = await params;
 	const username = param.username;
@@ -69,8 +50,8 @@ export default async function ProfilePage({ params }: { params: { username: stri
 	const banner = user.bannerColor ?? 'var(--secondary)';
 
 	const [favorites, fundraisers] = await Promise.all([
-		fetchFavorites(user.username),
-		isOrganizer ? fetchFundraisers(user.username) : Promise.resolve({ content: [], empty: true }),
+		FundraisersApi.favorites(user.username),
+		isOrganizer ? FundraisersApi.byUser(user.username) : Promise.resolve({content: [], empty: true}),
 	]);
 
 	const initials = user.username?.[0]?.toUpperCase() ?? "U";
@@ -87,10 +68,12 @@ export default async function ProfilePage({ params }: { params: { username: stri
 				>
 					<div className="flex flex-row gap-8 items-end">
 						<div className="relative">
-							<div className="h-24 w-24 md:h-32 md:w-32 rounded-full ring-4 ring-background overflow-hidden bg-background">
+							<div
+								className="h-24 w-24 md:h-32 md:w-32 rounded-full ring-4 ring-background overflow-hidden bg-background">
 								<Avatar className="h-full w-full">
-									<AvatarImage src={undefined} alt={user.username} />
-									<AvatarFallback className="text-xl md:text-2xl font-semibold bg-primary dark:bg-zinc-700">
+									<AvatarImage src={undefined} alt={user.username}/>
+									<AvatarFallback
+										className="text-xl md:text-2xl font-semibold bg-primary dark:bg-zinc-700">
 										{initials}
 									</AvatarFallback>
 								</Avatar>
@@ -170,12 +153,12 @@ export default async function ProfilePage({ params }: { params: { username: stri
 
 			<div className="flex flex-col">
 				<Section title="Favorites" href={`/fundraisers/favorites/${user.username}`}>
-					<FundraiserList items={favorites.content} initialShow={4} emptyText="No favorites yet." />
+					<FundraiserList items={favorites.content} initialShow={4} emptyText="No favorites yet."/>
 				</Section>
 
 				{isOrganizer && (
 					<Section title="Fundraisers" href={`/fundraisers/user/${user.username}`}>
-						<FundraiserList items={fundraisers.content} initialShow={4} emptyText="No fundraisers yet." />
+						<FundraiserList items={fundraisers.content} initialShow={4} emptyText="No fundraisers yet."/>
 					</Section>
 				)}
 			</div>

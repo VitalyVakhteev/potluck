@@ -74,7 +74,9 @@ public class FundraiserQueryService {
 		return new FundraiserSummary(
 				f.getId(), f.getTitle(), f.isActive(),
 				f.getLat(), f.getLon(),
-				f.getStarts_at(), f.getEnds_at());
+				f.getStarts_at(), f.getEnds_at(),
+				f.getOrganizer().getUsername()
+		);
 	}
 
 	private FundraiserDetail toDetail(Fundraiser f) {

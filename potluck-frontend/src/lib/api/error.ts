@@ -41,7 +41,10 @@ export async function jsonFetch<T>(input: RequestInfo, init?: RequestInit): Prom
 	}
 
 	let body: { code?: string; error?: string; status?: number; fields?: Record<string, unknown> } = {};
-	try { body = await res.json(); } catch {}
+	try {
+		body = await res.json();
+	} catch {
+	}
 
 	throw new ApiError(
 		body?.code ?? "UNKNOWN",

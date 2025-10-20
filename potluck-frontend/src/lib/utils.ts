@@ -3,7 +3,7 @@ import {twMerge} from "tailwind-merge"
 import {NextRequest} from "next/server";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+	return twMerge(clsx(inputs))
 }
 
 export const PAGE_SIZE = 20;
@@ -36,7 +36,7 @@ export function combineLocalDateTime(d: Date | undefined, timeHHMMSS: string | u
 }
 
 // What follows is a series of functions that helpz calculate what color the text should be
-// all to match user banner color preference on the profile page...
+// all to match users banner color preference on the profile page...
 export function hexToRgb(hex: string): [number, number, number] | null {
 	const m = hex.trim().replace(/^#/, "");
 	if (m.length === 3) {

@@ -1,12 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/providers";
-import { signup, login } from "@/lib/api/auth";
-import { toast } from "sonner";
+import {useRouter} from "next/navigation";
+import {useAuth} from "@/app/providers";
+import {signup, login} from "@/lib/api/auth";
+import {toast} from "sonner";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -24,18 +24,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
 import Link from "next/link";
 
 import {SignupSchema} from "@/lib/api/schemas";
-import { normalizePhone } from "@/lib/phone";
-import type { Role } from "@/lib/api/schemas";
+import {normalizePhone} from "@/lib/phone";
+import type {Role} from "@/lib/api/schemas";
 import {isApiError} from "@/lib/api/error";
 
 export default function SignupPage() {
 	const router = useRouter();
-	const { setUser } = useAuth();
+	const {setUser} = useAuth();
 
 	const [role, setRole] = React.useState<Role | "">("");
 
@@ -72,7 +72,7 @@ export default function SignupPage() {
 			toast.success("Account created!");
 			await login(username, password);
 
-			const meRes = await fetch("/next-api/users/me", { credentials: "include" });
+			const meRes = await fetch("/next-api/users/me", {credentials: "include"});
 			if (meRes.ok) setUser(await meRes.json());
 
 			router.replace("/");
@@ -119,7 +119,7 @@ export default function SignupPage() {
 							</div>
 							<Select value={role} onValueChange={(v: Role) => setRole(v)}>
 								<SelectTrigger aria-label="Account Type">
-									<SelectValue placeholder="Select your account type" />
+									<SelectValue placeholder="Select your account type"/>
 								</SelectTrigger>
 								<SelectContent>
 									<SelectGroup>
@@ -129,7 +129,7 @@ export default function SignupPage() {
 									</SelectGroup>
 								</SelectContent>
 							</Select>
-							<input type="hidden" name="role" value={role} />
+							<input type="hidden" name="role" value={role}/>
 						</div>
 
 						<div className="grid gap-2">
@@ -186,7 +186,8 @@ export default function SignupPage() {
 							/>
 						</div>
 
-						<Button type="submit" variant="outline" className="w-full bg-primary dark:bg-primary-foreground">
+						<Button type="submit" variant="outline"
+								className="w-full bg-primary dark:bg-primary-foreground">
 							<p className="text-foreground">Sign Up</p>
 						</Button>
 					</div>

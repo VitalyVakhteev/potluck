@@ -1,12 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/providers";
-import { login } from "@/lib/api/auth";
-import { toast } from "sonner";
+import {useRouter} from "next/navigation";
+import {useAuth} from "@/app/providers";
+import {login} from "@/lib/api/auth";
+import {toast} from "sonner";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
 	Card,
 	CardAction,
@@ -16,15 +16,15 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
 import Link from "next/link";
 import {LoginSchema} from "@/lib/api/schemas";
 import {isApiError} from "@/lib/api/error";
 
 export default function LoginPage() {
 	const router = useRouter();
-	const { setUser } = useAuth();
+	const {setUser} = useAuth();
 
 	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
@@ -32,7 +32,7 @@ export default function LoginPage() {
 		const username = String(fd.get("username") ?? "");
 		const password = String(fd.get("password") ?? "");
 
-		const parsed = LoginSchema.safeParse({ username, password });
+		const parsed = LoginSchema.safeParse({username, password});
 		if (!parsed.success) {
 			toast.error(parsed.error.issues[0]?.message ?? "Invalid input.");
 			return;
@@ -41,7 +41,7 @@ export default function LoginPage() {
 		try {
 			await login(username, password);
 			toast.success("Logged in!");
-			const meRes = await fetch("/next-api/users/me", { credentials: "include" });
+			const meRes = await fetch("/next-api/users/me", {credentials: "include"});
 			if (meRes.ok) setUser(await meRes.json());
 			router.replace("/");
 			router.refresh();
@@ -101,7 +101,8 @@ export default function LoginPage() {
 								required
 							/>
 						</div>
-						<Button type="submit" variant="outline" className="w-full bg-primary dark:bg-primary-foreground">
+						<Button type="submit" variant="outline"
+								className="w-full bg-primary dark:bg-primary-foreground">
 							<p className="text-foreground">Login</p>
 						</Button>
 					</div>

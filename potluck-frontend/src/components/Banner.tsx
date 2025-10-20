@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { pickTextOnHex, pickTextOnRgb } from "@/lib/utils";
+import {pickTextOnHex, pickTextOnRgb} from "@/lib/utils";
 
 function parseComputedRgb(input: string): [number, number, number] | null {
 	// the regex accepts "rgb(12, 34, 56)" or "rgba(12,34,56,1)"
@@ -12,7 +12,7 @@ function parseComputedRgb(input: string): [number, number, number] | null {
 
 function resolveToRgb(color: string): [number, number, number] | null {
 	if (color.startsWith("#")) {
-		const hexRgb = pickTextOnHex(color) === "#ffffff" ? [255,255,255] : [0,0,0];
+		const hexRgb = pickTextOnHex(color) === "#ffffff" ? [255, 255, 255] : [0, 0, 0];
 	}
 	const el = document.createElement("div");
 	el.style.display = "none";
@@ -52,7 +52,7 @@ export function Banner({color, className, children,}: {
 
 	return (
 		<section className={["w-full rounded-xl overflow-hidden", className].filter(Boolean).join(" ")}
-				 style={{ backgroundColor: color, color: textColor }}>
+				 style={{backgroundColor: color, color: textColor}}>
 			{children}
 		</section>
 	);

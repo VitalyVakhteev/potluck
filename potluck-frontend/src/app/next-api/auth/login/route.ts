@@ -1,6 +1,6 @@
-import { proxy } from "../../_proxy";
-import { NextRequest } from "next/server";
+import {proxy} from "../../_proxy";
+import {NextRequest} from "next/server";
 
 export async function POST(req: NextRequest) {
-	return proxy(req, "/api/auth/login", { method: "POST" });
+	return proxy(req, "/api/auth/login", {method: "POST"});
 }

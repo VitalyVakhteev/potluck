@@ -22,14 +22,17 @@ type SettingsForm = {
 	newPassword: string;
 };
 
-export default function EditSettingsDialog({open, onOpenChange,}: { open: boolean; onOpenChange: (v: boolean) => void }) {
+export default function EditSettingsDialog({open, onOpenChange,}: {
+	open: boolean;
+	onOpenChange: (v: boolean) => void
+}) {
 	const [form, setForm] = React.useState<SettingsForm>({
 		currentPassword: "",
 		newPassword: "",
 	});
 	const [busy, setBusy] = React.useState(false);
 
-	const set = <K extends keyof SettingsForm>(k: K, v: SettingsForm[K]) => setForm((f) => ({ ...f, [k]: v }));
+	const set = <K extends keyof SettingsForm>(k: K, v: SettingsForm[K]) => setForm((f) => ({...f, [k]: v}));
 
 	const onSave = async () => {
 		setBusy(true);
@@ -103,7 +106,8 @@ export default function EditSettingsDialog({open, onOpenChange,}: { open: boolea
 
 				<DialogFooter>
 					<Button variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>Cancel</Button>
-					<Button variant="outline" onClick={onSave} disabled={busy} className="bg-primary hover:bg-primary-foreground">
+					<Button variant="outline" onClick={onSave} disabled={busy}
+							className="bg-primary hover:bg-primary-foreground">
 						{busy ? "Saving..." : "Save"}
 					</Button>
 				</DialogFooter>

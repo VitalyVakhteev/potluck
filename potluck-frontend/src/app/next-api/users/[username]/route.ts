@@ -5,11 +5,11 @@ const BASE = process.env.BACKEND_URL ?? "http://localhost:8080";
 export async function GET(req: NextRequest, ctx: { params: { username: string } }) {
 	const inCookie = req.headers.get("cookie") ?? "";
 	const ctx_params = await ctx.params;
-	const { username } = ctx_params;
+	const {username} = ctx_params;
 
 	const upstream = await fetch(`${BASE}/api/users/${encodeURIComponent(username)}`, {
 		method: "GET",
-		headers: { cookie: inCookie },
+		headers: {cookie: inCookie},
 		cache: "no-store",
 	});
 
