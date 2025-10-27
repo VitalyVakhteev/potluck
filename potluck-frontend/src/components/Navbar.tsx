@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import {Moon, Sun} from "lucide-react"
+import {DollarSign, Moon, Search, Sun, UserIcon} from "lucide-react"
 import {useTheme} from "next-themes"
 
 import {
@@ -36,6 +36,8 @@ import {logout} from "@/lib/api/auth";
 import {toast} from "sonner";
 import {useRouter} from "next/navigation";
 import EditSettingsDialog from "@/components/EditSettingsDialog";
+import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/input-group";
+import {useEffect, useRef, useState} from "react";
 
 interface Card {
 	title: string;
@@ -82,6 +84,90 @@ const components: Card[] = [
 			"Recently created fundraisers.",
 	},
 ]
+
+function SearchChooser() {
+	const router = useRouter();
+	const [q, setQ] = useState("");
+	const [open, setOpen] = useState(false);
+	const boxRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		const onDocClick = (e: MouseEvent) => {
+			if (!boxRef.current) return;
+			if (!boxRef.current.contains(e.target as Node)) setOpen(false);
+		};
+		document.addEventListener("mousedown", onDocClick);
+		return () => document.removeEventListener("mousedown", onDocClick);
+	}, []);
+
+	const gotoFundraisers = () => {
+		if (!q.trim()) return;
+		router.push(`/fundraisers/search?q=${encodeURIComponent(q.trim())}&page=0&size=20`);
+		setOpen(false);
+	};
+
+	const gotoUsers = () => {
+		if (!q.trim()) return;
+		router.push(`/users/search?q=${encodeURIComponent(q.trim())}&page=0&size=20`);
+		setOpen(false);
+	};
+
+	const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+		if (e.key === "Enter") {
+			gotoFundraisers();
+		} else if (e.key === "ArrowDown") {
+			setOpen(true);
+		}
+	};
+
+	return (
+		<div ref={boxRef} className="relative mr-4">
+			<InputGroup>
+				<InputGroupInput
+					value={q}
+					onChange={(e) => {
+						setQ(e.target.value);
+						setOpen(e.target.value.trim().length > 0);
+					}}
+					onFocus={() => setOpen(q.trim().length > 0)}
+					onKeyDown={onKeyDown}
+					placeholder="Search…"
+					aria-label="Search"
+				/>
+				<InputGroupAddon>
+					<Search/>
+				</InputGroupAddon>
+			</InputGroup>
+
+			{open && (
+				<div
+					className="absolute left-0 right-0 mt-1 z-50 rounded-xl border bg-background shadow-sm p-2 space-y-2"
+					role="menu"
+					aria-label="Search destinations"
+				>
+					<Button
+						variant="ghost"
+						className="w-full justify-start"
+						onClick={gotoFundraisers}
+						role="menuitem"
+					>
+						<DollarSign className="h-4 w-4 mr-2"/>
+						Fundraisers: <span className="ml-1 font-medium truncate">{q}</span>
+					</Button>
+					<Button
+						variant="ghost"
+						className="w-full justify-start"
+						onClick={gotoUsers}
+						role="menuitem"
+					>
+						<UserIcon className="h-4 w-4 mr-2"/>
+						Users: <span className="ml-1 font-medium truncate">{q}</span>
+					</Button>
+				</div>
+			)}
+		</div>
+	);
+}
 
 export default function Navbar() {
 	const {refresh} = useRouter();
@@ -165,9 +251,7 @@ export default function Navbar() {
 				</div>
 
 				<div className="flex flex-row mr-4 mt-4">
-					<Input className="mr-4">
-
-					</Input>
+					<SearchChooser/>
 
 					<Tooltip>
 						<TooltipTrigger asChild>

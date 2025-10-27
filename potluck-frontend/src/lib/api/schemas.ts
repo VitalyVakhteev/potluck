@@ -125,6 +125,15 @@ export const SignupSchema = z.object({
 	role: z.enum(["SEEKER", "ORGANIZER"]),
 });
 
+export const UserSummary = z.looseObject({
+	id: z.uuid(),
+	username: z.string(),
+	totalPoints: z.number(),
+	totalFundraisers: z.number(),
+});
+export type UserSummary = z.infer<typeof UserSummary>;
+export const UserPage = Page(UserSummary);
+
 export const UserDetail = z.looseObject({
 	id: z.uuid(),
 	role: z.string(),

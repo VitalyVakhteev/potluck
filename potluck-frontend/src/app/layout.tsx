@@ -25,7 +25,7 @@ export default async function RootLayout({children}: Readonly<{ children: React.
 
 	return (
 		<html lang="en" suppressHydrationWarning>
-		<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+		<body>
 		<Providers initialUser={user}>
 			{children}
 			<Toaster/>

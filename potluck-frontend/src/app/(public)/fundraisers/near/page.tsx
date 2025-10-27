@@ -1,5 +1,5 @@
 import FundraiserListPage from "@/components/fundraisers/FundraiserListPage";
-import { near } from "@/lib/near";
+import {near} from "@/lib/near";
 import EmptyState from "@/components/fundraisers/EmptyState";
 
 const toPageIndex = (v?: string) => Math.max(0, Number(v ?? 0) | 0);
@@ -28,7 +28,7 @@ export default async function NearListPage({
 		);
 	}
 
-	const data = await near({ lat, lon, radiusKm }, { page, size });
+	const data = await near({lat, lon, radiusKm}, {page, size});
 
 	const basePath =
 		`/fundraisers/near?lat=${encodeURIComponent(lat)}` +

@@ -37,6 +37,9 @@ export const FundraisersApi = {
 	favoritesByUser: (username: string, {page = 0, size = PAGE_SIZE, sort = "createdAt,DESC"}: ListOpts = {}) =>
 		apiGetServer(`/api/users/favorites/${encodeURIComponent(username)}?page=${page}&size=${size}&sort=${encodeURIComponent(sort)}`, FundraiserPage),
 
+	search: (q: string, {page = 0, size = PAGE_SIZE, sort = "createdAt,DESC"}: ListOpts = {}) =>
+		apiGetServer(`/api/fundraisers/search?q=${encodeURIComponent(q)}&page=${page}&size=${size}&sort=${encodeURIComponent(sort)}`, FundraiserPage),
+
 	near: ({page = 0, size = PAGE_SIZE, sort = "createdAt,DESC", lat, lon, radiusKm}: ListOpts & {
 		lat: number;
 		lon: number;

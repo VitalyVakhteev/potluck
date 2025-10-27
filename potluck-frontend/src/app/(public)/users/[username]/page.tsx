@@ -82,7 +82,7 @@ export default async function ProfilePage({params}: { params: { username: string
 
 						<div className="flex flex-col gap-2">
 							<div className="flex items-center gap-3 mb-4">
-								<h1 className="text-2xl md:text-3xl font-bold">
+								<h1 className="text-2xl md:text-3xl font-bold dark:text-foreground">
 									{user.username}
 								</h1>
 								<Badge variant="secondary" className="uppercase bg-primary-foreground md:mt-2">
@@ -90,7 +90,7 @@ export default async function ProfilePage({params}: { params: { username: string
 								</Badge>
 							</div>
 
-							<div className="text-sm/6 flex flex-wrap gap-x-4 gap-y-1">
+							<div className="text-sm/6 flex flex-wrap gap-x-4 gap-y-1 dark:text-foreground">
 								<span><strong>{user.followersCount ?? 0}</strong> Followers</span>
 								<span><strong>{user.followingCount ?? 0}</strong> Following</span>
 								<Link href={`/fundraisers/favorites/${user.username}`}>
@@ -100,7 +100,7 @@ export default async function ProfilePage({params}: { params: { username: string
 						</div>
 					</div>
 
-					<div className="hidden md:flex flex-col items-end gap-1 text-sm">
+					<div className="hidden md:flex flex-col items-end gap-1 text-sm dark:text-foreground">
 						<div><span className="font-semibold">Total Points:</span> {user.totalPoints ?? 0}</div>
 						{isOrganizer && (
 							<div><span className="font-semibold">Fundraisers:</span> {user.totalFundraisers ?? 0}</div>
