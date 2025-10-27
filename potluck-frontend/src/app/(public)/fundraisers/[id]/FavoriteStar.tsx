@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Star } from "lucide-react";
-import { favoriteFundraiser, unfavoriteFundraiser } from "@/lib/api/favorites.client";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import {Star} from "lucide-react";
+import {favoriteFundraiser, unfavoriteFundraiser} from "@/lib/api/favorites.client";
+import {Button} from "@/components/ui/button";
+import {Tooltip, TooltipTrigger, TooltipContent, TooltipProvider} from "@/components/ui/tooltip";
+import {cn} from "@/lib/utils";
 
 type Props = {
 	fundraiserId: string;
@@ -13,7 +13,7 @@ type Props = {
 	disabled?: boolean;
 };
 
-export default function FavoriteStar({ fundraiserId, initial = false, disabled = false }: Props) {
+export default function FavoriteStar({fundraiserId, initial = false, disabled = false}: Props) {
 	const [fav, setFav] = React.useState(initial);
 	const [pending, setPending] = React.useState(false);
 
@@ -46,7 +46,7 @@ export default function FavoriteStar({ fundraiserId, initial = false, disabled =
 						onClick={toggle}
 						disabled={disabled || pending}
 					>
-						<Star className={cn("h-5 w-5", fav ? "fill-current" : "fill-transparent")} />
+						<Star className={cn("h-5 w-5", fav ? "fill-current" : "fill-transparent")}/>
 					</Button>
 				</TooltipTrigger>
 				<TooltipContent side="left" className="text-sm">

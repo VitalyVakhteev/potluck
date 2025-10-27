@@ -77,7 +77,7 @@ const components: Card[] = [
 	},
 	{
 		title: "Recently Created",
-		href: "/fundraisers/recent",
+		href: "/fundraisers",
 		description:
 			"Recently created fundraisers.",
 	},
@@ -155,11 +155,11 @@ export default function Navbar() {
 									</ul>
 								</NavigationMenuContent>
 							</NavigationMenuItem>
-							<NavigationMenuItem>
-								<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-									<Link href="/leaderboard">Leaderboard</Link>
-								</NavigationMenuLink>
-							</NavigationMenuItem>
+							{/*<NavigationMenuItem>*/}
+							{/*	<NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>*/}
+							{/*		<Link href="/leaderboard">Leaderboard</Link>*/}
+							{/*	</NavigationMenuLink>*/}
+							{/*</NavigationMenuItem>*/}
 						</NavigationMenuList>
 					</NavigationMenu>
 				</div>

@@ -41,12 +41,12 @@ export async function PATCH(req: NextRequest) {
 
 	const upstream = await fetch(`${BASE}/api/fundraisers`, {
 		method: "PATCH",
-		headers: { "content-type": "application/json", cookie },
+		headers: {"content-type": "application/json", cookie},
 		body,
 		cache: "no-store",
 	});
 
 	const ctype = upstream.headers.get("content-type") ?? "application/json";
 	const text = await upstream.text();
-	return new NextResponse(text, { status: upstream.status, headers: { "content-type": ctype } });
+	return new NextResponse(text, {status: upstream.status, headers: {"content-type": ctype}});
 }

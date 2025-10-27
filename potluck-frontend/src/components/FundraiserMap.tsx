@@ -1,6 +1,6 @@
 "use client";
 
-export default function FundraiserMap({ lat, lon }: { lat: number; lon: number }) {
+export default function FundraiserMap({lat, lon}: { lat: number; lon: number }) {
 	const url = new URL("https://www.google.com/maps");
 	url.pathname = "/embed/v1/view"; // Embed API
 	const q = `${lat},${lon}`;
@@ -14,5 +14,5 @@ export default function FundraiserMap({ lat, lon }: { lat: number; lon: number }
 			referrerPolicy="no-referrer-when-downgrade"
 			className="w-full aspect-[16/9]"
 		/>
-);
+	);
 }

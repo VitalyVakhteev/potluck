@@ -1,17 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { patchFundraiser } from "@/lib/api/fundraisers.client";
-import { combineLocalDateTime } from "@/lib/utils";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {toast} from "sonner";
+import {Button} from "@/components/ui/button";
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter} from "@/components/ui/dialog";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Switch} from "@/components/ui/switch";
+import {patchFundraiser} from "@/lib/api/fundraisers.client";
+import {combineLocalDateTime} from "@/lib/utils";
 
 const PatchFundraiserSchema = z.object({
 	id: z.uuid(),
@@ -48,7 +48,7 @@ export default function EditFundraiserDialog({initial}: {
 	const {
 		register,
 		handleSubmit,
-		formState: { isSubmitting },
+		formState: {isSubmitting},
 	} = useForm<PatchForm>({
 		resolver: zodResolver(PatchFundraiserSchema),
 		defaultValues: {
@@ -137,11 +137,11 @@ export default function EditFundraiserDialog({initial}: {
 					<div className="grid grid-cols-2 gap-3">
 						<div className="grid gap-2">
 							<Label htmlFor="lat">Latitude</Label>
-							<Input id="lat" type="number" step="any" {...register("lat", { valueAsNumber: true })} />
+							<Input id="lat" type="number" step="any" {...register("lat", {valueAsNumber: true})} />
 						</div>
 						<div className="grid gap-2">
 							<Label htmlFor="lon">Longitude</Label>
-							<Input id="lon" type="number" step="any" {...register("lon", { valueAsNumber: true })} />
+							<Input id="lon" type="number" step="any" {...register("lon", {valueAsNumber: true})} />
 						</div>
 					</div>
 

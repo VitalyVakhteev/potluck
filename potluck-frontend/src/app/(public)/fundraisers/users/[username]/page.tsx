@@ -15,5 +15,6 @@ export default async function ByUserPage({params, searchParams,}: {
 	const sort = toSort(param.sort);
 	const data = await FundraisersApi.byUser(userParam.username, {page, size, sort});
 
-	return <FundraiserListPage title={`Fundraisers by ${userParam.username}`} page={data} basePath={`/fundraisers/user/${userParam.username}`}/>;
+	return <FundraiserListPage title={`Fundraisers by ${userParam.username}`} page={data}
+							   basePath={`/fundraisers/user/${userParam.username}`}/>;
 }

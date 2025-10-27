@@ -1,5 +1,5 @@
-import { jsonFetch } from "@/lib/api/http/client";
-import type { CreateFundraiser } from "@/lib/api/schemas";
+import {jsonFetch} from "@/lib/api/http/client";
+import type {CreateFundraiser} from "@/lib/api/schemas";
 
 export type CreateFundraiserResponse = {
 	id: string; title: string; startsAt: string | null; endsAt: string | null;
@@ -14,7 +14,7 @@ export async function createFundraiser(payload: CreateFundraiser) {
 
 	return jsonFetch<CreateFundraiserResponse>("/next-api/fundraisers", {
 		method: "POST",
-		headers: { "content-type": "application/json" },
+		headers: {"content-type": "application/json"},
 		credentials: "include",
 		body: JSON.stringify(body),
 	});
@@ -34,7 +34,7 @@ export async function patchFundraiser(payload: {
 }) {
 	return jsonFetch(`/next-api/fundraisers`, {
 		method: "PATCH",
-		headers: { "content-type": "application/json" },
+		headers: {"content-type": "application/json"},
 		credentials: "include",
 		body: JSON.stringify(payload),
 	});

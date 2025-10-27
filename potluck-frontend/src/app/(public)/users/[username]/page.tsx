@@ -93,7 +93,9 @@ export default async function ProfilePage({params}: { params: { username: string
 							<div className="text-sm/6 flex flex-wrap gap-x-4 gap-y-1">
 								<span><strong>{user.followersCount ?? 0}</strong> Followers</span>
 								<span><strong>{user.followingCount ?? 0}</strong> Following</span>
-								<span><strong>{user.favoritesCount ?? 0}</strong> Favorites</span>
+								<Link href={`/fundraisers/favorites/${user.username}`}>
+									<span className="hover:underline"><strong>{user.favoritesCount ?? 0}</strong> Favorites</span>
+								</Link>
 							</div>
 						</div>
 					</div>
@@ -157,7 +159,7 @@ export default async function ProfilePage({params}: { params: { username: string
 				</Section>
 
 				{isOrganizer && (
-					<Section title="Fundraisers" href={`/fundraisers/user/${user.username}`}>
+					<Section title="Fundraisers" href={`/fundraisers/users/${user.username}`}>
 						<FundraiserList items={fundraisers.content} initialShow={4} emptyText="No fundraisers yet."/>
 					</Section>
 				)}

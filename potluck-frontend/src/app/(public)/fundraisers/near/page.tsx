@@ -1,26 +1,45 @@
 import FundraiserListPage from "@/components/fundraisers/FundraiserListPage";
-import {FundraisersApi} from "@/lib/api/fundraisers.server";
-import {parseNearby} from "@/lib/api/schemas";
-import GeolocateAndPush from "@/components/GeolocateAndPush";
+import { near } from "@/lib/near";
+import EmptyState from "@/components/fundraisers/EmptyState";
+
+const toPageIndex = (v?: string) => Math.max(0, Number(v ?? 0) | 0);
+const toSize = (v?: string) => Math.min(100, Math.max(1, Number(v ?? 20) | 0));
 
 export const dynamic = "force-dynamic";
 
-export default async function NearbyPage({searchParams}: {
-	searchParams: Record<string, string | string[] | undefined>
+export default async function NearListPage({
+											   searchParams,
+										   }: {
+	searchParams: { lat?: string; lon?: string; radiusKm?: string; page?: string; size?: string };
 }) {
-	const opts = parseNearby(searchParams);
+	const param = await searchParams;
+	const lat = Number(param.lat);
+	const lon = Number(param.lon);
+	const radiusKm = Number(param.radiusKm ?? 20);
+	const page = toPageIndex(param.page);
+	const size = toSize(param.size);
 
-	// Todo: throw in input fields to set lat/lon, radius in km to replace a button prompt
-	if (!opts) {
+	if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
 		return (
-			<main className="flex flex-col ml-4 mr-4 px-4 py-6">
-				<h1 className="text-2xl font-bold tracking-tight">Nearby</h1>
-				<p className="text-sm text-muted-foreground mt-2">Share your location to see nearby fundraisers.</p>
-				<GeolocateAndPush/>
-			</main>
+			<div className="mt-4 ml-8">
+				<h1 className="text-2xl font-bold tracking-tight mb-4">Nearby Fundraisers</h1>
+				<EmptyState text="No nearby fundraisers yet."/>
+			</div>
 		);
 	}
 
-	const data = await FundraisersApi.near(opts);
-	return <FundraiserListPage title="Nearby" page={data} basePath="/fundraisers/near"/>;
+	const data = await near({ lat, lon, radiusKm }, { page, size });
+
+	const basePath =
+		`/fundraisers/near?lat=${encodeURIComponent(lat)}` +
+		`&lon=${encodeURIComponent(lon)}` +
+		`&radiusKm=${encodeURIComponent(radiusKm)}`;
+
+	return (
+		<FundraiserListPage
+			title="Nearby fundraisers"
+			page={data}
+			basePath={basePath}
+		/>
+	);
 }
