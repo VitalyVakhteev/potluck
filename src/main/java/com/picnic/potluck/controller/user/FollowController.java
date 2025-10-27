@@ -11,10 +11,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -62,7 +65,12 @@ public class FollowController {
 	})
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/followers/{userId}")
-	public Page<UserSummary> followers(@PathVariable UUID userId, Pageable p) {
+	public Page<UserSummary> followers(@PathVariable UUID userId,
+									   @PageableDefault(
+											   size = 20,
+											   sort = "createdAt",
+											   direction = Sort.Direction.DESC
+									   ) Pageable p) {
 		return followService.followers(userId, p);
 	}
 
@@ -74,7 +82,12 @@ public class FollowController {
 	})
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/following/{userId}")
-	public Page<UserSummary> following(@PathVariable UUID userId, Pageable p) {
+	public Page<UserSummary> following(@PathVariable UUID userId,
+									   @PageableDefault(
+											   size = 20,
+											   sort = "createdAt",
+											   direction = Sort.Direction.DESC
+									   ) Pageable p) {
 		return followService.following(userId, p);
 	}
 
@@ -89,7 +102,12 @@ public class FollowController {
 	})
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/followers/me")
-	public Page<UserSummary> myFollowers(@AuthenticationPrincipal Jwt jwt, Pageable p) {
+	public Page<UserSummary> myFollowers(@AuthenticationPrincipal Jwt jwt,
+										 @PageableDefault(
+												 size = 20,
+												 sort = "createdAt",
+												 direction = Sort.Direction.DESC
+										 ) Pageable p) {
 		return followService.followers(UUID.fromString(jwt.getSubject()), p);
 	}
 
@@ -104,7 +122,29 @@ public class FollowController {
 	})
 	@Tag(name = "Follows", description = "Follows management API")
 	@GetMapping("/following/me")
-	public Page<UserSummary> myFollowing(@AuthenticationPrincipal Jwt jwt, Pageable p) {
+	public Page<UserSummary> myFollowing(@AuthenticationPrincipal Jwt jwt,
+										 @PageableDefault(
+												 size = 20,
+												 sort = "createdAt",
+												 direction = Sort.Direction.DESC
+										 ) Pageable p) {
 		return followService.following(UUID.fromString(jwt.getSubject()), p);
+	}
+
+	@Operation(
+			summary = "Get the following status.",
+			description = "Returns if the target is being followed by the user.",
+			security = {@SecurityRequirement(name = "Bearer Authentication")}
+	)
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Fetched successfully"),
+			@ApiResponse(responseCode = "401", description = "Unauthorized request")
+	})
+	@Tag(name = "Follows", description = "Follows management API")
+	@GetMapping("/{targetId}/status")
+	public Map<String, Boolean> status(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID targetId) {
+		var me = UUID.fromString(jwt.getSubject());
+		boolean following = followService.isFollowing(me, targetId);
+		return Map.of("following", following);
 	}
 }

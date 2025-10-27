@@ -11,14 +11,27 @@ import java.util.UUID;
 
 public interface PointsTransactionRepository extends JpaRepository<PointsTransaction, UUID> {
 	@Query(value = """
-			select s.user_id as userId, s.total as total, s.rnk as rnk from (
-			  select t.user_id,
-			         coalesce(sum(t.delta),0) as total,
-			         rank() over (order by coalesce(sum(t.delta),0) desc ) as rnk
-			  from points_transactions t
-			  group by t.user_id
-			) s
-			where s.user_id = :userId
+			         with totals as (
+			            select t.user_id, coalesce(sum(t.delta), 0) as total
+			            from points_transactions t
+			            group by t.user_id
+			        ),
+			        totals_with_user as (
+			            select user_id, total from totals
+			            union all
+			            select :userId, 0
+			            where not exists (select 1 from totals where user_id = :userId)
+			        ),
+			        ranked as (
+			            select
+			                user_id,
+			                total,
+			                dense_rank() over (order by total desc) as rnk
+			            from totals_with_user
+			        )
+			        select user_id as userId, total, rnk
+			        from ranked
+			        where user_id = :userId
 			""", nativeQuery = true)
 	RankRow rankForUser(@Param("userId") UUID userId);
 
@@ -37,9 +50,10 @@ public interface PointsTransactionRepository extends JpaRepository<PointsTransac
 			    group by t.user_id
 			),
 			ranked as (
-			    select user_id,
+			    select
+			        user_id,
 			        total,
-			        rank() over (order by total desc, user_id asc) as rnk
+			        dense_rank() over (order by total desc) as rnk
 			    from totals
 			)
 			select user_id as userId, total as total, rnk as rnk
@@ -47,11 +61,12 @@ public interface PointsTransactionRepository extends JpaRepository<PointsTransac
 			order by total desc, user_id asc
 			""",
 			countQuery = """
-					select count(*) from (
-					  select 1
-					  from points_transactions t
-					  group by t.user_id
-					) x
-					""", nativeQuery = true)
+					    select count(*) from (
+					      select 1
+					      from points_transactions t
+					      group by t.user_id
+					    ) x
+					""",
+			nativeQuery = true)
 	Page<RankRow> leaderboard(Pageable pageable);
 }

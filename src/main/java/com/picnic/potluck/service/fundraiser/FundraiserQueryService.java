@@ -44,8 +44,8 @@ public class FundraiserQueryService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<FundraiserSummary> listByOrganizer(UUID organizerId, Pageable pageable) {
-		User organizer = users.findById(organizerId).orElseThrow();
+	public Page<FundraiserSummary> listByOrganizer(String organizerUsername, Pageable pageable) {
+		User organizer = users.findByUsernameIgnoreCase(organizerUsername).orElseThrow();
 		return fundraisers.findByOrganizerOrderByCreatedAtDesc(organizer, pageable).map(this::toSummary);
 	}
 
@@ -65,21 +65,24 @@ public class FundraiserQueryService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<FundraiserSummary> list(UUID userId, Pageable pageable) {
-		return fundraisers.findFavorites(userId, pageable).map(this::toSummary);
+	public Page<FundraiserSummary> list(String username, Pageable pageable) {
+		var user = users.findByUsernameIgnoreCase(username).orElseThrow();
+		return fundraisers.findFavorites(user.getId(), pageable).map(this::toSummary);
 	}
 
 	private FundraiserSummary toSummary(Fundraiser f) {
 		return new FundraiserSummary(
 				f.getId(), f.getTitle(), f.isActive(),
 				f.getLat(), f.getLon(),
-				f.getStarts_at(), f.getEnds_at());
+				f.getStarts_at(), f.getEnds_at(),
+				f.getOrganizer().getUsername()
+		);
 	}
 
 	private FundraiserDetail toDetail(Fundraiser f) {
 		return new FundraiserDetail(
 				f.getId(), f.getTitle(), f.getDescription(), f.getEmail(), f.getPhone(),
-				f.isActive(), f.getLat(), f.getLon(), f.getStarts_at(), f.getEnds_at(),
+				f.isActive(), f.isReward(), f.getLat(), f.getLon(), f.getStarts_at(), f.getEnds_at(),
 				f.getOrganizer().getId(), f.getOrganizer().getUsername()
 		);
 	}

@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 public class LeaderboardService {
@@ -35,10 +33,10 @@ public class LeaderboardService {
 	}
 
 	@Transactional(readOnly = true)
-	public LeaderboardEntry getUserEntry(UUID userId) {
-		var rankUser = pointsRepo.rankForUser(userId);
-		var username = userRepo.findById(userId).orElseThrow().getUsername();
+	public LeaderboardEntry getUserEntry(String username) {
+		var user = userRepo.findByUsernameIgnoreCase(username).orElseThrow();
+		var rankUser = pointsRepo.rankForUser(user.getId());
 
-		return new LeaderboardEntry(rankUser.getUserId(), username, rankUser.getTotal(), rankUser.getRnk());
+		return new LeaderboardEntry(rankUser.getUserId(), user.getUsername(), rankUser.getTotal(), rankUser.getRnk());
 	}
 }

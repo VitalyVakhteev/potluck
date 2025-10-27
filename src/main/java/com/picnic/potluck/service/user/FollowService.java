@@ -42,4 +42,9 @@ public class FollowService {
 				.map(f -> new UserSummary(f.getUser().getId(), f.getUser().getUsername(),
 						f.getUser().getTotalPoints(), f.getUser().getTotalFundraisers()));
 	}
+
+	@Transactional(readOnly = true)
+	public boolean isFollowing(UUID me, UUID target) {
+		return followRepository.existsByUserIdAndFollowerId(target, me);
+	}
 }

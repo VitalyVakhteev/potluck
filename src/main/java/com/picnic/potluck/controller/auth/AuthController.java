@@ -1,6 +1,7 @@
 package com.picnic.potluck.controller.auth;
 
 import com.picnic.potluck.service.auth.OidcService;
+import com.picnic.potluck.service.security.JwtCookieCreator;
 import com.picnic.potluck.service.user.UserService;
 import com.picnic.potluck.dto.auth.SignupRequest;
 import com.picnic.potluck.dto.auth.LoginRequest;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 	private final UserService userService;
 	private final OidcService oidcService;
+	private final JwtCookieCreator cookies;
 
 	@Operation(
 			summary = "Sign up a new user.",
@@ -32,8 +36,13 @@ public class AuthController {
 	})
 	@Tag(name = "Auth", description = "Auth management API")
 	@PostMapping("/signup")
-	public AuthResponse signup(@RequestBody @Valid SignupRequest req) {
-		return userService.signup(req);
+	public ResponseEntity<AuthResponse> signup(@RequestBody @Valid SignupRequest req) {
+		AuthResponse auth = userService.signup(req);
+		var cookie = cookies.build(auth.token());
+		var body = new AuthResponse(null, auth.userId(), auth.username(), auth.role());
+		return ResponseEntity.ok()
+				.header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.body(body);
 	}
 
 	@Operation(
@@ -45,8 +54,13 @@ public class AuthController {
 	})
 	@Tag(name = "Auth", description = "Auth management API")
 	@PostMapping("/login")
-	public AuthResponse login(@RequestBody @Valid LoginRequest req) {
-		return userService.login(req);
+	public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest req) {
+		AuthResponse auth = userService.login(req);
+		var cookie = cookies.build(auth.token());
+		var body = new AuthResponse(null, auth.userId(), auth.username(), auth.role());
+		return ResponseEntity.ok()
+				.header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.body(body);
 	}
 
 	@Operation(
@@ -59,7 +73,28 @@ public class AuthController {
 	})
 	@Tag(name = "Auth", description = "Auth management API")
 	@GetMapping("/oidc/me")
-	public AuthResponse oidcMe(@AuthenticationPrincipal OidcUser oidcUser) {
-		return oidcService.fromGoogle(oidcUser);
+	public ResponseEntity<AuthResponse> oidcMe(@AuthenticationPrincipal OidcUser oidcUser) {
+		AuthResponse auth = oidcService.fromGoogle(oidcUser);
+		var cookie = cookies.build(auth.token());
+		var body = new AuthResponse(null, auth.userId(), auth.username(), auth.role());
+		return ResponseEntity.ok()
+				.header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.body(body);
+	}
+
+	@Operation(
+			summary = "Logout.",
+			description = "Clears the JWT cookie."
+	)
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "User logged out successfully")
+	})
+	@Tag(name = "Auth", description = "Auth management API")
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout() {
+		var cookie = cookies.clear();
+		return ResponseEntity.ok()
+				.header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.build();
 	}
 }

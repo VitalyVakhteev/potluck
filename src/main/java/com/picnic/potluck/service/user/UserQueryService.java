@@ -35,12 +35,6 @@ public class UserQueryService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserSummary getSummary(UUID userId) {
-		var u = userRepository.findById(userId).orElseThrow();
-		return new UserSummary(u.getId(), u.getUsername(), u.getTotalPoints(), u.getTotalFundraisers());
-	}
-
-	@Transactional(readOnly = true)
 	public UserSummary getSummary(String username) {
 		var u = userRepository.findByUsernameIgnoreCase(username).orElseThrow();
 		return new UserSummary(u.getId(), u.getUsername(), u.getTotalPoints(), u.getTotalFundraisers());
@@ -79,6 +73,7 @@ public class UserQueryService {
 
 		return new UserDetail(
 				user.getId(),
+				user.getRole(),
 				user.getUsername(),
 				user.getBio(),
 				user.getLocation(),

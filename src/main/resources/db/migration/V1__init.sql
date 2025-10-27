@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS users
 
     created_at        TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMPTZ NOT NULL,
-
     CONSTRAINT uc_users_username UNIQUE (username),
     CONSTRAINT uc_users_email UNIQUE (email),
     CONSTRAINT uc_users_phone_number UNIQUE (phone_number)
@@ -92,7 +91,6 @@ CREATE TABLE IF NOT EXISTS scans
 
     created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at          TIMESTAMPTZ                           NOT NULL,
-
     CONSTRAINT uk_scans_idempotency_key UNIQUE (idempotency_key),
     CONSTRAINT fk_scans_fundraiser FOREIGN KEY (fundraiser_id) REFERENCES fundraisers (id),
     CONSTRAINT fk_scans_participant_user FOREIGN KEY (participant_user_id) REFERENCES users (id),
@@ -113,7 +111,6 @@ CREATE TABLE IF NOT EXISTS points_transactions
 
     created_at    TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at    TIMESTAMPTZ                           NOT NULL,
-
     CONSTRAINT fk_points_transaction_user FOREIGN KEY (user_id) REFERENCES users (id),
     CONSTRAINT fk_points_transaction_fundraiser FOREIGN KEY (fundraiser_id) REFERENCES fundraisers (id),
     CONSTRAINT fk_points_transaction_scan FOREIGN KEY (scan_id) REFERENCES scans (id),

@@ -29,6 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -95,9 +96,28 @@ public class SecurityConfig {
 		return provider;
 	}
 
+
+	@Bean
+	BearerTokenResolver headerThenCookieResolver(@Value("${app.jwt.cookie-name:potluck_token}") String cookieName) {
+		return request -> {
+			String auth = request.getHeader("Authorization");
+			if (auth != null && auth.startsWith("Bearer ")) {
+				return auth.substring(7);
+			}
+			if (request.getCookies() != null) {
+				for (var c : request.getCookies()) {
+					if (cookieName.equals(c.getName())) {
+						return c.getValue();
+					}
+				}
+			}
+			return null;
+		};
+	}
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider,
-											JwtAuthenticationConverter conv) throws Exception {
+											JwtAuthenticationConverter conv, BearerTokenResolver headerThenCookieResolver) throws Exception {
 		http
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(Customizer.withDefaults())
@@ -105,12 +125,17 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(
 								"/actuator/health", "/swagger-ui/**", "/v3/api-docs/**",
-								"/api/auth/login", "/api/auth/signup"
+								"/api/auth/login", "/api/auth/logout", "/api/auth/signup"
 						).permitAll()
 						.requestMatchers(HttpMethod.GET,
+								"/api/users/search",
+								"/api/users/id/**",
 								"/api/users/**",
 								"/api/leaderboard/**",
 								"/api/fundraisers/**"
+						).permitAll()
+						.requestMatchers(HttpMethod.POST,
+								"/api/fundraisers/near"
 						).permitAll()
 						.anyRequest().authenticated()
 				)
@@ -119,7 +144,9 @@ public class SecurityConfig {
 							res.sendRedirect("/auth/success");
 						})
 				)
-				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
+				.oauth2ResourceServer(oauth2 -> oauth2
+						.bearerTokenResolver(headerThenCookieResolver)
+						.jwt(jwt -> jwt.jwtAuthenticationConverter(conv)))
 				.exceptionHandling(ex -> ex
 						.authenticationEntryPoint((req, res, e) -> res.sendError(401))
 						.accessDeniedHandler((req, res, e) -> res.sendError(403))

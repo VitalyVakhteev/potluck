@@ -10,6 +10,7 @@ public record FundraiserSummary(
 		Double lat,
 		Double lon,
 		Instant startsAt,
-		Instant endsAt
+		Instant endsAt,
+		String organizerUsername
 ) {
 }

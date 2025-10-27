@@ -1,7 +1,8 @@
 package com.picnic.potluck.util;
 
 public final class PhoneNormalizer {
-	private PhoneNormalizer() {}
+	private PhoneNormalizer() {
+	}
 
 	public static String toE164(String raw, String defaultCountryCode) {
 		if (raw == null) throw new IllegalArgumentException("Phone is blank");
@@ -12,12 +13,14 @@ public final class PhoneNormalizer {
 		if (!hadPlus && s.startsWith("+")) hadPlus = true;
 
 		s = (hadPlus ? "+" : "") + s.replaceAll("\\D", "");
+
 		if (!s.startsWith("+")) {
-			if (s.length() == 10 && "+1".equals(defaultCountryCode)) {
+			if ("+1".equals(defaultCountryCode) && s.length() == 11 && s.startsWith("1")) {
+				s = s.substring(1);
+			}
+			if ("+1".equals(defaultCountryCode) && s.length() == 10) {
 				s = defaultCountryCode + s;
 			} else {
-				// I don't have the energy to read through the other country codes
-				// so we assume they work the same until proven otherwise :)
 				s = defaultCountryCode + s;
 			}
 		}
@@ -27,4 +30,5 @@ public final class PhoneNormalizer {
 		}
 		return s;
 	}
+
 }
